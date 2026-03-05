@@ -449,6 +449,36 @@
               <FilePath>.\Source_Files\Communication.c</FilePath>
             </File>
             <File>
+              <FileName>Sensor_Manager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\Sensor_Manager.c</FilePath>
+            </File>
+            <File>
+              <FileName>sensor_ph.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\sensor_ph.c</FilePath>
+            </File>
+            <File>
+              <FileName>sensor_ec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\sensor_ec.c</FilePath>
+            </File>
+            <File>
+              <FileName>sensor_autodetect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\sensor_autodetect.c</FilePath>
+            </File>
+            <File>
+              <FileName>sensor_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\sensor_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>Adc_Read.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\Adc_Read.c</FilePath>
+            </File>
+            <File>
               <FileName>Button.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source_Files\Button.c</FilePath>
@@ -457,6 +487,11 @@
               <FileName>ReDisplay.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source_Files\ReDisplay.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <IncludeInBuild>0</IncludeInBuild>
+                </CommonProperty>
+              </FileOption>
             </File>
             <File>
               <FileName>NANDDisplay.c</FileName>
@@ -487,6 +522,31 @@
               <FileName>display_icon.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source_Files\display_icon.c</FilePath>
+            </File>
+            <File>
+              <FileName>ReDisplay_ch2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\ReDisplay_ch2.c</FilePath>
+            </File>
+            <File>
+              <FileName>display_update.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\display_update.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\ui_mode.c</FilePath>
+            </File>
+            <File>
+              <FileName>ReDisplay_ch1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\ReDisplay_ch1.c</FilePath>
+            </File>
+            <File>
+              <FileName>ReDisplay_ch4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\ReDisplay_ch4.c</FilePath>
             </File>
           </Files>
         </Group>

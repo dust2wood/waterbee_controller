@@ -654,6 +654,31 @@
               <FileType>1</FileType>
               <FilePath>.\Source_Files\icon_ch2_ch4.c</FilePath>
             </File>
+            <File>
+              <FileName>ReDisplay_ch2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\ReDisplay_ch2.c</FilePath>
+            </File>
+            <File>
+              <FileName>display_update.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\display_update.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\ui_mode.c</FilePath>
+            </File>
+            <File>
+              <FileName>ReDisplay_ch1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\ReDisplay_ch1.c</FilePath>
+            </File>
+            <File>
+              <FileName>ReDisplay_ch4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source_Files\ReDisplay_ch4.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

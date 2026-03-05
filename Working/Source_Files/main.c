@@ -1,5 +1,6 @@
 #include "Main.h"
 #include "Sensor_Manager.h"
+#include "sensor_autodetect.h"
 
 
 unsigned int buz_time;	// max=65535*10msec=655.35sec
@@ -229,6 +230,8 @@ int main(void)
     Initialize();
     SysIND_LED();
     SystemSetting();
+    sensor_autodetect_run();
+    sensor_manager_init();
     bufferData_reset_function();
     Update_Cal_Logdata();
     configData.adjustConfig.filter_update_flag = 1;
@@ -373,7 +376,7 @@ BUZ_OFF;
         // SENSOR INPUT
         SensorComHandler();
 
-        /* 범용 외부 센서 폴링 (Modbus485Handler 보다 먼저 호출해야 함) */
+        /* ???? ??? ???? ???? (Modbus485Handler ???? ???? ?????? ??) */
         Update_All_External_Sensors();
 
         // 4-20mA ???
@@ -398,6 +401,9 @@ BUZ_OFF;
         else if (configData.modbusConfig.mode == 2 && currentData.holdState == 0) {
        		Ethernet_loop();
         }
+
+        /* ???? ????? ???? (Modbus ???? currentData ???) */
+        sensor_manager_update();
 
         // CALIBRATION. ???? ???				
         if (manual_cal_flag == 1) {

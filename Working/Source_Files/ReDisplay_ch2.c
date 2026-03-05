@@ -1,5 +1,6 @@
 #include "ReDisplay.h"
 #include "Sensor_Manager.h"
+#include "display_update.h"
 
 const char* comModeText[3] = {"232", "485", "586"};
 const char* comDatabitText[2] = {"8", "9"};
@@ -36,7 +37,7 @@ int32_t offsetintVal = 0;
 #define MGL_Y3  190
 
 
-//  ?    
+// ?? ??? ???????? ??????? ?????? 
 void RedrawValue(void) {
     switch (state) {
         case STATE_MAIN:
@@ -271,7 +272,7 @@ void RedrawViewArea(void) {
             break;
 
 
-		//  
+		// ???? 
         case STATE_DIAGNOSTIC:
             //ClearViewArea();
             //DrawBack2();
@@ -301,11 +302,11 @@ void RedrawViewArea(void) {
                 //DrawTextETC(350, 157, TEXT_ETC_MV, DRAW_IMAGE_ENABLE);
 				display_mV_1();
 
-	            //   ?, ?
-	            if (Sensor_State1 == SENSOR_OK) display_set10_sensor(0); //  
-	            else if (Sensor_State1 == SENSOR_ERROR1) display_set10_sensor(1); // ?,   
-	            else if (Sensor_State1 == SENSOR_ERROR2) display_set10_sensor(2); // ?,  
-	            else display_set10_sensor(3); //   
+	            // ???? ???? ???, ???
+	            if (Sensor_State1 == SENSOR_OK) display_set10_sensor(0); // ???? 
+	            else if (Sensor_State1 == SENSOR_ERROR1) display_set10_sensor(1); // ???, ???? ???? 
+	            else if (Sensor_State1 == SENSOR_ERROR2) display_set10_sensor(2); // ???, ???? ????
+	            else display_set10_sensor(3); // ???? ???? ????
 
             }
             else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
@@ -345,11 +346,11 @@ void RedrawViewArea(void) {
                 DrawMediumNumber(245, 155, strBuffer, BROWN);
 				display_mV_1();
 
-	            //   ?, ?
-	            if (Sensor_State2 == SENSOR_OK) display_set10_sensor(0); //  
-	            else if (Sensor_State2 == SENSOR_ERROR1) display_set10_sensor(1); // ?,   
-	            else if (Sensor_State2 == SENSOR_ERROR2) display_set10_sensor(2); // ?,  
-	            else display_set10_sensor(3); //   
+	            // ???? ???? ???, ???
+	            if (Sensor_State2 == SENSOR_OK) display_set10_sensor(0); // ???? 
+	            else if (Sensor_State2 == SENSOR_ERROR1) display_set10_sensor(1); // ???, ???? ???? 
+	            else if (Sensor_State2 == SENSOR_ERROR2) display_set10_sensor(2); // ???, ???? ????
+	            else display_set10_sensor(3); // ???? ???? ????
 			}	
 
             break;
@@ -440,7 +441,7 @@ void RedrawViewArea(void) {
 
             break;
 
-		//  
+		// ??? ????
         case STATE_CONFIG_COMM:
             //		ClearViewArea();
             ClearViewArea2();
@@ -489,7 +490,7 @@ void RedrawViewArea(void) {
             break;
 
 
-		// ETHERNET  
+		// ETHERNET ??? ????
         case STATE_CONFIG_COMM_ETHERNET:
             //		ClearViewArea();
             ClearViewArea2();
@@ -555,7 +556,7 @@ void RedrawViewArea(void) {
             break;
 
 
-            // ?
+            // ?????
         case STATE_CONFIG_TIME:
             ClearViewArea2();
             display_time();
@@ -624,7 +625,7 @@ void RedrawViewArea(void) {
 
 
 #ifndef  SENSOR_PH_EC
-        // calib-?
+        // calib-???????
         case STATE_CALIB_ZERO:
             ClearViewArea2();
 			display_zero();
@@ -695,7 +696,7 @@ void RedrawViewArea(void) {
             break;
 
 
-         //  
+         // ???? ????
         case STATE_CALIB_MANUAL:
             ClearViewArea2();
 			display_span();
@@ -758,7 +759,7 @@ void RedrawViewArea(void) {
             break;
 
 
-         //  
+         // ??? ????
         case STATE_CALIB_TEMP:
             ClearViewArea2();
 			display_temp();
@@ -808,7 +809,7 @@ void RedrawViewArea(void) {
 
 
                 } else if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
-				// 
+				// ??????
                     //DrawTextsize180(50, 120, TEXT180_S1_AUTO_CAL_VAULE, DRAW_IMAGE_ENABLE);
                     //DrawTextETC(402, 120, TEXT_ETC_NTU, DRAW_IMAGE_ENABLE);
 
@@ -827,7 +828,7 @@ void RedrawViewArea(void) {
             break;
 
 #else
-         //  
+         // ???? ????
         case STATE_CALIB_BUFF_PH4:
         case STATE_CALIB_BUFF_PH7:
             ClearViewArea2();
@@ -880,7 +881,7 @@ void RedrawViewArea(void) {
             }
             break;
 
-		// ?
+		// ???????
         case STATE_CALIB_ZERO:
             ClearViewArea2();
 			display_zero();
@@ -907,7 +908,7 @@ void RedrawViewArea(void) {
             break;
 
 
-         //  
+         // ???? ????
         case STATE_CALIB_SPAN:
             ClearViewArea2();
 			display_span();
@@ -974,7 +975,7 @@ void RedrawViewArea(void) {
             break;
 
 
-         //  
+         // ??? ????
         case STATE_CALIB_TEMP:
             ClearViewArea2();
 			display_temp();
@@ -1039,7 +1040,7 @@ void RedrawViewArea(void) {
             break;
 
 
-            // ? 
+            // ??????? 
         case STATE_CALIB_LOG:
             ClearViewArea4();
 
@@ -1061,7 +1062,7 @@ void RedrawViewArea(void) {
         //============================
         //============================
         //============================
-        // -
+        // ????-?????
         case STATE_CONFIG_ADJUST_GRADIENT:
             ClearViewArea2();
             if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
@@ -1092,7 +1093,7 @@ void RedrawViewArea(void) {
 
             break;
 
-        // -
+        // ????-??????
         case STATE_CONFIG_ADJUST_OFFSET:
             ClearViewArea2();
 
@@ -1161,7 +1162,7 @@ void RedrawViewArea(void) {
             }
             break;
 
-            // -
+            // ????-????
         case STATE_CONFIG_ADJUST_FILTER:
             ClearViewArea2();
             if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
@@ -1190,7 +1191,7 @@ void RedrawViewArea(void) {
             break;
 
 
-            // -??
+            // ????-????
         case STATE_CONFIG_ADJUST_FACTORYRESET:
             ClearViewArea2();
             //DrawTextETC(115, 130, TEXT_ETC_F_RESET_MESSAGE, DRAW_IMAGE_ENABLE);
@@ -1202,7 +1203,7 @@ void RedrawViewArea(void) {
             //=================================
 
 
-		// ?
+		// ???????
         case STATE_CONFIG_RELAY_RELAY1_AUTO_WASH:
             ClearViewArea2();
             display_autowash();
@@ -1237,7 +1238,7 @@ void RedrawViewArea(void) {
             break;
 
 
-		// 
+		// ????????
         case STATE_CONFIG_RELAY_RELAY1_MAN_WASH:
             //ClearViewArea();
             ClearViewArea3();
@@ -1283,7 +1284,7 @@ void RedrawViewArea(void) {
             //			DrawTextsize55(L_NUMBER1_X, L_NUMBER3_Y, TEXT55_DISABLE_YELLOW, DRAW_IMAGE_ENABLE);
             break;
 
-            // ---
+            // ????-??????-??????-????????
         case STATE_CONFIG_RELAY_RELAY3_SET:
             ClearViewArea2();
             if (currentData.Device_Selector_Mode == SENSOR_1_MODE || currentData.Device_Selector_Mode == SENSOR_2_MODE) // // TEXT96_CONFIG DrawTextsize96(90, 200, TEXT96_FILTER, DRAW_IMAGE_ENABLE);
@@ -1309,11 +1310,11 @@ void RedrawViewArea(void) {
             }
             break;
 
-            // ---
+            // ????-??????-??????-????????
         case STATE_CONFIG_RELAY_RELAY3_MAN:
             //		ClearViewArea();
             ClearViewArea3();
-            display_act_manual(); //
+            display_act_manual(); //????????
             display_message_STOP(); //stop
 
             display_set11_run(0);
@@ -1330,7 +1331,7 @@ void RedrawViewArea(void) {
 void RedrawBottomArea(void) {
     switch (state) {
         case STATE_MAIN:
-            //ClearBottomArea();	   //??....
+            //ClearBottomArea();	   //????????....
 
             //TFT_Fill(0, 234, 480, 236, BROWN);
 
@@ -1465,7 +1466,7 @@ void RedrawBottomArea(void) {
             ClearBottomArea();
             break;
 
-            // -?,
+            // ????-???????,????????
         case STATE_CONFIG_RELAY_RELAY1:
             ClearBottomArea();
             //		TFT_Fill(0, 234, 480, 236, BROWN);
@@ -1477,7 +1478,7 @@ void RedrawBottomArea(void) {
 
             break;
 
-            // ?-??, ?
+            // ??-??????, ???????
         case STATE_CONFIG_RELAY_RELAY2:
             ClearViewArea3();
             display_alarm();
@@ -1543,7 +1544,7 @@ void RedrawBottomArea(void) {
 void RedrawBottomArea_CH2(void) {
     switch (state) {
         case STATE_MAIN:
-            //ClearBottomArea();	   //??....
+            //ClearBottomArea();	   //????????....
 
             //TFT_Fill(0, 234, 480, 236, BROWN);
 
@@ -1584,22 +1585,75 @@ void RedrawBottomArea_CH2(void) {
 extern uint16_t Timer10msec;
 
 
-#ifndef SENSOR_PH_EC
+void ReDisplay_ch2(void) {
+#ifdef SENSOR_PH_EC
+	/* PH + EC layout */
+        if ((currentData.S1PPM) >= 1400)
+            sprintf(strBuffer, "14.00");	
+        else 
+		    sprintf(strBuffer, "%2d.%02d", (currentData.S1PPM) / 100, (currentData.S1PPM) % 100);
+		display_2ch_ph();
+       	Draw_2CH_HOME_Number(80, L_NUMBER1_Y+20, strBuffer, BROWN);
+		display_2ch_unit_ph();
 
-void RedrawMainValue(void) {
-	unsigned char imsi, imsi1;
+		if (Relay1_run_on_flag == 0 && Relay3_run_on_flag == 0){
+	        if ((currentData.temperature) >= 9999) sprintf(strBuffer, " 99.9C ");	
+	        else if ((currentData.temperature) <= -9999) sprintf(strBuffer, "-99.9C ");	
+	        else if ((currentData.temperature) >= 0) 	sprintf(strBuffer, " %02d.%01dC ",      currentData.temperature / 10, currentData.temperature % 10);
+	        else 										sprintf(strBuffer, "-%02d.%01dC ", (abs(currentData.temperature)) / 10, (abs(currentData.temperature)) % 10);
+			TFT_Fill(90, 154, 90+84, 154+5, BACK_COLOR3);
+			TFT_Fill(90, 175, 90+84, 175+5, BACK_COLOR3);
+	        Draw_2CH_TEMP_Number(90, 159, strBuffer, DRAW_NORMAL);
+		}
 
-	//   ?   ?? 	
-//	imsi1 = (imsi1 + imsi/10 + Timer10msec + currentTime.tm_sec + currentTime.tm_sec/10 + 37)%7;
-//	imsi = imsi1;
-//	imsi %=10;
+        if ((currentData.S2PPM) >= 20000)
+            sprintf(strBuffer, "2000.0");	
+        else
+            sprintf(strBuffer, "%4d.%01d", (currentData.S2PPM) / 10, (currentData.S2PPM) % 10);
+		display_2ch_ec();
+        Draw_2CH_HOME_Number(255, L_NUMBER1_Y+20, strBuffer, BROWN);
+		display_2ch_unit_ec();
 
-//    if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
-        // ? ?
+		if (Relay1_run_on_flag == 0 && Relay3_run_on_flag == 0){
+	        if ((currentData.temperature1) >= 9999) sprintf(strBuffer, " 99.9C ");	
+	        else if ((currentData.temperature1) <= -9999) sprintf(strBuffer, "-99.9C ");	
+	        else if ((currentData.temperature1) >= 0) 	sprintf(strBuffer, " %02d.%01dC ",      currentData.temperature1 / 10, currentData.temperature1 % 10);
+	        else 										sprintf(strBuffer, "-%02d.%01dC ", (abs(currentData.temperature1)) / 10, (abs(currentData.temperature1)) % 10);
+		TFT_Fill(320, 154, 330+74, 154+5, BACK_COLOR3);
+		TFT_Fill(320, 175, 330+74, 175+5, BACK_COLOR3);
+	        Draw_2CH_TEMP_Number(320, 159, strBuffer, DRAW_NORMAL);
+		}
+
+    {
+        uint16_t ext_raw;
+#define EXT_PH_X_PHEC  25
+#define EXT_EC_X_PHEC  330
+#define EXT_Y_PHEC     192
+        if (g_ext_sensor_count >= 1) {
+            TFT_Fill(EXT_PH_X_PHEC, EXT_Y_PHEC, EXT_PH_X_PHEC + 60, EXT_Y_PHEC + 16, BACK_COLOR3);
+            if (g_ext_sensors[0].status == SMGR_STATUS_OK) {
+                ext_raw = g_ext_sensors[0].raw[0];
+                sprintf(strBuffer, "%2d.%02d", ext_raw / 100, ext_raw % 100);
+            } else {
+                sprintf(strBuffer, "--.-  ");
+            }
+            DrawSmallNumber(EXT_PH_X_PHEC, EXT_Y_PHEC, strBuffer, BLUE);
+        }
+        if (g_ext_sensor_count >= 2) {
+            TFT_Fill(EXT_EC_X_PHEC, EXT_Y_PHEC, EXT_EC_X_PHEC + 72, EXT_Y_PHEC + 16, BACK_COLOR3);
+            if (g_ext_sensors[1].status == SMGR_STATUS_OK) {
+                ext_raw = g_ext_sensors[1].raw[0];
+                sprintf(strBuffer, "%4d.%1d ", ext_raw / 10, ext_raw % 10);
+            } else {
+                sprintf(strBuffer, "---.-  ");
+            }
+            DrawSmallNumber(EXT_EC_X_PHEC, EXT_Y_PHEC, strBuffer, BLUE);
+        }
+    }
+#else
+	/* CL + TU layout */
         if ((currentData.S1PPM) >= 9999)
             sprintf(strBuffer, "99.99");	
-
-//        else if ((currentData.S1PPM / 100) >= 10) {
         else 
 		    sprintf(strBuffer, "%2d.%02d", (currentData.S1PPM) / 100, (currentData.S1PPM) % 100);
 //		    sprintf(strBuffer, "%2d.%03d", (currentData.S1PPM*10+imsi) / 1000, (currentData.S1PPM*10+imsi) % 1000);
@@ -1608,19 +1662,19 @@ void RedrawMainValue(void) {
 //            sprintf(strBuffer, " %1d.%02d ", currentData.S1PPM / 100, currentData.S1PPM % 100);
 //		}
 		display_2ch_cl();
-		Draw_2CH_HOME_Number(38, L_NUMBER1_Y+20, strBuffer);
+		Draw_2CH_HOME_Number(38, L_NUMBER1_Y+20, strBuffer, BROWN);
 		display_2ch_unit_cl();
 
 
 		if (Relay1_run_on_flag == 0 && Relay3_run_on_flag == 0){
 
-	        //  ?
+	        // ??? ???
 	        if ((currentData.temperature) >= 9999) sprintf(strBuffer, " 99.9C ");	
 	        else if ((currentData.temperature) <= -9999) sprintf(strBuffer, "-99.9C ");	
 	        else if ((currentData.temperature) >= 0) 	sprintf(strBuffer, " %02d.%01dC ",      currentData.temperature / 100, currentData.temperature/10 % 10); // C is 'C
 	        else 										sprintf(strBuffer, "-%02d.%01dC ", (abs(currentData.temperature)) / 100, (abs(currentData.temperature/10)) % 10); // C is 'C
 
-	        //  ?,  
+	        // ??? ???, ??? ???
 	//        Draw_Back_Oval_100x30(80, 152);
 
 	//        if ((currentData.temperature) >= 9999) sprintf(strBuffer, "99.9C");	
@@ -1636,12 +1690,12 @@ void RedrawMainValue(void) {
 	//        DrawSmallNumber(210+54, 159, strBuffer, BACK_COLOR3);
 
 
-	        // ? ('C) ?
+	        // ?????? ('C) ???
 	        //DrawTextETC(280, 170, TEXT_ETC_TEMPUNIT, DRAW_IMAGE_ENABLE);
 		}
 //    }
 
-	// ? ?
+	// ??? ???
 //    if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
 
         if ((currentData.S2PPM) >= 99999)
@@ -1654,9 +1708,9 @@ void RedrawMainValue(void) {
 //            sprintf(strBuffer, "%2d.%04d", (currentData.S2PPM*10+imsi) / 10000, (currentData.S2PPM*10+imsi) % 10000);
 
 		display_2ch_tu();
-		// 2??  1?? ???? 
-		if (currentData.S2PPM<10000)        	Draw_2CH_HOME_Number(256, L_NUMBER1_Y+20, strBuffer);
-        else 								Draw_2CH_HOME_Number(262, L_NUMBER1_Y+20, strBuffer);
+		// 2?????? ?? 1?????? ???????????? ??????
+		if (currentData.S2PPM<10000)        	Draw_2CH_HOME_Number(256, L_NUMBER1_Y+20, strBuffer, BROWN);
+        else 								Draw_2CH_HOME_Number(262, L_NUMBER1_Y+20, strBuffer, BROWN);
 		display_2ch_unit_tu();
 
         //DrawTextETC(363, 170, TEXT_ETC_TEMPUNIT, DRAW_IMAGE_ENABLE);
@@ -1664,174 +1718,40 @@ void RedrawMainValue(void) {
         //DrawMediumNumber(235, 170, strBuffer, BROWN);
 //    }
 
-    /* EXT sensor overlay: Draw_2CH_HOME_Number reused at same coords as S1/S2PPM.
-     * raw[0] used directly (scaled_value is int32_t; fractional part would be lost).
-     *   sensors[0] pH_EXT  scale=0.01 : raw 700  -> " 7.00"
-     *   sensors[1] EC_EXT  scale=1.0  : raw 1234 -> "123.4"
-     * Show "--.-  " while status != SMGR_STATUS_OK (timeout / CRC error / pending).
-     * DRAW_NORMAL keeps original NAND bitmap colors identical to existing S1/S2PPM. */
+    /* Sensor_Manager EXT pH/EC: ?? ?? ??(??)? ???? ?? */
     {
         uint16_t ext_raw;
+#define EXT_PH_X  25
+#define EXT_EC_X  330
+#define EXT_Y     192
 
         if (g_ext_sensor_count >= 1) {
+            TFT_Fill(EXT_PH_X, EXT_Y, EXT_PH_X + 60, EXT_Y + 16, BACK_COLOR3);
             if (g_ext_sensors[0].status == SMGR_STATUS_OK) {
                 ext_raw = g_ext_sensors[0].raw[0];
                 sprintf(strBuffer, "%2d.%02d", ext_raw / 100, ext_raw % 100);
             } else {
                 sprintf(strBuffer, "--.-  ");
             }
-            Draw_2CH_HOME_Number(38, L_NUMBER1_Y + 20, strBuffer, DRAW_NORMAL);
+            DrawSmallNumber(EXT_PH_X, EXT_Y, strBuffer, BLUE);
         }
-
         if (g_ext_sensor_count >= 2) {
+            TFT_Fill(EXT_EC_X, EXT_Y, EXT_EC_X + 72, EXT_Y + 16, BACK_COLOR3);
             if (g_ext_sensors[1].status == SMGR_STATUS_OK) {
                 ext_raw = g_ext_sensors[1].raw[0];
-                sprintf(strBuffer, "%4d.%01d", ext_raw / 10, ext_raw % 10);
+                sprintf(strBuffer, "%4d.%1d ", ext_raw / 10, ext_raw % 10);
             } else {
                 sprintf(strBuffer, "---.-  ");
             }
-            Draw_2CH_HOME_Number(256, L_NUMBER1_Y + 20, strBuffer, DRAW_NORMAL);
+            DrawSmallNumber(EXT_EC_X, EXT_Y, strBuffer, BLUE);
         }
     }
 }
-
-
-#else	// define SENSOR_PH_EC
-
-
-void RedrawMainValue(void) {
-	unsigned char imsi, imsi1;
-
-	//   ?   ?? 	
-//	imsi1 = (imsi1 + imsi/10 + Timer10msec + currentTime.tm_sec + currentTime.tm_sec/10 + 37)%7;
-//	imsi = imsi1;
-//	imsi %=10;
-
-//    if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
-        // PH ?
-        if ((currentData.S1PPM) >= 1400)
-            sprintf(strBuffer, "14.00");	
-
-//        else if ((currentData.S1PPM / 100) >= 10) {
-        else 
-		    sprintf(strBuffer, "%2d.%02d", (currentData.S1PPM) / 100, (currentData.S1PPM) % 100);
-//		    sprintf(strBuffer, "%2d.%03d", (currentData.S1PPM*10+imsi) / 1000, (currentData.S1PPM*10+imsi) % 1000);
-//		}
-//        else {
-//            sprintf(strBuffer, " %1d.%02d ", currentData.S1PPM / 100, currentData.S1PPM % 100);
-//		}
-		display_2ch_ph();
-       	Draw_2CH_HOME_Number(80, L_NUMBER1_Y+20, strBuffer);
-		display_2ch_unit_ph();
-
-
-		if (Relay1_run_on_flag == 0 && Relay3_run_on_flag == 0){
-
-	        //  ?,  
-	//        Draw_Back_Oval_100x30(190, 152);
-
-	//        if ((currentData.temperature) >= 9999) sprintf(strBuffer, "99.9C");	
-	//        else if ((currentData.temperature) <= -9999) sprintf(strBuffer, "-99.9C");	
-	//        else sprintf(strBuffer, "%02d.%01dC", currentData.temperature / 100, currentData.temperature % 100); // C is 'C
-
-	        if ((currentData.temperature) >= 9999) sprintf(strBuffer, " 99.9C ");	
-	        else if ((currentData.temperature) <= -9999) sprintf(strBuffer, "-99.9C ");	
-	        else if ((currentData.temperature) >= 0) 	sprintf(strBuffer, " %02d.%01dC ",      currentData.temperature / 10, currentData.temperature % 10); // C is 'C
-	        else 										sprintf(strBuffer, "-%02d.%01dC ", (abs(currentData.temperature)) / 10, (abs(currentData.temperature)) % 10); // C is 'C
-
-	//        else if ((currentData.temperature) >= 0) 	sprintf(strBuffer, " %02d.%01dC ",      currentData.temperature / 100, (currentData.temperature/10) % 10); // C is 'C
-	//        else 										sprintf(strBuffer, "-%02d.%01dC ", (abs(currentData.temperature)) / 100, ((abs(currentData.temperature))/10) % 10); // C is 'C
-
-
-	        //  ?,  
-	//        Draw_Back_Oval_100x30(80, 152);
-
-			TFT_Fill(90, 154, 90+84, 154+5, BACK_COLOR3);
-			TFT_Fill(90, 175, 90+84, 175+5, BACK_COLOR3);
-	        Draw_2CH_TEMP_Number(90, 159, strBuffer, DRAW_NORMAL);
-
-	        // ? ('C) ?
-	        //DrawTextETC(280, 170, TEXT_ETC_TEMPUNIT, DRAW_IMAGE_ENABLE);
-		}
-//    }
-
-	//  ?
-//    if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
-
-        if ((currentData.S2PPM) >= 20000)
-            sprintf(strBuffer, "2000.0");	
-
-//        else if ((currentData.S2PPM / 1000) >= 10)
-//            sprintf(strBuffer, "%01d.%03d ", currentData.S2PPM / 1000, currentData.S2PPM % 1000);
-        else
-            sprintf(strBuffer, "%4d.%01d", (currentData.S2PPM) / 10, (currentData.S2PPM) % 10);
-//            sprintf(strBuffer, "%2d.%04d", (currentData.S2PPM*10+imsi) / 10000, (currentData.S2PPM*10+imsi) % 10000);
-
-
-		display_2ch_ec();
-        Draw_2CH_HOME_Number(255, L_NUMBER1_Y+20, strBuffer);
-		display_2ch_unit_ec();
-
-        //DrawTextETC(363, 170, TEXT_ETC_TEMPUNIT, DRAW_IMAGE_ENABLE);
-        //sprintf(strBuffer, "%02d.%02d", currentData.temperature/100, currentData.temperature%100);
-        //DrawMediumNumber(235, 170, strBuffer, BROWN);
-
-
-		if (Relay1_run_on_flag == 0 && Relay3_run_on_flag == 0){
-	        //  ?,  
-	//        Draw_Back_Oval_100x30(310, 152);
-
-	//        if ((currentData.temperature) >= 9999) sprintf(strBuffer, "99.9C");	
-	//        else if ((currentData.temperature) <= -9999) sprintf(strBuffer, "-99.9C");	
-	//        else sprintf(strBuffer, "%02d.%01dC", currentData.temperature / 100, currentData.temperature % 100); // C is 'C
-
-	        if ((currentData.temperature1) >= 9999) sprintf(strBuffer, " 99.9C ");	
-	        else if ((currentData.temperature1) <= -9999) sprintf(strBuffer, "-99.9C ");	
-	        else if ((currentData.temperature1) >= 0) 	sprintf(strBuffer, " %02d.%01dC ",      currentData.temperature1 / 10, currentData.temperature1 % 10); // C is 'C
-	        else 										sprintf(strBuffer, "-%02d.%01dC ", (abs(currentData.temperature1)) / 10, (abs(currentData.temperature1)) % 10); // C is 'C
-
-	//        else if ((currentData.temperature1) >= 0) 	sprintf(strBuffer, " %02d.%01dC ",      currentData.temperature1 / 100, (currentData.temperature1/10) % 10); // C is 'C
-	//        else 										sprintf(strBuffer, "-%02d.%01dC ", (abs(currentData.temperature1)) / 100, ((abs(currentData.temperature1))/10) % 10); // C is 'C
-
-		TFT_Fill(320, 154, 330+74, 154+5, BACK_COLOR3);
-		TFT_Fill(320, 175, 330+74, 175+5, BACK_COLOR3);
-	        Draw_2CH_TEMP_Number(320, 159, strBuffer, DRAW_NORMAL);
-		}
-//    }
-
-    /* EXT sensor overlay: Draw_2CH_HOME_Number reused at same coords as S1/S2PPM.
-     * raw[0] used directly (scaled_value is int32_t; fractional part would be lost).
-     *   sensors[0] pH_EXT  scale=0.01 : raw 700  -> " 7.00"
-     *   sensors[1] EC_EXT  scale=1.0  : raw 1234 -> "123.4"
-     * Show "--.-  " while status != SMGR_STATUS_OK (timeout / CRC error / pending).
-     * DRAW_NORMAL keeps original NAND bitmap colors identical to existing S1/S2PPM. */
-    {
-        uint16_t ext_raw;
-
-        if (g_ext_sensor_count >= 1) {
-            if (g_ext_sensors[0].status == SMGR_STATUS_OK) {
-                ext_raw = g_ext_sensors[0].raw[0];
-                sprintf(strBuffer, "%2d.%02d", ext_raw / 100, ext_raw % 100);
-            } else {
-                sprintf(strBuffer, "--.-  ");
-            }
-            Draw_2CH_HOME_Number(80, L_NUMBER1_Y + 20, strBuffer, DRAW_NORMAL);
-        }
-
-        if (g_ext_sensor_count >= 2) {
-            if (g_ext_sensors[1].status == SMGR_STATUS_OK) {
-                ext_raw = g_ext_sensors[1].raw[0];
-                sprintf(strBuffer, "%4d.%01d", ext_raw / 10, ext_raw % 10);
-            } else {
-                sprintf(strBuffer, "---.-  ");
-            }
-            Draw_2CH_HOME_Number(255, L_NUMBER1_Y + 20, strBuffer, DRAW_NORMAL);
-        }
-    }
-}
-
 #endif
 
+void RedrawMainValue(void) {
+    Display_Update();
+}
 
 void RedrawMainView(void) {
     ClearViewArea();
