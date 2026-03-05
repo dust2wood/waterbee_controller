@@ -1,0 +1,430 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+F:\2022\WaterBEE\CONTROLLER\program\FlashDownload\ID_Solution.uvproj
+Project File Date:  10/27/2022
+
+<h2>Output:</h2>
+Build target 'Project'
+compiling main.c...
+Source_Files\main.c(28): error:  #20: identifier "NAND_ADDRESS" is undefined
+Source_Files\main.c(29): error:  #20: identifier "NAND_PAGE_SIZE" is undefined
+Source_Files\main.c(40): warning:  #223-D: function "RCC_Configuration" declared implicitly
+Source_Files\main.c(42): warning:  #223-D: function "GPIO_Configuration" declared implicitly
+Source_Files\main.c(49): error:  #20: identifier "RCC_APB2Periph_GPIO_DISCONNECT" is undefined
+Source_Files\main.c(52): warning:  #223-D: function "FSMC_LCD_Init" declared implicitly
+Source_Files\main.c(54): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+Source_Files\main.c(58): warning:  #223-D: function "System_TIMConfig" declared implicitly
+Source_Files\main.c(59): warning:  #223-D: function "System_InterruptConfig" declared implicitly
+Source_Files\main.c(68): warning:  #223-D: function "Set_IWDG_ResetTime" declared implicitly
+Source_Files\main.c(69): warning:  #223-D: function "IWDG_Start" declared implicitly
+Source_Files\main.c(77): warning:  #223-D: function "Serial_Open" declared implicitly
+Source_Files\main.c(77): error:  #20: identifier "SERIAL_PORT1" is undefined
+Source_Files\main.c(95): warning:  #223-D: function "FSMC_NAND_WriteSmallPage" declared implicitly
+compiling NandInterface.c...
+Source_Files\NandInterface.c(7): error:  #20: identifier "NAND_ADDRESS" is undefined
+Source_Files\NandInterface.c(13): warning:  #223-D: function "FSMC_NAND_EraseBlock" declared implicitly
+compiling NAND.c...
+Source_Files\NAND.c(431): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+compiling Flash.c...
+compiling sdio_sd.c...
+compiling misc.c...
+compiling stm32f10x_adc.c...
+compiling stm32f10x_bkp.c...
+compiling stm32f10x_flash.c...
+compiling stm32f10x_fsmc.c...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_iwdg.c...
+compiling stm32f10x_pwr.c...
+compiling stm32f10x_rcc.c...
+compiling stm32f10x_rtc.c...
+compiling stm32f10x_sdio.c...
+compiling stm32f10x_spi.c...
+compiling stm32f10x_tim.c...
+compiling stm32f10x_usart.c...
+compiling stm32f10x_dma.c...
+compiling core_cm3.c...
+compiling system_stm32f10x.c...
+assembling startup_stm32f10x_hd.s...
+compiling diskio.c...
+compiling ff.c...
+Target not created
+Build target 'Project'
+compiling main.c...
+Source_Files\main.c(40): warning:  #223-D: function "RCC_Configuration" declared implicitly
+Source_Files\main.c(42): warning:  #223-D: function "GPIO_Configuration" declared implicitly
+Source_Files\main.c(49): error:  #20: identifier "RCC_APB2Periph_GPIO_DISCONNECT" is undefined
+Source_Files\main.c(52): warning:  #223-D: function "FSMC_LCD_Init" declared implicitly
+Source_Files\main.c(54): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+Source_Files\main.c(58): warning:  #223-D: function "System_TIMConfig" declared implicitly
+Source_Files\main.c(59): warning:  #223-D: function "System_InterruptConfig" declared implicitly
+Source_Files\main.c(68): warning:  #223-D: function "Set_IWDG_ResetTime" declared implicitly
+Source_Files\main.c(69): warning:  #223-D: function "IWDG_Start" declared implicitly
+Source_Files\main.c(77): warning:  #223-D: function "Serial_Open" declared implicitly
+Source_Files\main.c(77): error:  #20: identifier "SERIAL_PORT1" is undefined
+compiling NandInterface.c...
+compiling NAND.c...
+Source_Files\NAND.c(431): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+compiling sdio_sd.c...
+compiling diskio.c...
+Target not created
+Build target 'Project'
+compiling main.c...
+Source_Files\main.c(40): warning:  #223-D: function "RCC_Configuration" declared implicitly
+Source_Files\main.c(42): warning:  #223-D: function "GPIO_Configuration" declared implicitly
+Source_Files\main.c(53): warning:  #223-D: function "FSMC_LCD_Init" declared implicitly
+Source_Files\main.c(55): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+Source_Files\main.c(59): warning:  #223-D: function "System_TIMConfig" declared implicitly
+Source_Files\main.c(60): warning:  #223-D: function "System_InterruptConfig" declared implicitly
+Source_Files\main.c(69): warning:  #223-D: function "Set_IWDG_ResetTime" declared implicitly
+Source_Files\main.c(70): warning:  #223-D: function "IWDG_Start" declared implicitly
+Source_Files\main.c(78): warning:  #223-D: function "Serial_Open" declared implicitly
+Source_Files\main.c(78): error:  #20: identifier "SERIAL_PORT1" is undefined
+Target not created
+Build target 'Project'
+compiling main.c...
+Source_Files\main.c(40): warning:  #223-D: function "RCC_Configuration" declared implicitly
+Source_Files\main.c(42): warning:  #223-D: function "GPIO_Configuration" declared implicitly
+Source_Files\main.c(53): warning:  #223-D: function "FSMC_LCD_Init" declared implicitly
+Source_Files\main.c(55): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+Source_Files\main.c(59): warning:  #223-D: function "System_TIMConfig" declared implicitly
+Source_Files\main.c(60): warning:  #223-D: function "System_InterruptConfig" declared implicitly
+Source_Files\main.c(69): warning:  #223-D: function "Set_IWDG_ResetTime" declared implicitly
+Source_Files\main.c(70): warning:  #223-D: function "IWDG_Start" declared implicitly
+Source_Files\main.c(78): warning:  #223-D: function "Serial_Open" declared implicitly
+Source_Files\main.c(78): error:  #20: identifier "SERIAL_PORT1" is undefined
+compiling serial.c...
+Source_Files\serial.c(17): error:  #20: identifier "NVIC_InitTypeDef" is undefined
+Source_Files\serial.c(143): warning:  #223-D: function "NVIC_Init" declared implicitly
+Source_Files\serial.c(152): error:  #20: identifier "NVIC_InitTypeDef" is undefined
+Source_Files\serial.c(175): warning:  #223-D: function "NVIC_Init" declared implicitly
+Target not created
+Build target 'Project'
+compiling main.c...
+Source_Files\main.c(40): warning:  #223-D: function "RCC_Configuration" declared implicitly
+Source_Files\main.c(42): warning:  #223-D: function "GPIO_Configuration" declared implicitly
+Source_Files\main.c(53): warning:  #223-D: function "FSMC_LCD_Init" declared implicitly
+Source_Files\main.c(55): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+Source_Files\main.c(59): warning:  #223-D: function "System_TIMConfig" declared implicitly
+Source_Files\main.c(60): warning:  #223-D: function "System_InterruptConfig" declared implicitly
+Source_Files\main.c(69): warning:  #223-D: function "Set_IWDG_ResetTime" declared implicitly
+Source_Files\main.c(70): warning:  #223-D: function "IWDG_Start" declared implicitly
+Source_Files\main.c(78): error:  #140: too many arguments in function call
+compiling NandInterface.c...
+compiling NAND.c...
+Source_Files\NAND.c(431): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+compiling sdio_sd.c...
+compiling serial.c...
+Source_Files\serial.c(17): error:  #20: identifier "NVIC_InitTypeDef" is undefined
+Source_Files\serial.c(143): warning:  #223-D: function "NVIC_Init" declared implicitly
+Source_Files\serial.c(152): error:  #20: identifier "NVIC_InitTypeDef" is undefined
+Source_Files\serial.c(175): warning:  #223-D: function "NVIC_Init" declared implicitly
+compiling diskio.c...
+Target not created
+Build target 'Project'
+compiling main.c...
+Source_Files\main.c(40): warning:  #223-D: function "RCC_Configuration" declared implicitly
+Source_Files\main.c(42): warning:  #223-D: function "GPIO_Configuration" declared implicitly
+Source_Files\main.c(53): warning:  #223-D: function "FSMC_LCD_Init" declared implicitly
+Source_Files\main.c(55): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+Source_Files\main.c(59): warning:  #223-D: function "System_TIMConfig" declared implicitly
+Source_Files\main.c(60): warning:  #223-D: function "System_InterruptConfig" declared implicitly
+Source_Files\main.c(69): warning:  #223-D: function "Set_IWDG_ResetTime" declared implicitly
+Source_Files\main.c(70): warning:  #223-D: function "IWDG_Start" declared implicitly
+compiling serial.c...
+Source_Files\serial.c(17): error:  #20: identifier "NVIC_InitTypeDef" is undefined
+Source_Files\serial.c(143): warning:  #223-D: function "NVIC_Init" declared implicitly
+Source_Files\serial.c(152): error:  #20: identifier "NVIC_InitTypeDef" is undefined
+Source_Files\serial.c(175): warning:  #223-D: function "NVIC_Init" declared implicitly
+Target not created
+Build target 'Project'
+compiling serial.c...
+linking...
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol FSMC_LCD_Init (referred from main.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol FSMC_NAND_Init (referred from main.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol GPIO_Configuration (referred from main.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol IWDG_Start (referred from main.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol RCC_Configuration (referred from main.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol SPI_TP_Init (referred from main.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol Set_IWDG_ResetTime (referred from main.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol System_InterruptConfig (referred from main.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol System_TIMConfig (referred from main.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol User_ADC_Configuration (referred from main.o).
+Target not created
+Build target 'Project'
+compiling Initialize.c...
+Source_Files\Initialize.c(13): warning:  #223-D: function "RTC_Config" declared implicitly
+Source_Files\Initialize.c(15): warning:  #223-D: function "TFT_Init" declared implicitly
+Source_Files\Initialize.c(28): warning:  #223-D: function "TFT_clear" declared implicitly
+Source_Files\Initialize.c(28): error:  #20: identifier "BLACK" is undefined
+Source_Files\Initialize.c(35): warning:  #223-D: function "InitEeprom" declared implicitly
+Source_Files\Initialize.c(38): error:  #20: identifier "RS485_DRIVE_LOW" is undefined
+Source_Files\Initialize.c(40): error:  #20: identifier "RELAY1_OFF" is undefined
+Source_Files\Initialize.c(41): error:  #20: identifier "RELAY2_OFF" is undefined
+Source_Files\Initialize.c(42): error:  #20: identifier "RELAY3_OFF" is undefined
+Source_Files\Initialize.c(46): error:  #20: identifier "imageBuffer" is undefined
+Source_Files\Initialize.c(164): error:  #20: identifier "SPI2_PIN_SCK" is undefined
+Source_Files\Initialize.c(164): error:  #20: identifier "SPI2_PIN_MISO" is undefined
+Source_Files\Initialize.c(164): error:  #20: identifier "SPI2_PIN_MOSI" is undefined
+Source_Files\Initialize.c(167): error:  #20: identifier "SPI2_GPIO" is undefined
+Source_Files\Initialize.c(170): error:  #20: identifier "GPIO_SPI_NCS_PIN" is undefined
+Source_Files\Initialize.c(173): error:  #20: identifier "GPIO_SPI_CS" is undefined
+Source_Files\Initialize.c(308): error:  #20: identifier "NVIC_InitTypeDef" is undefined
+Source_Files\Initialize.c(311): warning:  #223-D: function "NVIC_SetVectorTable" declared implicitly
+Source_Files\Initialize.c(311): error:  #20: identifier "NVIC_VectTab_FLASH" is undefined
+Source_Files\Initialize.c(320): warning:  #223-D: function "NVIC_Init" declared implicitly
+Target not created
+Build target 'Project'
+compiling main.c...
+.\Include_Files\Main.h(55): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\main.c(40): warning:  #223-D: function "RCC_Configuration" declared implicitly
+Source_Files\main.c(42): warning:  #223-D: function "GPIO_Configuration" declared implicitly
+Source_Files\main.c(53): warning:  #223-D: function "FSMC_LCD_Init" declared implicitly
+Source_Files\main.c(55): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+Source_Files\main.c(59): warning:  #223-D: function "System_TIMConfig" declared implicitly
+Source_Files\main.c(60): warning:  #223-D: function "System_InterruptConfig" declared implicitly
+Source_Files\main.c(69): warning:  #223-D: function "Set_IWDG_ResetTime" declared implicitly
+Source_Files\main.c(70): warning:  #223-D: function "IWDG_Start" declared implicitly
+compiling NandInterface.c...
+.\Include_Files\Main.h(55): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+compiling NAND.c...
+.\Include_Files\Main.h(55): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\NAND.c(431): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+compiling sdio_sd.c...
+.\Include_Files\main.h(55): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+compiling serial.c...
+.\Include_Files\Main.h(55): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+compiling Initialize.c...
+.\Include_Files\Main.h(55): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\Initialize.c(13): warning:  #223-D: function "RTC_Config" declared implicitly
+Source_Files\Initialize.c(15): warning:  #223-D: function "TFT_Init" declared implicitly
+Source_Files\Initialize.c(28): warning:  #223-D: function "TFT_clear" declared implicitly
+Source_Files\Initialize.c(28): error:  #20: identifier "BLACK" is undefined
+Source_Files\Initialize.c(35): warning:  #223-D: function "InitEeprom" declared implicitly
+Source_Files\Initialize.c(38): error:  #20: identifier "RS485_DRIVE_LOW" is undefined
+Source_Files\Initialize.c(40): error:  #20: identifier "RELAY1_OFF" is undefined
+Source_Files\Initialize.c(41): error:  #20: identifier "RELAY2_OFF" is undefined
+Source_Files\Initialize.c(42): error:  #20: identifier "RELAY3_OFF" is undefined
+Source_Files\Initialize.c(46): error:  #20: identifier "imageBuffer" is undefined
+Source_Files\Initialize.c(164): error:  #20: identifier "SPI2_PIN_SCK" is undefined
+Source_Files\Initialize.c(164): error:  #20: identifier "SPI2_PIN_MISO" is undefined
+Source_Files\Initialize.c(164): error:  #20: identifier "SPI2_PIN_MOSI" is undefined
+Source_Files\Initialize.c(167): error:  #20: identifier "SPI2_GPIO" is undefined
+Source_Files\Initialize.c(170): error:  #20: identifier "GPIO_SPI_NCS_PIN" is undefined
+Source_Files\Initialize.c(173): error:  #20: identifier "GPIO_SPI_CS" is undefined
+Source_Files\Initialize.c(308): error:  #20: identifier "NVIC_InitTypeDef" is undefined
+Source_Files\Initialize.c(311): warning:  #223-D: function "NVIC_SetVectorTable" declared implicitly
+Source_Files\Initialize.c(311): error:  #20: identifier "NVIC_VectTab_FLASH" is undefined
+Source_Files\Initialize.c(320): warning:  #223-D: function "NVIC_Init" declared implicitly
+compiling diskio.c...
+.\Include_Files\main.h(55): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Target not created
+Build target 'Project'
+compiling Initialize.c...
+.\Include_Files\Main.h(55): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\Initialize.c(13): warning:  #223-D: function "RTC_Config" declared implicitly
+Source_Files\Initialize.c(15): warning:  #223-D: function "TFT_Init" declared implicitly
+Source_Files\Initialize.c(28): warning:  #223-D: function "TFT_clear" declared implicitly
+Source_Files\Initialize.c(28): error:  #20: identifier "BLACK" is undefined
+Source_Files\Initialize.c(35): warning:  #223-D: function "InitEeprom" declared implicitly
+Source_Files\Initialize.c(46): error:  #20: identifier "imageBuffer" is undefined
+Source_Files\Initialize.c(281): error:  #20: identifier "NVIC_InitTypeDef" is undefined
+Source_Files\Initialize.c(284): warning:  #223-D: function "NVIC_SetVectorTable" declared implicitly
+Source_Files\Initialize.c(284): error:  #20: identifier "NVIC_VectTab_FLASH" is undefined
+Source_Files\Initialize.c(293): warning:  #223-D: function "NVIC_Init" declared implicitly
+Target not created
+Build target 'Project'
+compiling main.c...
+.\Include_Files\Main.h(31): error:  #5: cannot open source input file "Picture.h": No such file or directory
+compiling NandInterface.c...
+.\Include_Files\Main.h(31): error:  #5: cannot open source input file "Picture.h": No such file or directory
+compiling NAND.c...
+.\Include_Files\Main.h(31): error:  #5: cannot open source input file "Picture.h": No such file or directory
+compiling sdio_sd.c...
+.\Include_Files\main.h(31): error:  #5: cannot open source input file "Picture.h": No such file or directory
+compiling serial.c...
+.\Include_Files\Main.h(31): error:  #5: cannot open source input file "Picture.h": No such file or directory
+compiling Initialize.c...
+.\Include_Files\Main.h(31): error:  #5: cannot open source input file "Picture.h": No such file or directory
+compiling diskio.c...
+.\Include_Files\main.h(31): error:  #5: cannot open source input file "Picture.h": No such file or directory
+Target not created
+Build target 'Project'
+compiling main.c...
+.\Include_Files\Main.h(55): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\main.c(40): warning:  #223-D: function "RCC_Configuration" declared implicitly
+Source_Files\main.c(42): warning:  #223-D: function "GPIO_Configuration" declared implicitly
+Source_Files\main.c(53): warning:  #223-D: function "FSMC_LCD_Init" declared implicitly
+Source_Files\main.c(55): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+Source_Files\main.c(59): warning:  #223-D: function "System_TIMConfig" declared implicitly
+Source_Files\main.c(60): warning:  #223-D: function "System_InterruptConfig" declared implicitly
+Source_Files\main.c(69): warning:  #223-D: function "Set_IWDG_ResetTime" declared implicitly
+Source_Files\main.c(70): warning:  #223-D: function "IWDG_Start" declared implicitly
+compiling NandInterface.c...
+.\Include_Files\Main.h(55): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+compiling NAND.c...
+.\Include_Files\Main.h(55): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\NAND.c(431): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+compiling sdio_sd.c...
+.\Include_Files\main.h(55): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+compiling serial.c...
+.\Include_Files\Main.h(55): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+compiling Initialize.c...
+.\Include_Files\Main.h(55): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\Initialize.c(13): warning:  #223-D: function "RTC_Config" declared implicitly
+Source_Files\Initialize.c(15): warning:  #223-D: function "TFT_Init" declared implicitly
+Source_Files\Initialize.c(28): warning:  #223-D: function "TFT_clear" declared implicitly
+Source_Files\Initialize.c(28): error:  #20: identifier "BLACK" is undefined
+Source_Files\Initialize.c(35): warning:  #223-D: function "InitEeprom" declared implicitly
+Source_Files\Initialize.c(46): error:  #20: identifier "imageBuffer" is undefined
+Source_Files\Initialize.c(281): error:  #20: identifier "NVIC_InitTypeDef" is undefined
+Source_Files\Initialize.c(284): warning:  #223-D: function "NVIC_SetVectorTable" declared implicitly
+Source_Files\Initialize.c(284): error:  #20: identifier "NVIC_VectTab_FLASH" is undefined
+Source_Files\Initialize.c(293): warning:  #223-D: function "NVIC_Init" declared implicitly
+compiling diskio.c...
+.\Include_Files\main.h(55): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Target not created
+Build target 'Project'
+compiling main.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\main.c(40): warning:  #223-D: function "RCC_Configuration" declared implicitly
+Source_Files\main.c(42): warning:  #223-D: function "GPIO_Configuration" declared implicitly
+Source_Files\main.c(53): warning:  #223-D: function "FSMC_LCD_Init" declared implicitly
+Source_Files\main.c(55): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+Source_Files\main.c(59): warning:  #223-D: function "System_TIMConfig" declared implicitly
+Source_Files\main.c(60): warning:  #223-D: function "System_InterruptConfig" declared implicitly
+Source_Files\main.c(69): warning:  #223-D: function "Set_IWDG_ResetTime" declared implicitly
+Source_Files\main.c(70): warning:  #223-D: function "IWDG_Start" declared implicitly
+compiling NandInterface.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+compiling NAND.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\NAND.c(431): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+compiling sdio_sd.c...
+.\Include_Files\main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+compiling serial.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+compiling Initialize.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\Initialize.c(13): warning:  #223-D: function "RTC_Config" declared implicitly
+Source_Files\Initialize.c(35): warning:  #223-D: function "InitEeprom" declared implicitly
+Source_Files\Initialize.c(46): error:  #20: identifier "imageBuffer" is undefined
+Source_Files\Initialize.c(281): error:  #20: identifier "NVIC_InitTypeDef" is undefined
+Source_Files\Initialize.c(284): warning:  #223-D: function "NVIC_SetVectorTable" declared implicitly
+Source_Files\Initialize.c(284): error:  #20: identifier "NVIC_VectTab_FLASH" is undefined
+Source_Files\Initialize.c(293): warning:  #223-D: function "NVIC_Init" declared implicitly
+compiling diskio.c...
+.\Include_Files\main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Target not created
+Build target 'Project'
+compiling Initialize.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\Initialize.c(18): warning:  #223-D: function "RTC_Config" declared implicitly
+Source_Files\Initialize.c(40): warning:  #223-D: function "InitEeprom" declared implicitly
+Source_Files\Initialize.c(286): error:  #20: identifier "NVIC_InitTypeDef" is undefined
+Source_Files\Initialize.c(289): warning:  #223-D: function "NVIC_SetVectorTable" declared implicitly
+Source_Files\Initialize.c(289): error:  #20: identifier "NVIC_VectTab_FLASH" is undefined
+Source_Files\Initialize.c(298): warning:  #223-D: function "NVIC_Init" declared implicitly
+Target not created
+Build target 'Project'
+compiling main.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\main.c(40): warning:  #223-D: function "RCC_Configuration" declared implicitly
+Source_Files\main.c(42): warning:  #223-D: function "GPIO_Configuration" declared implicitly
+Source_Files\main.c(53): warning:  #223-D: function "FSMC_LCD_Init" declared implicitly
+Source_Files\main.c(55): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+Source_Files\main.c(59): warning:  #223-D: function "System_TIMConfig" declared implicitly
+Source_Files\main.c(60): warning:  #223-D: function "System_InterruptConfig" declared implicitly
+Source_Files\main.c(69): warning:  #223-D: function "Set_IWDG_ResetTime" declared implicitly
+Source_Files\main.c(70): warning:  #223-D: function "IWDG_Start" declared implicitly
+compiling NandInterface.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+compiling NAND.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\NAND.c(431): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+compiling sdio_sd.c...
+.\Include_Files\main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+compiling serial.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+compiling Initialize.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\Initialize.c(18): warning:  #223-D: function "RTC_Config" declared implicitly
+Source_Files\Initialize.c(40): warning:  #223-D: function "InitEeprom" declared implicitly
+compiling diskio.c...
+.\Include_Files\main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+linking...
+.\Out\FLASH.axf: Error: L6200E: Symbol imageBuffer multiply defined (by initialize.o and main.o).
+Target not created
+Build target 'Project'
+compiling Initialize.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\Initialize.c(18): warning:  #223-D: function "RTC_Config" declared implicitly
+Source_Files\Initialize.c(40): warning:  #223-D: function "InitEeprom" declared implicitly
+linking...
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol IWDG_Start (referred from main.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol SPI_TP_Init (referred from main.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol Set_IWDG_ResetTime (referred from main.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol GlobalMemory (referred from initialize.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol InitEeprom (referred from initialize.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol RTC_Config (referred from initialize.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol TFT_Init (referred from initialize.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol TFT_clear (referred from initialize.o).
+Target not created
+Build target 'Project'
+compiling main.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\main.c(40): warning:  #223-D: function "RCC_Configuration" declared implicitly
+Source_Files\main.c(42): warning:  #223-D: function "GPIO_Configuration" declared implicitly
+Source_Files\main.c(53): warning:  #223-D: function "FSMC_LCD_Init" declared implicitly
+Source_Files\main.c(55): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+Source_Files\main.c(59): warning:  #223-D: function "System_TIMConfig" declared implicitly
+Source_Files\main.c(60): warning:  #223-D: function "System_InterruptConfig" declared implicitly
+linking...
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol SPI_TP_Init (referred from main.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol GlobalMemory (referred from initialize.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol InitEeprom (referred from initialize.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol RTC_Config (referred from initialize.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol TFT_Init (referred from initialize.o).
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol TFT_clear (referred from initialize.o).
+Target not created
+Build target 'Project'
+compiling main.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\main.c(40): warning:  #223-D: function "RCC_Configuration" declared implicitly
+Source_Files\main.c(42): warning:  #223-D: function "GPIO_Configuration" declared implicitly
+Source_Files\main.c(53): warning:  #223-D: function "FSMC_LCD_Init" declared implicitly
+Source_Files\main.c(55): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+Source_Files\main.c(59): warning:  #223-D: function "System_TIMConfig" declared implicitly
+Source_Files\main.c(60): warning:  #223-D: function "System_InterruptConfig" declared implicitly
+compiling Initialize.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+linking...
+.\Out\FLASH.axf: Error: L6218E: Undefined symbol GlobalMemory (referred from initialize.o).
+Target not created
+Build target 'Project'
+compiling Initialize.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+linking...
+Program Size: Code=3966 RO-data=400338 RW-data=40 ZI-data=1632  
+FromELF: creating hex file...
+".\Out\FLASH.axf" - 0 Error(s), 1 Warning(s).
+Build target 'Project'
+compiling Initialize.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+linking...
+Program Size: Code=3966 RO-data=400338 RW-data=40 ZI-data=1632  
+FromELF: creating hex file...
+".\Out\FLASH.axf" - 0 Error(s), 1 Warning(s).
+Build target 'Project'
+compiling main.c...
+.\Include_Files\Main.h(58): warning:  #47-D: incompatible redefinition of macro "GRAPH_Y_ZERO" (declared at line 5 of ".\Include_Files\Display.h")
+Source_Files\main.c(51): warning:  #223-D: function "RCC_Configuration" declared implicitly
+Source_Files\main.c(53): warning:  #223-D: function "GPIO_Configuration" declared implicitly
+Source_Files\main.c(64): warning:  #223-D: function "FSMC_LCD_Init" declared implicitly
+Source_Files\main.c(66): warning:  #223-D: function "FSMC_NAND_Init" declared implicitly
+linking...
+Program Size: Code=2194 RO-data=406098 RW-data=24 ZI-data=1632  
+FromELF: creating hex file...
+".\Out\FLASH.axf" - 0 Error(s), 5 Warning(s).

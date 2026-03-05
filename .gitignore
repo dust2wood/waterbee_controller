@@ -1,0 +1,29 @@
+﻿# 빌드 결과물
+*.o
+*.d
+*.hex
+*.elf
+*.map
+*.lst
+*.dep
+*.bak
+*.tmp
+Debug/
+Release/
+build/
+
+# IAR
+*.pbi
+*.pbd
+*.dni
+*.wsdt
+settings/
+
+# Keil
+*.uvguix.*
+*.uvoptx
+*.uvopt
+
+# STM32CubeIDE
+.metadata/
+RemoteSystemsTempFiles/

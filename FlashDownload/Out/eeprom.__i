@@ -1,0 +1,1 @@
+-c --cpu Cortex-M3 -D__EVAL -g -O2 --apcs=interwork --split_sections -I.\Include_Files -I.\StdPeriph_Driver\inc -I.\CMSIS -I.\FATFS_V0.08A\src -I "C:\Keil_v5\ARM\CMSIS\Include" -I "C:\Keil_v5\ARM\INC\ST\STM32F10x" -DUSE_STDPERIPH_DRIVER -DSTM32F10X_HD -DUSE_STM3210B_EVAL -o ".\Out\eeprom.o" --omf_browse ".\Out\eeprom.crf" --depend ".\Out\eeprom.d" "Source_Files\eeprom.c"

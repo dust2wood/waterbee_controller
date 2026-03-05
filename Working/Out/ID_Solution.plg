@@ -1,0 +1,365 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+C:\Users\PC\Desktop\Final\PROG_2CH (pH)_1\program_2ch_20240808\Working\ID_Solution.uvproj
+Project File Date:  04/30/2025
+
+<h2>Output:</h2>
+Build target 'Project'
+compiling main.c...
+Source_Files\Redisplay_ch2.c(220): warning:  #223-D: function "display_home" declared implicitly
+Source_Files\Redisplay_ch2.c(236): warning:  #223-D: function "display_O2" declared implicitly
+Source_Files\Redisplay_ch2.c(237): warning:  #223-D: function "display_elec" declared implicitly
+Source_Files\Redisplay_ch2.c(381): warning:  #223-D: function "display_back_graph" declared implicitly
+Source_Files\Redisplay_ch2.c(409): warning:  #223-D: function "ClearViewArea2" declared implicitly
+Source_Files\Redisplay_ch2.c(410): warning:  #223-D: function "display_value_scale" declared implicitly
+Source_Files\Redisplay_ch2.c(411): warning:  #223-D: function "display_value_max" declared implicitly
+Source_Files\Redisplay_ch2.c(412): warning:  #223-D: function "display_value_min" declared implicitly
+Source_Files\Redisplay_ch2.c(413): warning:  #223-D: function "display_zero_alarm" declared implicitly
+Source_Files\Redisplay_ch2.c(469): warning:  #223-D: function "Draw_Back_Oval3" declared implicitly
+Source_Files\Redisplay_ch2.c(471): warning:  #223-D: function "Draw_Back_Oval3_min" declared implicitly
+Source_Files\Redisplay_ch2.c(494): warning:  #223-D: function "Draw_Back_Oval3_uscm" declared implicitly
+Source_Files\Redisplay_ch2.c(496): warning:  #223-D: function "Draw_Back_Oval3_min" declared implicitly
+Source_Files\Redisplay_ch2.c(530): warning:  #223-D: function "display_diag" declared implicitly
+Source_Files\Redisplay_ch2.c(541): warning:  #223-D: function "display_2ch_small_unit_ph" declared implicitly
+Source_Files\Redisplay_ch2.c(547): warning:  #223-D: function "display_mV_1" declared implicitly
+Source_Files\Redisplay_ch2.c(550): warning:  #223-D: function "display_set10_sensor" declared implicitly
+Source_Files\Redisplay_ch2.c(560): warning:  #223-D: function "display_diag" declared implicitly
+Source_Files\Redisplay_ch2.c(584): warning:  #223-D: function "display_2ch_small_unit_ec" declared implicitly
+Source_Files\Redisplay_ch2.c(591): warning:  #223-D: function "display_mV_1" declared implicitly
+Source_Files\Redisplay_ch2.c(594): warning:  #223-D: function "display_set10_sensor" declared implicitly
+Source_Files\Redisplay_ch2.c(615): warning:  #223-D: function "display_analog" declared implicitly
+Source_Files\Redisplay_ch2.c(616): warning:  #223-D: function "display_4mA" declared implicitly
+Source_Files\Redisplay_ch2.c(617): warning:  #223-D: function "display_20mA" declared implicitly
+Source_Files\Redisplay_ch2.c(632): warning:  #223-D: function "Draw_Back_Oval4" declared implicitly
+Source_Files\Redisplay_ch2.c(638): warning:  #223-D: function "Draw_Back_Oval4_uscm" declared implicitly
+Source_Files\Redisplay_ch2.c(643): warning:  #223-D: function "Draw_Back_Oval4" declared implicitly
+Source_Files\Redisplay_ch2.c(715): warning:  #223-D: function "display_comm" declared implicitly
+Source_Files\Redisplay_ch2.c(716): warning:  #223-D: function "display_comm_method" declared implicitly
+Source_Files\Redisplay_ch2.c(717): warning:  #223-D: function "display_comm_number" declared implicitly
+Source_Files\Redisplay_ch2.c(718): warning:  #223-D: function "display_comm_baud" declared implicitly
+Source_Files\Redisplay_ch2.c(719): warning:  #223-D: function "display_comm_databit" declared implicitly
+Source_Files\Redisplay_ch2.c(738): warning:  #223-D: function "display_Ethernet" declared implicitly
+Source_Files\Redisplay_ch2.c(765): warning:  #223-D: function "display_Ethernet2" declared implicitly
+Source_Files\Redisplay_ch2.c(766): warning:  #223-D: function "display_IP_addr" declared implicitly
+Source_Files\Redisplay_ch2.c(767): warning:  #223-D: function "display_gateway" declared implicitly
+Source_Files\Redisplay_ch2.c(768): warning:  #223-D: function "display_subnet" declared implicitly
+Source_Files\Redisplay_ch2.c(769): warning:  #223-D: function "display_port" declared implicitly
+Source_Files\Redisplay_ch2.c(835): warning:  #223-D: function "display_time" declared implicitly
+Source_Files\Redisplay_ch2.c(837): warning:  #223-D: function "display_year" declared implicitly
+Source_Files\Redisplay_ch2.c(838): warning:  #223-D: function "display_mon" declared implicitly
+Source_Files\Redisplay_ch2.c(839): warning:  #223-D: function "display_day" declared implicitly
+Source_Files\Redisplay_ch2.c(840): warning:  #223-D: function "display_hour" declared implicitly
+Source_Files\Redisplay_ch2.c(841): warning:  #223-D: function "display_min" declared implicitly
+Source_Files\Redisplay_ch2.c(842): warning:  #223-D: function "display_sec" declared implicitly
+Source_Files\Redisplay_ch2.c(844): warning:  #223-D: function "Draw_Back_Oval6" declared implicitly
+Source_Files\Redisplay_ch2.c(1116): warning:  #223-D: function "display_buff" declared implicitly
+Source_Files\Redisplay_ch2.c(1118): warning:  #223-D: function "display_ph4" declared implicitly
+Source_Files\Redisplay_ch2.c(1119): warning:  #223-D: function "Draw_Back_Oval2" declared implicitly
+Source_Files\Redisplay_ch2.c(1138): warning:  #223-D: function "display_ph7" declared implicitly
+Source_Files\Redisplay_ch2.c(1140): warning:  #223-D: function "Draw_Back_Oval2" declared implicitly
+Source_Files\Redisplay_ch2.c(1179): warning:  #223-D: function "display_zero" declared implicitly
+Source_Files\Redisplay_ch2.c(1182): warning:  #223-D: function "Draw_Back_Oval2" declared implicitly
+Source_Files\Redisplay_ch2.c(1206): warning:  #223-D: function "display_span" declared implicitly
+Source_Files\Redisplay_ch2.c(1209): warning:  #223-D: function "Draw_Back_Oval2" declared implicitly
+Source_Files\Redisplay_ch2.c(1235): warning:  #223-D: function "Draw_Back_Oval2" declared implicitly
+Source_Files\Redisplay_ch2.c(1274): warning:  #223-D: function "display_temp" declared implicitly
+Source_Files\Redisplay_ch2.c(1275): warning:  #223-D: function "Draw_Back_Oval2_c" declared implicitly
+Source_Files\Redisplay_ch2.c(1339): warning:  #223-D: function "ClearViewArea4" declared implicitly
+Source_Files\Redisplay_ch2.c(1365): warning:  #223-D: function "display_slope" declared implicitly
+Source_Files\Redisplay_ch2.c(1366): warning:  #223-D: function "Draw_Back_Oval2" declared implicitly
+Source_Files\Redisplay_ch2.c(1376): warning:  #223-D: function "display_slope" declared implicitly
+Source_Files\Redisplay_ch2.c(1377): warning:  #223-D: function "Draw_Back_Oval2" declared implicitly
+Source_Files\Redisplay_ch2.c(1399): warning:  #223-D: function "display_offset" declared implicitly
+Source_Files\Redisplay_ch2.c(1400): warning:  #223-D: function "Draw_Back_Oval2" declared implicitly
+Source_Files\Redisplay_ch2.c(1431): warning:  #223-D: function "display_offset" declared implicitly
+Source_Files\Redisplay_ch2.c(1432): warning:  #223-D: function "Draw_Back_Oval2" declared implicitly
+Source_Files\Redisplay_ch2.c(1465): warning:  #223-D: function "display_filter" declared implicitly
+Source_Files\Redisplay_ch2.c(1466): warning:  #223-D: function "Draw_Back_Oval2" declared implicitly
+Source_Files\Redisplay_ch2.c(1476): warning:  #223-D: function "display_filter" declared implicitly
+Source_Files\Redisplay_ch2.c(1477): warning:  #223-D: function "Draw_Back_Oval2" declared implicitly
+Source_Files\Redisplay_ch2.c(1493): warning:  #223-D: function "display_init" declared implicitly
+Source_Files\Redisplay_ch2.c(1494): warning:  #223-D: function "display_message6" declared implicitly
+Source_Files\Redisplay_ch2.c(1504): warning:  #223-D: function "display_autowash" declared implicitly
+Source_Files\Redisplay_ch2.c(1506): warning:  #223-D: function "display_set_period" declared implicitly
+Source_Files\Redisplay_ch2.c(1507): warning:  #223-D: function "display_set_time" declared implicitly
+Source_Files\Redisplay_ch2.c(1508): warning:  #223-D: function "Draw_Back_Oval2_min" declared implicitly
+Source_Files\Redisplay_ch2.c(1539): warning:  #223-D: function "ClearViewArea3" declared implicitly
+Source_Files\Redisplay_ch2.c(1542): warning:  #223-D: function "display_set11_run" declared implicitly
+Source_Files\Redisplay_ch2.c(1543): warning:  #223-D: function "display_set11_stop" declared implicitly
+Source_Files\Redisplay_ch2.c(1545): warning:  #223-D: function "display_message1" declared implicitly
+Source_Files\Redisplay_ch2.c(1549): warning:  #223-D: function "display_set11_run" declared implicitly
+Source_Files\Redisplay_ch2.c(1550): warning:  #223-D: function "display_set11_stop" declared implicitly
+Source_Files\Redisplay_ch2.c(1551): warning:  #223-D: function "display_message_STOP" declared implicitly
+Source_Files\Redisplay_ch2.c(1556): warning:  #223-D: function "display_manwash" declared implicitly
+Source_Files\Redisplay_ch2.c(1587): warning:  #223-D: function "display_act_set" declared implicitly
+Source_Files\Redisplay_ch2.c(1588): warning:  #223-D: function "display_set_period" declared implicitly
+Source_Files\Redisplay_ch2.c(1589): warning:  #223-D: function "display_set_time" declared implicitly
+Source_Files\Redisplay_ch2.c(1590): warning:  #223-D: function "Draw_Back_Oval2_min" declared implicitly
+Source_Files\Redisplay_ch2.c(1612): warning:  #223-D: function "display_act_manual" declared implicitly
+Source_Files\Redisplay_ch2.c(1613): warning:  #223-D: function "display_message_STOP" declared implicitly
+Source_Files\Redisplay_ch2.c(1615): warning:  #223-D: function "display_set11_run" declared implicitly
+Source_Files\Redisplay_ch2.c(1616): warning:  #223-D: function "display_set11_stop" declared implicitly
+Source_Files\Redisplay_ch2.c(1641): warning:  #223-D: function "display_RS_232" declared implicitly
+Source_Files\Redisplay_ch2.c(1642): warning:  #223-D: function "display_RS_485" declared implicitly
+Source_Files\Redisplay_ch2.c(1643): warning:  #223-D: function "display_4_20mA" declared implicitly
+Source_Files\Redisplay_ch2.c(1670): warning:  #223-D: function "display_set2_analog" declared implicitly
+Source_Files\Redisplay_ch2.c(1671): warning:  #223-D: function "display_set2_calib" declared implicitly
+Source_Files\Redisplay_ch2.c(1672): warning:  #223-D: function "display_set2_comm" declared implicitly
+Source_Files\Redisplay_ch2.c(1673): warning:  #223-D: function "display_set2_relay" declared implicitly
+Source_Files\Redisplay_ch2.c(1674): warning:  #223-D: function "display_set2_time" declared implicitly
+Source_Files\Redisplay_ch2.c(1692): warning:  #223-D: function "display_set3_buff" declared implicitly
+Source_Files\Redisplay_ch2.c(1693): warning:  #223-D: function "display_set3_zero" declared implicitly
+Source_Files\Redisplay_ch2.c(1696): warning:  #223-D: function "display_set3_span" declared implicitly
+Source_Files\Redisplay_ch2.c(1697): warning:  #223-D: function "display_set3_temp" declared implicitly
+Source_Files\Redisplay_ch2.c(1698): warning:  #223-D: function "display_set3_log" declared implicitly
+Source_Files\Redisplay_ch2.c(1720): warning:  #223-D: function "display_set5_clean" declared implicitly
+Source_Files\Redisplay_ch2.c(1721): warning:  #223-D: function "display_set5_alarm" declared implicitly
+Source_Files\Redisplay_ch2.c(1722): warning:  #223-D: function "display_set5_relay" declared implicitly
+Source_Files\Redisplay_ch2.c(1736): warning:  #223-D: function "display_set4_slope" declared implicitly
+Source_Files\Redisplay_ch2.c(1737): warning:  #223-D: function "display_set4_offset" declared implicitly
+Source_Files\Redisplay_ch2.c(1738): warning:  #223-D: function "display_set4_filter" declared implicitly
+Source_Files\Redisplay_ch2.c(1739): warning:  #223-D: function "display_set4_init" declared implicitly
+Source_Files\Redisplay_ch2.c(1771): warning:  #223-D: function "display_set7_autowash" declared implicitly
+Source_Files\Redisplay_ch2.c(1772): warning:  #223-D: function "display_set7_manwash" declared implicitly
+Source_Files\Redisplay_ch2.c(1778): warning:  #223-D: function "ClearViewArea3" declared implicitly
+Source_Files\Redisplay_ch2.c(1779): warning:  #223-D: function "display_alarm" declared implicitly
+Source_Files\Redisplay_ch2.c(1780): warning:  #223-D: function "display_message3" declared implicitly
+Source_Files\Redisplay_ch2.c(1788): warning:  #223-D: function "display_set8_autoalarm" declared implicitly
+Source_Files\Redisplay_ch2.c(1789): warning:  #223-D: function "display_set8_noalarm" declared implicitly
+Source_Files\Redisplay_ch2.c(1795): warning:  #223-D: function "display_set6_set" declared implicitly
+Source_Files\Redisplay_ch2.c(1796): warning:  #223-D: function "display_set6_passive" declared implicitly
+Source_Files\Redisplay_ch2.c(1864): warning:  #223-D: function "display_2ch_set_ph2" declared implicitly
+Source_Files\Redisplay_ch2.c(1865): warning:  #223-D: function "display_2ch_set_ec1" declared implicitly
+Source_Files\Redisplay_ch2.c(1868): warning:  #223-D: function "display_2ch_set_ph1" declared implicitly
+Source_Files\Redisplay_ch2.c(1869): warning:  #223-D: function "display_2ch_set_ec2" declared implicitly
+Source_Files\Redisplay_ch2.c(1992): warning:  #223-D: function "display_2ch_ph" declared implicitly
+Source_Files\Redisplay_ch2.c(1993): warning:  #223-D: function "Draw_2CH_HOME_Number" declared implicitly
+Source_Files\Redisplay_ch2.c(1994): warning:  #223-D: function "display_2ch_unit_ph" declared implicitly
+Source_Files\Redisplay_ch2.c(2009): warning:  #223-D: function "abs" declared implicitly
+Source_Files\Redisplay_ch2.c(2021): warning:  #223-D: function "Draw_2CH_TEMP_Number" declared implicitly
+Source_Files\Redisplay_ch2.c(2041): warning:  #223-D: function "display_2ch_ec" declared implicitly
+Source_Files\Redisplay_ch2.c(2043): warning:  #223-D: function "display_2ch_unit_ec" declared implicitly
+Source_Files\Redisplay_ch2.c(2062): warning:  #223-D: function "abs" declared implicitly
+Source_Files\Redisplay_ch2.c(2069): warning:  #223-D: function "Draw_2CH_TEMP_Number" declared implicitly
+Source_Files\Redisplay_ch2.c(1972): warning:  #177-D: variable "imsi" was declared but never referenced
+Source_Files\Redisplay_ch2.c(1972): warning:  #177-D: variable "imsi1" was declared but never referenced
+Source_Files\main.c(269): warning:  #223-D: function "display_logo" declared implicitly
+Source_Files\main.c(276): warning:  #223-D: function "MicroSD_Trand_Read" declared implicitly
+Source_Files\main.c(279): warning:  #223-D: function "init_tx3Buffer" declared implicitly
+Source_Files\main.c(318): warning:  #223-D: function "DAC_output" declared implicitly
+Source_Files\main.c(322): warning:  #223-D: function "DrawBack1" declared implicitly
+Source_Files\main.c(390): warning:  #223-D: function "main_ethernet" declared implicitly
+Source_Files\main.c(434): warning:  #223-D: function "Ethernet_loop" declared implicitly
+Source_Files\main.c(547): warning:  #223-D: function "MicroSD_Trand_Write" declared implicitly
+Source_Files\main.c(861): warning:  #223-D: function "display_message1" declared implicitly
+Source_Files\main.c(864): warning:  #223-D: function "display_message1" declared implicitly
+Source_Files\main.c(878): warning:  #223-D: function "display_message1" declared implicitly
+Source_Files\main.c(881): warning:  #223-D: function "display_message1" declared implicitly
+Source_Files\main.c(895): warning:  #223-D: function "ClearViewArea5" declared implicitly
+Source_Files\main.c(922): warning:  #223-D: function "display_message1" declared implicitly
+Source_Files\main.c(931): warning:  #223-D: function "display_message1" declared implicitly
+Source_Files\main.c(941): warning:  #223-D: function "ClearViewArea5" declared implicitly
+Source_Files\main.c(1403): warning:  #223-D: function "display_set2_analog" declared implicitly
+Source_Files\main.c(1404): warning:  #223-D: function "display_set2_calib" declared implicitly
+Source_Files\main.c(1405): warning:  #223-D: function "display_set2_comm" declared implicitly
+Source_Files\main.c(1406): warning:  #223-D: function "display_set2_relay" declared implicitly
+Source_Files\main.c(1407): warning:  #223-D: function "display_set2_time" declared implicitly
+Source_Files\main.c(1484): warning:  #223-D: function "display_set3_buff" declared implicitly
+Source_Files\main.c(1485): warning:  #223-D: function "display_set3_zero" declared implicitly
+Source_Files\main.c(1487): warning:  #223-D: function "display_set3_span" declared implicitly
+Source_Files\main.c(1488): warning:  #223-D: function "display_set3_temp" declared implicitly
+Source_Files\main.c(1489): warning:  #223-D: function "display_set3_log" declared implicitly
+Source_Files\main.c(1613): warning:  #223-D: function "ClearViewArea4" declared implicitly
+Source_Files\main.c(1622): warning:  #223-D: function "DrawTrandDiamond" declared implicitly
+Source_Files\main.c(1623): warning:  #223-D: function "DrawTrandText" declared implicitly
+Source_Files\main.c(1723): warning:  #186-D: pointless comparison of unsigned integer with zero
+Source_Files\main.c(1724): warning:  #186-D: pointless comparison of unsigned integer with zero
+Source_Files\main.c(1725): warning:  #186-D: pointless comparison of unsigned integer with zero
+Source_Files\main.c(1726): warning:  #186-D: pointless comparison of unsigned integer with zero
+Source_Files\main.c(1884): warning:  #223-D: function "DrawBack2" declared implicitly
+Source_Files\main.c(2515): warning:  #223-D: function "DrawCommEthernetConfig" declared implicitly
+Source_Files\main.c(2623): warning:  #223-D: function "display_set5_clean" declared implicitly
+Source_Files\main.c(2624): warning:  #223-D: function "display_set5_alarm" declared implicitly
+Source_Files\main.c(2625): warning:  #223-D: function "display_set5_relay" declared implicitly
+Source_Files\main.c(2787): warning:  #223-D: function "display_set4_slope" declared implicitly
+Source_Files\main.c(2788): warning:  #223-D: function "display_set4_offset" declared implicitly
+Source_Files\main.c(2789): warning:  #223-D: function "display_set4_filter" declared implicitly
+Source_Files\main.c(2790): warning:  #223-D: function "display_set4_init" declared implicitly
+Source_Files\main.c(3339): warning:  #223-D: function "DrawCalibSpan" declared implicitly
+Source_Files\main.c(3344): warning:  #223-D: function "DrawCalibSpan" declared implicitly
+Source_Files\main.c(3352): warning:  #223-D: function "DrawCalibSpan" declared implicitly
+Source_Files\main.c(3357): warning:  #223-D: function "DrawCalibSpan" declared implicitly
+Source_Files\main.c(3393): warning:  #223-D: function "DrawCalibSpan" declared implicitly
+Source_Files\main.c(3643): warning:  #223-D: function "DrawCalibTemp" declared implicitly
+Source_Files\main.c(4202): warning:  #223-D: function "DrawCalibPH4" declared implicitly
+Source_Files\main.c(4353): warning:  #223-D: function "DrawCalibPH7" declared implicitly
+Source_Files\main.c(4499): warning:  #223-D: function "DrawCalib_EC" declared implicitly
+Source_Files\main.c(4584): warning:  #223-D: function "display_Calib_Buff_ph4" declared implicitly
+Source_Files\main.c(4585): warning:  #223-D: function "display_Calib_Buff_ph7" declared implicitly
+Source_Files\main.c(4639): warning:  #223-D: function "display_set7_autowash" declared implicitly
+Source_Files\main.c(4640): warning:  #223-D: function "display_set7_manwash" declared implicitly
+Source_Files\main.c(4688): warning:  #223-D: function "display_message3" declared implicitly
+Source_Files\main.c(4689): warning:  #223-D: function "display_set8_autoalarm" declared implicitly
+Source_Files\main.c(4690): warning:  #223-D: function "display_set8_noalarm" declared implicitly
+Source_Files\main.c(4692): warning:  #223-D: function "display_message4" declared implicitly
+Source_Files\main.c(4693): warning:  #223-D: function "display_set8_autoalarm" declared implicitly
+Source_Files\main.c(4694): warning:  #223-D: function "display_set8_noalarm" declared implicitly
+Source_Files\main.c(4746): warning:  #223-D: function "display_set6_set" declared implicitly
+Source_Files\main.c(4747): warning:  #223-D: function "display_set6_passive" declared implicitly
+Source_Files\main.c(4841): warning:  #186-D: pointless comparison of unsigned integer with zero
+Source_Files\main.c(4847): warning:  #186-D: pointless comparison of unsigned integer with zero
+Source_Files\main.c(5254): warning:  #223-D: function "display_set11_run" declared implicitly
+Source_Files\main.c(5255): warning:  #223-D: function "display_set11_stop" declared implicitly
+Source_Files\main.c(5282): warning:  #223-D: function "display_message1" declared implicitly
+Source_Files\main.c(5294): warning:  #223-D: function "display_message_STOP" declared implicitly
+Source_Files\main.c(5333): warning:  #223-D: function "display_autoalarm" declared implicitly
+Source_Files\main.c(5334): warning:  #223-D: function "display_message_STOP" declared implicitly
+Source_Files\main.c(5336): warning:  #223-D: function "display_set11_run" declared implicitly
+Source_Files\main.c(5337): warning:  #223-D: function "display_set11_stop" declared implicitly
+Source_Files\main.c(5429): warning:  #223-D: function "display_alarm_off" declared implicitly
+Source_Files\main.c(5430): warning:  #223-D: function "display_message_STOP" declared implicitly
+Source_Files\main.c(5433): warning:  #223-D: function "display_set11_run" declared implicitly
+Source_Files\main.c(5434): warning:  #223-D: function "display_set11_stop" declared implicitly
+Source_Files\main.c(5633): warning:  #223-D: function "display_set11_run" declared implicitly
+Source_Files\main.c(5634): warning:  #223-D: function "display_set11_stop" declared implicitly
+Source_Files\main.c(5636): warning:  #223-D: function "display_message2" declared implicitly
+Source_Files\main.c(5647): warning:  #223-D: function "display_set11_run" declared implicitly
+Source_Files\main.c(5648): warning:  #223-D: function "display_set11_stop" declared implicitly
+Source_Files\main.c(5650): warning:  #223-D: function "display_message_STOP" declared implicitly
+Source_Files\main.c(5791): warning:  #223-D: function "Draw_Back_Oval_140x42" declared implicitly
+Source_Files\main.c(5802): warning:  #223-D: function "Draw_Back_Oval_140x42" declared implicitly
+linking...
+.\Out\ID_Solution.sct(19): warning: L6329W: Pattern Watchdog.o(RO) only matches removed unused sections.
+.\Out\ID_Solution.sct(20): warning: L6329W: Pattern DAC7512Interface.o(RO) only matches removed unused sections.
+.\Out\ID_Solution.sct(36): warning: L6329W: Pattern stm32f10x_iwdg.o(RO) only matches removed unused sections.
+.\Out\ID_Solution.sct(46): warning: L6329W: Pattern stm32f10x_i2c.o(RO) only matches removed unused sections.
+.\Out\ID_Solution.sct(47): warning: L6329W: Pattern core_cm3.o(RO) only matches removed unused sections.
+.\Out\ID_Solution.sct(54): warning: L6314W: No section matches pattern dns.o(RO).
+.\Out\ID_Solution.sct(61): warning: L6314W: No section matches pattern stats.o(RO).
+.\Out\ID_Solution.sct(62): warning: L6314W: No section matches pattern sys.o(RO).
+.\Out\ID_Solution.sct(68): warning: L6314W: No section matches pattern autoip.o(RO).
+.\Out\ID_Solution.sct(70): warning: L6314W: No section matches pattern igmp.o(RO).
+.\Out\ID_Solution.sct(71): warning: L6314W: No section matches pattern inet.o(RO).
+.\Out\ID_Solution.sct(77): warning: L6314W: No section matches pattern ethernetif.o(RO).
+.\Out\ID_Solution.sct(78): warning: L6314W: No section matches pattern slipif.o(RO).
+.\Out\ID_Solution.sct(86): warning: L6329W: Pattern stm32f1xx_hal_dac.o(RO) only matches removed unused sections.
+.\Out\ID_Solution.sct(90): warning: L6329W: Pattern stm32f1xx_hal_uart.o(RO) only matches removed unused sections.
+.\Out\ID_Solution.sct(94): warning: L6329W: Pattern stm32f1xx_hal_dac_ex.o(RO) only matches removed unused sections.
+.\Out\ID_Solution.sct(95): warning: L6314W: No section matches pattern stm32f1xx_ll_dma.o(RO).
+.\Out\ID_Solution.sct(98): warning: L6329W: Pattern stm32f1xx_hal_rcc_ex.o(RO) only matches removed unused sections.
+.\Out\ID_Solution.sct(103): warning: L6314W: No section matches pattern Initialize.o(ZI).
+.\Out\ID_Solution.sct(103): warning: L6314W: No section matches pattern Initialize.o(RW).
+.\Out\ID_Solution.sct(106): warning: L6314W: No section matches pattern NandInterface.o(ZI).
+.\Out\ID_Solution.sct(106): warning: L6314W: No section matches pattern NandInterface.o(RW).
+.\Out\ID_Solution.sct(107): warning: L6314W: No section matches pattern NAND.o(ZI).
+.\Out\ID_Solution.sct(107): warning: L6314W: No section matches pattern NAND.o(RW).
+.\Out\ID_Solution.sct(109): warning: L6314W: No section matches pattern RTC_Time.o(ZI).
+.\Out\ID_Solution.sct(109): warning: L6314W: No section matches pattern RTC_Time.o(RW).
+.\Out\ID_Solution.sct(112): warning: L6314W: No section matches pattern Watchdog.o(ZI).
+.\Out\ID_Solution.sct(112): warning: L6314W: No section matches pattern Watchdog.o(RW).
+.\Out\ID_Solution.sct(113): warning: L6314W: No section matches pattern DAC7512Interface.o(ZI).
+.\Out\ID_Solution.sct(113): warning: L6314W: No section matches pattern DAC7512Interface.o(RW).
+.\Out\ID_Solution.sct(121): warning: L6314W: No section matches pattern display_icon.o(ZI).
+.\Out\ID_Solution.sct(121): warning: L6314W: No section matches pattern display_icon.o(RW).
+.\Out\ID_Solution.sct(122): warning: L6314W: No section matches pattern icon_ch2_ch4.o(ZI).
+.\Out\ID_Solution.sct(122): warning: L6314W: No section matches pattern icon_ch2_ch4.o(RW).
+.\Out\ID_Solution.sct(123): warning: L6314W: No section matches pattern misc.o(ZI).
+.\Out\ID_Solution.sct(123): warning: L6314W: No section matches pattern misc.o(RW).
+.\Out\ID_Solution.sct(124): warning: L6314W: No section matches pattern stm32f10x_adc.o(ZI).
+.\Out\ID_Solution.sct(124): warning: L6314W: No section matches pattern stm32f10x_adc.o(RW).
+.\Out\ID_Solution.sct(125): warning: L6314W: No section matches pattern stm32f10x_bkp.o(ZI).
+.\Out\ID_Solution.sct(125): warning: L6314W: No section matches pattern stm32f10x_bkp.o(RW).
+.\Out\ID_Solution.sct(126): warning: L6314W: No section matches pattern stm32f10x_flash.o(ZI).
+.\Out\ID_Solution.sct(126): warning: L6314W: No section matches pattern stm32f10x_flash.o(RW).
+.\Out\ID_Solution.sct(127): warning: L6314W: No section matches pattern stm32f10x_fsmc.o(ZI).
+.\Out\ID_Solution.sct(127): warning: L6314W: No section matches pattern stm32f10x_fsmc.o(RW).
+.\Out\ID_Solution.sct(128): warning: L6314W: No section matches pattern stm32f10x_gpio.o(ZI).
+.\Out\ID_Solution.sct(128): warning: L6314W: No section matches pattern stm32f10x_gpio.o(RW).
+.\Out\ID_Solution.sct(129): warning: L6314W: No section matches pattern stm32f10x_iwdg.o(ZI).
+.\Out\ID_Solution.sct(129): warning: L6314W: No section matches pattern stm32f10x_iwdg.o(RW).
+.\Out\ID_Solution.sct(130): warning: L6314W: No section matches pattern stm32f10x_pwr.o(ZI).
+.\Out\ID_Solution.sct(130): warning: L6314W: No section matches pattern stm32f10x_pwr.o(RW).
+.\Out\ID_Solution.sct(132): warning: L6314W: No section matches pattern stm32f10x_rtc.o(ZI).
+.\Out\ID_Solution.sct(132): warning: L6314W: No section matches pattern stm32f10x_rtc.o(RW).
+.\Out\ID_Solution.sct(133): warning: L6314W: No section matches pattern stm32f10x_sdio.o(ZI).
+.\Out\ID_Solution.sct(133): warning: L6314W: No section matches pattern stm32f10x_sdio.o(RW).
+.\Out\ID_Solution.sct(134): warning: L6314W: No section matches pattern stm32f10x_spi.o(ZI).
+.\Out\ID_Solution.sct(134): warning: L6314W: No section matches pattern stm32f10x_spi.o(RW).
+.\Out\ID_Solution.sct(135): warning: L6314W: No section matches pattern stm32f10x_tim.o(ZI).
+.\Out\ID_Solution.sct(135): warning: L6314W: No section matches pattern stm32f10x_tim.o(RW).
+.\Out\ID_Solution.sct(136): warning: L6314W: No section matches pattern stm32f10x_usart.o(ZI).
+.\Out\ID_Solution.sct(136): warning: L6314W: No section matches pattern stm32f10x_usart.o(RW).
+.\Out\ID_Solution.sct(137): warning: L6314W: No section matches pattern stm32f10x_dma.o(ZI).
+.\Out\ID_Solution.sct(137): warning: L6314W: No section matches pattern stm32f10x_dma.o(RW).
+.\Out\ID_Solution.sct(138): warning: L6314W: No section matches pattern stm32f10x_dac.o(ZI).
+.\Out\ID_Solution.sct(138): warning: L6314W: No section matches pattern stm32f10x_dac.o(RW).
+.\Out\ID_Solution.sct(139): warning: L6314W: No section matches pattern stm32f10x_i2c.o(ZI).
+.\Out\ID_Solution.sct(139): warning: L6314W: No section matches pattern stm32f10x_i2c.o(RW).
+.\Out\ID_Solution.sct(140): warning: L6314W: No section matches pattern core_cm3.o(ZI).
+.\Out\ID_Solution.sct(140): warning: L6314W: No section matches pattern core_cm3.o(RW).
+.\Out\ID_Solution.sct(143): warning: L6314W: No section matches pattern diskio.o(ZI).
+.\Out\ID_Solution.sct(143): warning: L6314W: No section matches pattern diskio.o(RW).
+.\Out\ID_Solution.sct(145): warning: L6314W: No section matches pattern def.o(ZI).
+.\Out\ID_Solution.sct(145): warning: L6314W: No section matches pattern def.o(RW).
+.\Out\ID_Solution.sct(147): warning: L6314W: No section matches pattern dns.o(ZI).
+.\Out\ID_Solution.sct(147): warning: L6314W: No section matches pattern dns.o(RW).
+.\Out\ID_Solution.sct(148): warning: L6314W: No section matches pattern init.o(ZI).
+.\Out\ID_Solution.sct(148): warning: L6314W: No section matches pattern init.o(RW).
+.\Out\ID_Solution.sct(152): warning: L6314W: No section matches pattern pbuf.o(ZI).
+.\Out\ID_Solution.sct(152): warning: L6314W: No section matches pattern pbuf.o(RW).
+.\Out\ID_Solution.sct(154): warning: L6314W: No section matches pattern stats.o(ZI).
+.\Out\ID_Solution.sct(154): warning: L6314W: No section matches pattern stats.o(RW).
+.\Out\ID_Solution.sct(155): warning: L6314W: No section matches pattern sys.o(ZI).
+.\Out\ID_Solution.sct(155): warning: L6314W: No section matches pattern sys.o(RW).
+.\Out\ID_Solution.sct(158): warning: L6314W: No section matches pattern tcp_out.o(ZI).
+.\Out\ID_Solution.sct(158): warning: L6314W: No section matches pattern tcp_out.o(RW).
+.\Out\ID_Solution.sct(161): warning: L6314W: No section matches pattern autoip.o(ZI).
+.\Out\ID_Solution.sct(161): warning: L6314W: No section matches pattern autoip.o(RW).
+.\Out\ID_Solution.sct(162): warning: L6314W: No section matches pattern icmp.o(ZI).
+.\Out\ID_Solution.sct(162): warning: L6314W: No section matches pattern icmp.o(RW).
+.\Out\ID_Solution.sct(163): warning: L6314W: No section matches pattern igmp.o(ZI).
+.\Out\ID_Solution.sct(163): warning: L6314W: No section matches pattern igmp.o(RW).
+.\Out\ID_Solution.sct(164): warning: L6314W: No section matches pattern inet.o(ZI).
+.\Out\ID_Solution.sct(164): warning: L6314W: No section matches pattern inet.o(RW).
+.\Out\ID_Solution.sct(165): warning: L6314W: No section matches pattern inet_chksum.o(ZI).
+.\Out\ID_Solution.sct(165): warning: L6314W: No section matches pattern inet_chksum.o(RW).
+.\Out\ID_Solution.sct(170): warning: L6314W: No section matches pattern ethernetif.o(ZI).
+.\Out\ID_Solution.sct(170): warning: L6314W: No section matches pattern ethernetif.o(RW).
+.\Out\ID_Solution.sct(171): warning: L6314W: No section matches pattern slipif.o(ZI).
+.\Out\ID_Solution.sct(171): warning: L6314W: No section matches pattern slipif.o(RW).
+.\Out\ID_Solution.sct(172): warning: L6314W: No section matches pattern app_ethernet.o(ZI).
+.\Out\ID_Solution.sct(172): warning: L6314W: No section matches pattern app_ethernet.o(RW).
+.\Out\ID_Solution.sct(177): warning: L6314W: No section matches pattern system_stm32f1xx.o(ZI).
+.\Out\ID_Solution.sct(177): warning: L6329W: Pattern system_stm32f1xx.o(RW) only matches removed unused sections.
+.\Out\ID_Solution.sct(178): warning: L6314W: No section matches pattern stm32f1xx_it.o(ZI).
+.\Out\ID_Solution.sct(178): warning: L6314W: No section matches pattern stm32f1xx_it.o(RW).
+.\Out\ID_Solution.sct(179): warning: L6314W: No section matches pattern stm32f1xx_hal_dac.o(ZI).
+.\Out\ID_Solution.sct(179): warning: L6314W: No section matches pattern stm32f1xx_hal_dac.o(RW).
+.\Out\ID_Solution.sct(181): warning: L6314W: No section matches pattern stm32f1xx_hal_dma.o(ZI).
+.\Out\ID_Solution.sct(181): warning: L6314W: No section matches pattern stm32f1xx_hal_dma.o(RW).
+.\Out\ID_Solution.sct(182): warning: L6314W: No section matches pattern stm32f1xx_hal_gpio.o(ZI).
+.\Out\ID_Solution.sct(182): warning: L6314W: No section matches pattern stm32f1xx_hal_gpio.o(RW).
+.\Out\ID_Solution.sct(183): warning: L6314W: No section matches pattern stm32f1xx_hal_uart.o(ZI).
+.\Out\ID_Solution.sct(183): warning: L6314W: No section matches pattern stm32f1xx_hal_uart.o(RW).
+.\Out\ID_Solution.sct(184): warning: L6314W: No section matches pattern stm32f1xx_hal_spi.o(ZI).
+.\Out\ID_Solution.sct(184): warning: L6314W: No section matches pattern stm32f1xx_hal_spi.o(RW).
+.\Out\ID_Solution.sct(185): warning: L6314W: No section matches pattern stm32f1xx_hal_rcc.o(ZI).
+.\Out\ID_Solution.sct(185): warning: L6314W: No section matches pattern stm32f1xx_hal_rcc.o(RW).
+.\Out\ID_Solution.sct(186): warning: L6314W: No section matches pattern stm32f1xx_hal_tim.o(ZI).
+.\Out\ID_Solution.sct(186): warning: L6314W: No section matches pattern stm32f1xx_hal_tim.o(RW).
+.\Out\ID_Solution.sct(187): warning: L6314W: No section matches pattern stm32f1xx_hal_dac_ex.o(ZI).
+.\Out\ID_Solution.sct(187): warning: L6314W: No section matches pattern stm32f1xx_hal_dac_ex.o(RW).
+.\Out\ID_Solution.sct(188): warning: L6314W: No section matches pattern stm32f1xx_ll_dma.o(ZI).
+.\Out\ID_Solution.sct(188): warning: L6314W: No section matches pattern stm32f1xx_ll_dma.o(RW).
+.\Out\ID_Solution.sct(189): warning: L6314W: No section matches pattern stm32f1xx_hal_cortex.o(ZI).
+.\Out\ID_Solution.sct(189): warning: L6314W: No section matches pattern stm32f1xx_hal_cortex.o(RW).
+.\Out\ID_Solution.sct(190): warning: L6314W: No section matches pattern stm32f1xx_hal_tim_ex.o(ZI).
+.\Out\ID_Solution.sct(190): warning: L6314W: No section matches pattern stm32f1xx_hal_tim_ex.o(RW).
+.\Out\ID_Solution.sct(191): warning: L6314W: No section matches pattern stm32f1xx_hal_rcc_ex.o(ZI).
+.\Out\ID_Solution.sct(191): warning: L6314W: No section matches pattern stm32f1xx_hal_rcc_ex.o(RW).
+Program Size: Code=186096 RO-data=5100 RW-data=1028 ZI-data=63612  
+FromELF: creating hex file...
+".\Out\ID_Solution.axf" - 0 Error(s), 350 Warning(s).

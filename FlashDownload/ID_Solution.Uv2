@@ -1,0 +1,157 @@
+### uVision2 Project, (C) Keil Software
+### Do not modify !
+
+Target (Project), 0x0004 // Tools: 'ARM-ADS'
+
+Group (SourceFiles)
+Group (IncludeFiles)
+Group (STD_Periph_Lib)
+Group (CMSIS)
+Group (StartUp)
+Group (FATFS_V0.08A)
+Group (Image)
+
+File 1,1,<.\Source_Files\main.c><main.c>
+File 1,1,<.\Source_Files\NandInterface.c><NandInterface.c>
+File 1,1,<.\Source_Files\NAND.c><NAND.c>
+File 1,1,<.\Source_Files\Initialize.c><Initialize.c>
+File 1,1,<.\Source_Files\sdio_sd.c><sdio_sd.c>
+File 2,5,<.\Include_Files\Display.h><Display.h>
+File 2,5,<.\Include_Files\Initialize.h><Initialize.h>
+File 2,5,<.\Include_Files\Interrupt.h><Interrupt.h>
+File 2,5,<.\Include_Files\Main.h><Main.h>
+File 2,5,<.\Include_Files\NandInterface.h><NandInterface.h>
+File 2,5,<.\Include_Files\stm32f10x_conf.h><stm32f10x_conf.h>
+File 2,5,<.\Include_Files\NAND.h><NAND.h>
+File 2,5,<.\Include_Files\tft.h><tft.h>
+File 2,5,<.\Include_Files\RTC_Time.h><RTC_Time.h>
+File 2,5,<.\Include_Files\serial.h><serial.h>
+File 2,5,<.\Include_Files\Flash.h><Flash.h>
+File 2,5,<.\Include_Files\Watchdog.h><Watchdog.h>
+File 2,5,<.\Include_Files\DAC7512Interface.h><DAC7512Interface.h>
+File 2,5,<.\Include_Files\Communication.h><Communication.h>
+File 2,5,<.\Include_Files\Button.h><Button.h>
+File 2,5,<.\Include_Files\ReDisplay.h><ReDisplay.h>
+File 2,5,<.\Include_Files\NANDDisplay.h><NANDDisplay.h>
+File 3,1,<.\StdPeriph_Driver\src\misc.c><misc.c>
+File 3,1,<.\StdPeriph_Driver\src\stm32f10x_adc.c><stm32f10x_adc.c>
+File 3,1,<.\StdPeriph_Driver\src\stm32f10x_bkp.c><stm32f10x_bkp.c>
+File 3,1,<.\StdPeriph_Driver\src\stm32f10x_flash.c><stm32f10x_flash.c>
+File 3,1,<.\StdPeriph_Driver\src\stm32f10x_fsmc.c><stm32f10x_fsmc.c>
+File 3,1,<.\StdPeriph_Driver\src\stm32f10x_gpio.c><stm32f10x_gpio.c>
+File 3,1,<.\StdPeriph_Driver\src\stm32f10x_iwdg.c><stm32f10x_iwdg.c>
+File 3,1,<.\StdPeriph_Driver\src\stm32f10x_pwr.c><stm32f10x_pwr.c>
+File 3,1,<.\StdPeriph_Driver\src\stm32f10x_rcc.c><stm32f10x_rcc.c>
+File 3,1,<.\StdPeriph_Driver\src\stm32f10x_rtc.c><stm32f10x_rtc.c>
+File 3,1,<.\StdPeriph_Driver\src\stm32f10x_sdio.c><stm32f10x_sdio.c>
+File 3,1,<.\StdPeriph_Driver\src\stm32f10x_spi.c><stm32f10x_spi.c>
+File 3,1,<.\StdPeriph_Driver\src\stm32f10x_tim.c><stm32f10x_tim.c>
+File 3,1,<.\StdPeriph_Driver\src\stm32f10x_usart.c><stm32f10x_usart.c>
+File 3,1,<.\StdPeriph_Driver\src\stm32f10x_dma.c><stm32f10x_dma.c>
+File 4,1,<.\CMSIS\core_cm3.c><core_cm3.c>
+File 4,1,<.\CMSIS\system_stm32f10x.c><system_stm32f10x.c>
+File 5,2,<.\startup_stm32f10x_hd.s><startup_stm32f10x_hd.s>
+File 6,5,<.\FATFS_V0.08A\src\00readme.txt><00readme.txt>
+File 6,1,<.\FATFS_V0.08A\src\diskio.c><diskio.c>
+File 6,5,<.\FATFS_V0.08A\src\diskio.h><diskio.h>
+File 6,1,<.\FATFS_V0.08A\src\ff.c><ff.c>
+File 6,5,<.\FATFS_V0.08A\src\ff.h><ff.h>
+File 6,5,<.\FATFS_V0.08A\src\ffconf.h><ffconf.h>
+File 6,5,<.\FATFS_V0.08A\src\integer.h><integer.h>
+File 7,5,<.\IMAGE\BELL_30x30.h><BELL_30x30.h>
+File 7,5,<.\IMAGE\CAUTION_40x32.h><CAUTION_40x32.h>
+File 7,5,<.\IMAGE\Cl_40x40.h><Cl_40x40.h>
+File 7,5,<.\IMAGE\SD_30x30.h><SD_30x30.h>
+File 7,5,<.\IMAGE\WORKING_35x30.h><WORKING_35x30.h>
+
+
+Options 1,0,0  // Target 'Project'
+ Device (STM32F103ZE)
+ Vendor (STMicroelectronics)
+ Cpu (IRAM(0x20000000-0x2000FFFF) IROM(0x8000000-0x807FFFF) CLOCK(8000000) CPUTYPE("Cortex-M3"))
+ FlashUt ()
+ StupF ("STARTUP\ST\STM32F10x\startup_stm32f10x_hd.s" ("STM32 High Density Line Startup Code"))
+ FlashDR (UL2CM3(-O14 -S0 -C0 -N00("ARM Cortex-M3") -D00(1BA00477) -L00(4) -FO7 -FD20000000 -FC800 -FN1 -FF0STM32F10x_512 -FS08000000 -FL080000))
+ DevID (4216)
+ Rgf (stm32f10x.h)
+ Mem ()
+ C ()
+ A ()
+ RL ()
+ OH ()
+ DBC_IFX ()
+ DBC_CMS ()
+ DBC_AMS ()
+ DBC_LMS ()
+ UseEnv=0
+ EnvBin ()
+ EnvInc ()
+ EnvLib ()
+ EnvReg (ST\STM32F10x\)
+ OrgReg (ST\STM32F10x\)
+ TgStat=16
+ OutDir (.\Out\)
+ OutName (FLASH)
+ GenApp=1
+ GenLib=0
+ GenHex=1
+ Debug=1
+ Browse=1
+ LstDir (.\List\)
+ HexSel=1
+ MG32K=0
+ TGMORE=0
+ RunUsr 0 0 <>
+ RunUsr 1 0 <>
+ BrunUsr 0 0 <>
+ BrunUsr 1 0 <>
+ CrunUsr 0 0 <>
+ CrunUsr 1 0 <>
+ SVCSID <>
+ GLFLAGS=1790
+ ADSFLGA { 243,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ACPUTYP ("Cortex-M3")
+ RVDEV ()
+ ADSTFLGA { 0,12,0,2,99,0,0,66,0,0,0,0,0,0,0,0,0,0,0,0 }
+ OCMADSOCM { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ OCMADSIRAM { 0,0,0,0,32,0,0,1,0 }
+ OCMADSIROM { 1,0,0,0,8,0,0,8,0 }
+ OCMADSXRAM { 0,0,0,0,0,0,0,0,0 }
+ OCR_RVCT { 1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,8,0,0,7,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,32,0,0,1,0,0,0,0,0,0,0,0,0,0 }
+ RV_STAVEC ()
+ ADSCCFLG { 1,32,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ADSCMISC ()
+ ADSCDEFN (USE_STDPERIPH_DRIVER, STM32F10X_HD, USE_STM3210B_EVAL)
+ ADSCUDEF ()
+ ADSCINCD (.\Include_Files;.\StdPeriph_Driver\inc;.\CMSIS;.\FATFS_V0.08A\src;.\IMAGE;.\IMAGE_name;.\IMAGE_ETC;.\IMAGE_OVAL;.\IMAGE_NUMERIC)
+ ADSASFLG { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ADSAMISC ()
+ ADSADEFN ()
+ ADSAUDEF ()
+ ADSAINCD ()
+ PropFld { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ IncBld=1
+ AlwaysBuild=0
+ GenAsm=0
+ AsmAsm=0
+ PublicsOnly=0
+ StopCode=3
+ CustArgs ()
+ LibMods ()
+ ADSLDFG { 17,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ADSLDTA (0x08000000)
+ ADSLDDA (0x20000000)
+ ADSLDSC ()
+ ADSLDIB ()
+ ADSLDIC ()
+ ADSLDMC ()
+ ADSLDIF ()
+ ADSLDDW ()
+  OPTDL (SARMCM3.DLL)()(DARMSTM.DLL)(-pSTM32F103ZE)(SARMCM3.DLL)()(TARMSTM.DLL)(-pSTM32F103ZE)
+  OPTDBG 49150,8,()()()()()()()()()() (STLink\ST-LINKIII-KEIL.dll)()()()
+ FLASH1 { 9,0,0,0,1,0,0,0,12,16,0,0,0,0,0,0,0,0,0,0 }
+ FLASH2 (STLink\ST-LINKIII-KEIL.dll)
+ FLASH3 ("" ())
+ FLASH4 ()
+EndOpt
+
