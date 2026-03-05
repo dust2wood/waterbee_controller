@@ -20,23 +20,6 @@
 **
 *********************************************************************************************************/
 
-/******************************************************************************
-  *          +-----------------------------------------------------------+
-  *          |                     Pin assignment                        |
-  *          +-----------------------------+---------------+-------------+
-  *          |  STM32 SDIO Pins            |     SD        |    Pin      |
-  *          +-----------------------------+---------------+-------------+
-  *          |      SDIO D2                |   D2          |    1        |
-  *          |      SDIO D3                |   D3          |    2        |
-  *          |      SDIO CMD               |   CMD         |    3        |
-  *          |                             |   VCC         |    4 (3.3 V)|
-  *          |      SDIO CK               |    CLK         |    5        |
-  *          |                             |   GND         |    6 (0 V)  |
-  *          |      SDIO D0                |   D0          |    7        |
-  *          |      SDIO D1                |   D1          |    8        |  
-  *          +-----------------------------+---------------+-------------+   
-  *****************************************************************************/
-
 
 /* Includes ------------------------------------------------------------------*/
 #include "sdio_sd.h"
@@ -125,7 +108,7 @@
 /**
   * @}
   */ 
-  
+
 
 /** @defgroup STM32_EVAL_SDIO_SD_Private_Variables
   * @{
@@ -160,7 +143,7 @@ static SD_Error SDEnWideBus(FunctionalState NewState);
 static SD_Error IsCardProgramming(uint8_t *pstatus);
 static SD_Error FindSCR(uint16_t rca, uint32_t *pscr);
 static uint8_t convert_from_bytes_to_power_of_two(uint16_t NumberOfBytes);
-  
+
 /**
   * @}
   */ 
@@ -207,7 +190,7 @@ void SD_LowLevel_Init(void)
   GPIO_InitStructure.GPIO_Pin = SD_DETECT_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
   GPIO_Init(SD_DETECT_GPIO_PORT, &GPIO_InitStructure);
-  
+
   /*!< Enable the SDIO AHB Clock */
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_SDIO, ENABLE);
 
@@ -297,7 +280,7 @@ void SD_LowLevel_DMA_TxConfig(uint32_t *BufferSRC, uint32_t BufferSize)
 SD_Error SD_Init(void)
 {
   SD_Error errorstatus = SD_OK;
-  
+
   /* SDIO Peripheral Low Level Init */
   SD_LowLevel_Init();
 
@@ -328,7 +311,7 @@ SD_Error SD_Init(void)
   SDIO_InitStructure.SDIO_BusWide = SDIO_BusWide_1b;
   SDIO_InitStructure.SDIO_HardwareFlowControl = SDIO_HardwareFlowControl_Disable;
   SDIO_Init(&SDIO_InitStructure);
-  
+
   if (errorstatus == SD_OK)
   {
     /*----------------- Read CSD/CID MSD registers ------------------*/
@@ -351,7 +334,7 @@ SD_Error SD_Init(void)
   {  
     errorstatus = SD_SetDeviceMode(SD_DMA_MODE);
   }
-  
+
   return(errorstatus);
 }
 
@@ -368,7 +351,7 @@ SDTransferState SD_GetStatus(void)
   SDCardState cardstate =  SD_CARD_TRANSFER;
 
   cardstate = SD_GetState();
-  
+
   if (cardstate == SD_CARD_TRANSFER)
   {
     return(SD_TRANSFER_OK);
@@ -391,7 +374,7 @@ SDTransferState SD_GetStatus(void)
 SDCardState SD_GetState(void)
 {
   uint32_t resp1 = 0;
-  
+
   if(SD_Detect()== SD_PRESENT)
   {
     if (SD_SendStatus(&resp1) != SD_OK)
@@ -475,9 +458,7 @@ SD_Error SD_PowerON(void)
 
   /*!< CMD8: SEND_IF_COND ----------------------------------------------------*/
   /*!< Send CMD8 to verify SD card interface operating condition */
-  /*!< Argument: - [31:12]: Reserved (shall be set to '0')
-               - [11:8]: Supply Voltage (VHS) 0x1 (Range: 2.7-3.6 V)
-               - [7:0]: Check Pattern (recommended 0xAA) */
+
   /*!< CMD Response: R7 */
   SDIO_CmdInitStructure.SDIO_Argument = SD_CHECK_PATTERN;
   SDIO_CmdInitStructure.SDIO_CmdIndex = SDIO_SEND_IF_COND;
@@ -746,7 +727,7 @@ SD_Error SD_GetCardInfo(SD_CardInfo *cardinfo)
     /*!< Byte 10 */
     tmp = (uint8_t)((CSD_Tab[2] & 0x0000FF00) >> 8);
     cardinfo->SD_csd.DeviceSizeMul |= (tmp & 0x80) >> 7;
-    
+
     cardinfo->CardCapacity = (cardinfo->SD_csd.DeviceSize + 1) ;
     cardinfo->CardCapacity *= (1 << (cardinfo->SD_csd.DeviceSizeMul + 2));
     cardinfo->CardBlockSize = 1 << (cardinfo->SD_csd.RdBlockLen);
@@ -770,7 +751,7 @@ SD_Error SD_GetCardInfo(SD_CardInfo *cardinfo)
 
     /*!< Byte 10 */
     tmp = (uint8_t)((CSD_Tab[2] & 0x0000FF00) >> 8);
-    
+
     cardinfo->CardCapacity = (cardinfo->SD_csd.DeviceSize + 1) * 512 * 1024;
     cardinfo->CardBlockSize = 512;    
   }
@@ -878,7 +859,7 @@ SD_Error SD_GetCardInfo(SD_CardInfo *cardinfo)
   tmp = (uint8_t)(CID_Tab[3] & 0x000000FF);
   cardinfo->SD_cid.CID_CRC = (tmp & 0xFE) >> 1;
   cardinfo->SD_cid.Reserved2 = 1;
-  
+
   return(errorstatus);
 }
 
@@ -1031,7 +1012,7 @@ SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize)
     errorstatus = SD_LOCK_UNLOCK_FAILED;
     return(errorstatus);
   }
-  
+
   if (CardType == SDIO_HIGH_CAPACITY_SD_CARD)
   {
     BlockSize = 512;
@@ -1207,7 +1188,7 @@ SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint32_t ReadAddr, uint16_t Block
     BlockSize = 512;
     ReadAddr /= 512;
   }
-  
+
   if ((BlockSize > 0) && (BlockSize <= 2048) && (0 == (BlockSize & (BlockSize - 1))))
   {
     power = convert_from_bytes_to_power_of_two(BlockSize);
@@ -1409,7 +1390,7 @@ SD_Error SD_WriteBlock(uint8_t *writebuff, uint32_t WriteAddr, uint16_t BlockSiz
     BlockSize = 512;
     WriteAddr /= 512;
   }
-  
+
   /*!< Set the block size, both on controller and card */
   if ((BlockSize > 0) && (BlockSize <= 2048) && ((BlockSize & (BlockSize - 1)) == 0))
   {
@@ -1610,7 +1591,7 @@ SD_Error SD_WriteMultiBlocks(uint8_t *writebuff, uint32_t WriteAddr, uint16_t Bl
   uint32_t restwords = 0;
   uint32_t *tempbuff = (uint32_t *)writebuff;
   __IO uint32_t count = 0;
-  
+
   if (writebuff == NULL)
   {
     errorstatus = SD_INVALID_PARAMETER;
@@ -1641,7 +1622,7 @@ SD_Error SD_WriteMultiBlocks(uint8_t *writebuff, uint32_t WriteAddr, uint16_t Bl
     BlockSize = 512;
     WriteAddr /= 512;
   }
-  
+
   /*!< Set the block size, both on controller and card */
   if ((BlockSize > 0) && (BlockSize <= 2048) && ((BlockSize & (BlockSize - 1)) == 0))
   {
@@ -1851,7 +1832,7 @@ SD_Error SD_WriteMultiBlocks(uint8_t *writebuff, uint32_t WriteAddr, uint16_t Bl
   }
   /*!< Clear all the static flags */
   SDIO_ClearFlag(SDIO_STATIC_FLAGS);
-  
+
   /*!< Add some delay before checking the Card Status */
   for(count = 0; count < 0xFFFF; count++)
   {
@@ -1942,7 +1923,7 @@ SD_Error SD_Erase(uint32_t startaddr, uint32_t endaddr)
     startaddr /= 512;
     endaddr /= 512;
   }
-  
+
   /*!< According to sd-card spec 1.0 ERASE_GROUP_START (CMD32) and erase_group_end(CMD33) */
   if ((SDIO_STD_CAPACITY_SD_CARD_V1_1 == CardType) || (SDIO_STD_CAPACITY_SD_CARD_V2_0 == CardType) || (SDIO_HIGH_CAPACITY_SD_CARD == CardType))
   {

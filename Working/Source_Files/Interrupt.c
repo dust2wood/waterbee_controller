@@ -3,14 +3,7 @@
 
 uint32_t flag10ms = 0;
 
-/*
-uint16_t rx1Buffer[128] = {0,};
-uint16_t rx2Buffer[256] = {0,};
-uint16_t rx3Buffer[256] = {0,};
-uint16_t tx1Buffer[15] = {0,};
-uint16_t tx2Buffer[256] = {0,};
-uint16_t tx3Buffer[256] = {0,};
-  */
+
 uint16_t rx1Buffer[32] = {0,};
 uint16_t rx2Buffer[32] = {0,};
 uint16_t rx3Buffer[32] = {0,};
@@ -42,25 +35,25 @@ extern uint16_t rx2_time_count, rx3_time_count;
 void TIM2_IRQHandler(void)  
 {
 	TIM_ClearITPendingBit(TIM2, TIM_IT_Update); 
-	
+
 	if( wash_run_flag == 1) 	{  flag_wash1_time_counter++; }
   	else { flag_wash1_time_counter = 0;   }
-	
+
 	if(Relay1_run_on_flag == 1) { flag_wash1_relay_time_counter++;  }
-	
+
 	if(Alarm_OP_flag == 0 && configData.alarmConfig.zeroAlarm != 0) { zero_Alarm_Time_couter++; }
 	else { zero_Alarm_Time_couter = 0; }
-	
+
 	if(Alarm_OP_flag == 0 && configData.alarmConfig.zeroAlarm2 != 0) { zero_Alarm_Time_couter2++; }
 	else { zero_Alarm_Time_couter2 = 0; }
-	
+
  	//-------------------------------------------------------------------------------------//
   	if( wash_run_flag3 == 1) 	{  flag_wash3_time_counter++; }
   	else { flag_wash3_time_counter = 0;   }
-	
+
 	if(Relay3_run_on_flag == 1) { flag_wash3_relay_time_counter++;  }
 	//---------------------------------------------------------------------------------------//
-	
+
 	if( MicrosdCard_Run_flag == 0 && sd_dec_flag == 1)
 	{
      	MicroSdCard_Time_Coutner++;
@@ -71,10 +64,10 @@ void TIM2_IRQHandler(void)
 	      	MicrosdCard_Run_flag = 1;		 
       	}
   	}
-	
+
 	if (rx2_time_count<1000) rx2_time_count++;
 	if (rx3_time_count<1000) rx3_time_count++;
-		
+
 }
 
 uint16_t Counter10msec = 0;
@@ -83,9 +76,6 @@ uint16_t Comm_time_flag = 0;
 uint16_t Timer10msec, TimerSec, TimerMin;
 
 extern uint32_t ButtonTimer;
-
-
-
 
 
 // trand 하기위한 변수들 
@@ -151,8 +141,8 @@ void CheckTrandData(void)
 	// 대이터 회전해야함
 	data_rotate(0);
 	flag_write_trand1=1;
-	
-	
+
+
 	// 1번 
 	if (trand_time6>=6) { 
 	 	trand_time6=0; 
@@ -161,7 +151,7 @@ void CheckTrandData(void)
 		data_rotate(1);
 		flag_write_trand6=1;
 	}	
-	
+
 	// 2번 
 	if (trand_time12>=12) { 
 	 	trand_time12=0; 
@@ -170,7 +160,7 @@ void CheckTrandData(void)
 		data_rotate(2);
 		flag_write_trand12=1;
 	}	
-	
+
 	// 3번 
 	if (trand_time24>=24) { 
 	 	trand_time24=0; 
@@ -179,7 +169,7 @@ void CheckTrandData(void)
 
 		flag_write_trand24=1;
 	}	
-	
+
 	// 4번 
 	if (trand_time168>=168) { 
 	 	trand_time168=0; 
@@ -187,7 +177,7 @@ void CheckTrandData(void)
 		data_rotate(4);
 		flag_write_trand168=1;
 	}	
-	
+
 
 	// 5번 
 	if (trand_time336>=336) { 
@@ -204,7 +194,7 @@ void TIM3_IRQHandler(void)
 {
 	TIM_ClearITPendingBit(TIM3, TIM_IT_Update); 
 	flag10ms = 0xFFFFFFFF;	
-	
+
 #ifdef BUZ_ENABLE
 	if (buz_time>0) { buz_time--;	BUZ_ON;	}
 	else 			  				BUZ_OFF;
@@ -243,7 +233,6 @@ void TIM3_IRQHandler(void)
 		if (Relay2_off_time2>0) Relay2_off_time2--;
 
 
-
 		// 1분마다 
 		if (TimerSec>=60) {
 			TimerSec=0;
@@ -255,7 +244,6 @@ void TIM3_IRQHandler(void)
 		}
 		Timer10msec=0;
 	}
-
 
 
 	if(Comm_time_flag == 1)
@@ -275,7 +263,7 @@ void TIM5_IRQHandler(void)
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update); 
 }
 
-  
+
 //=============================================
 
 extern uint32_t REqParmeterPPM;
@@ -303,7 +291,6 @@ extern char WORKING_TIMER;
 extern uint32_t ReqParmeterZero_NTU;
 
 
-
 // 센서 에러 표시하는 센서값의 하한값, 상한값
 // 에러 0~6.6 (660), 최대값 327.30 (32730) 
 #define S1_ERROR_LOW	660
@@ -318,7 +305,6 @@ extern uint32_t ReqParmeterZero_NTU;
 #define S2_EC_ERROR_HIGH	200000
 
 
-
 // NTU 탁도 
 // 센서이상 0~350.0   400.0~450.0  4500.0~
 // 램프이상 350.0 ~ 400.0
@@ -329,7 +315,6 @@ extern uint32_t ReqParmeterZero_NTU;
 
 #define S2_ERROR_LAMP_LOW	800
 #define S2_ERROR_LAMP_HIGH	1200
-
 
 
 // 새로정해야 함
@@ -356,7 +341,7 @@ void USART1_IRQHandler(void)
 	if (USART_GetITStatus(USART1, USART_IT_TC) != RESET) 
 	{
 		USART1->SR &= USART1->SR&(~0x40);
-		
+
 		if(tx1Count < tx1Size)
 			USART1->DR = tx1Buffer[tx1Count++];
 		else
@@ -464,7 +449,7 @@ void USART1_IRQHandler(void)
                     //DrawTextsize120(MEASURE_X2, MEASURE_Y, TEXT120_MEASURING, DRAW_IMAGE_ENABLE);
 //					if (WORKING_TIMER==0) { DrawIcon(ICON_WORKING, DRAW_IMAGE_ENABLE); WORKING_TIMER=1;}
 //					else 				  { DrawIcon(ICON_WORKING, DRAW_IMAGE_DISABLE); WORKING_TIMER=0;}
-					
+
 					// 0=no comm, 1=DISPLAY, 2=no DISPLAY
 					if (WORKING_TIMER==0) 		{ WORKING_TIMER=1;}
 					else if (WORKING_TIMER==1) 	{ WORKING_TIMER=2;}
@@ -511,7 +496,7 @@ void USART1_IRQHandler(void)
 						if (rx1Buffer[18]=='-') currentData.temperature*=(-1);	// 영하
 					}
 
-	                
+
                 }
                 comm_run_flag = 2;
 
@@ -559,12 +544,12 @@ void USART1_IRQHandler(void)
 	                    //DrawTextsize120(MEASURE_X2, MEASURE_Y, TEXT120_MEASURING, DRAW_IMAGE_ENABLE);
 	//					if (WORKING_TIMER==0) { DrawIcon(ICON_WORKING, DRAW_IMAGE_ENABLE); WORKING_TIMER=1;}
 	//					else 				  { DrawIcon(ICON_WORKING, DRAW_IMAGE_DISABLE); WORKING_TIMER=0;}
-						
+
 						// 0=no comm, 1=DISPLAY, 2=no DISPLAY
 						if (WORKING_TIMER==0) 		{ WORKING_TIMER=1;}
 						else if (WORKING_TIMER==1) 	{ WORKING_TIMER=2;}
 						else 				  		{ WORKING_TIMER=1;}
-	
+
 	                }
 	                if (rx1Buffer[6] != 0x2D) {
 	                    sensor  = (rx1Buffer[6] - 0x30) * 10000 + (rx1Buffer[7] - 0x30) * 1000 + (rx1Buffer[8] - 0x30) * 100 + (rx1Buffer[9] - 0x30) * 10 + (rx1Buffer[10] - 0x30);
@@ -589,7 +574,7 @@ void USART1_IRQHandler(void)
 	                //ComCouter++;
 	                ComCouter=0;
 	                ComCouter2=0;
-	
+
 	                if (rx1Buffer[11] == ',') {
 	                    sensor = (rx1Buffer[12] - 0x30) * 10000 + (rx1Buffer[13] - 0x30) * 1000 + (rx1Buffer[14] - 0x30) * 100 + (rx1Buffer[15] - 0x30) * 10 + (rx1Buffer[16] - 0x30);
 #ifdef CH2
@@ -608,16 +593,15 @@ void USART1_IRQHandler(void)
 #endif
 
 	                }
-	
+
 //	                S1PPm_Filter_OUT_function();
 					S1PPm_Data_offset_function();
 	                //RedrawValue();
-	
+
 					// 1234 = 12.34도, 최대 9999 = 99.99도, 영하는 2660 = -26.6 도
 	                if (rx1Buffer[17] == ',') {
 	                    data_TEMP = (rx1Buffer[19] - 0x30) * 1000 + (rx1Buffer[20] - 0x30) * 100 + (rx1Buffer[21] - 0x30) * 10 + (rx1Buffer[22] - 0x30);
 						if (rx1Buffer[18]=='-') data_TEMP*=(-1);	// 영하
-
 
 
 						//=====================
@@ -662,20 +646,6 @@ void USART1_IRQHandler(void)
 							else  SET_data_TEMP = data_TEMP;
 						}
 
-/*							 						  //==========================================test
-						if 		(sensor_no==1) {
-							f = configData.calibrationConfig.TEMP_Span_Cal1;
-							e = configData.calibrationConfig.TEMP_Span_Value1;
-							temp = data_TEMP*f/e;
-							currentData.temperature = temp;
-						}
-						if 		(sensor_no==1) {
-							f = configData.calibrationConfig.TEMP_Span_Cal2;
-							e = configData.calibrationConfig.TEMP_Span_Value2;
-							temp = data_TEMP*f/e;
-							currentData.temperature1 = temp;
-						}	 
-  */
 
 	#endif
 #else	// CH4
@@ -710,20 +680,12 @@ void USART1_IRQHandler(void)
 #endif
 	                }
 	                comm_run_flag = 2;
-	
 
 
 #ifndef  SENSOR_PH_EC	
 					// 센서값이 너무작거나 너무 크면, 센서점검 에러 표시함
 					if (sensor_no==1) {
-/*
-						if (currentData.S1mV<S1_ERROR_LOW || currentData.S1mV>S1_ERROR_HIGH) {
-							Sensor_State1=SENSOR_ERROR1;
-						}
-						else { //if (Sensor_State!=SENSOR_ERROR3)	
-							Sensor_State1=SENSOR_OK;
-						}
-						Sensor1_OK_TIME=10;	// 10=10sec */
+
 
 						// value 가 0과, 14.0 이상이면 에러로 하자 20241118 여기아님, 위에있음
 						if (currentData.S1mV<4.0 || currentData.S1mV>=25000) {
@@ -733,10 +695,10 @@ void USART1_IRQHandler(void)
 							Sensor_State1=SENSOR_OK;
 						}
 						Sensor1_OK_TIME=10;	// 10=10sec 
-	
+
 					}
 					else if (sensor_no==2) {
-					
+
 						// 센서이상 
 						if (currentData.S2mV<S2_ERROR_LAMP_LOW) {
 							Sensor_State2=SENSOR_ERROR1;
@@ -757,8 +719,8 @@ void USART1_IRQHandler(void)
 							Sensor_State2=SENSOR_OK;
 						}
 						Sensor2_OK_TIME=10;	// 10=10sec
-	
-	
+
+
 					}
 
 #else
@@ -772,7 +734,7 @@ void USART1_IRQHandler(void)
 							Sensor_State1=SENSOR_OK;
 						}
 						Sensor1_OK_TIME=10;	// 10=10sec
-										 
+
 					}
 					else if (sensor_no==4) {
 						if (currentData.S2PPM<S2_EC_ERROR_LOW || currentData.S2PPM>=S2_EC_ERROR_HIGH) {
@@ -802,7 +764,7 @@ void USART2_IRQHandler(void)
 		if (USART_GetITStatus(USART2, USART_IT_TC) != RESET) 
 	{
 		USART2->SR &= USART2->SR&(~0x40);
-		
+
 		if(tx2Count < tx2Size)
 			USART2->DR = tx2Buffer[tx2Count++];
 		else
@@ -826,7 +788,7 @@ void USART3_IRQHandler(void)
 	if (USART_GetITStatus(USART3, USART_IT_TC) != RESET) 
 	{
 		USART3->SR &= USART3->SR&(~0x40);
-		
+
 		if(tx3Count < tx3Size)
 			USART3->DR = tx3Buffer[tx3Count++];
 		else
@@ -844,21 +806,14 @@ void USART3_IRQHandler(void)
 	{
 		USART3->SR = (USART3->SR)&(~((USART3->SR)&0X20));
 		rx3Buffer[rx3Size] = USART3->DR;
-		
+
 		if (rx3Size==0 && rx3Buffer[rx3Size]==0) ;	// 처음 데이터가 0이면 안받음...
 		else rx3Size++;
-		
+
 		rx3HandlerCount  = 0;
 		if(rx3Size == 32)
 			rx3Size = 0;
 	}
 }
-
-
-
-
-
-
-
 
 

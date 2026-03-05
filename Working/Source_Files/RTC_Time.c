@@ -89,7 +89,6 @@ void Time_SetCalendarTime(struct tm t)
 }
 
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // RTC时钟初始化！
 ////////////////////////////////////////////////////////////////////////////////
@@ -130,10 +129,10 @@ void RTC_Configuration(void)
 	//开启后需要等待APB1时钟与RTC时钟同步，才能读写寄存器
 	RTC_WaitForSynchro();
 
-	//读写寄存器前，要确定上一个操作已经结束
+	//读写寄存器前，要确定?弦桓霾僮饕丫?结束
 	RTC_WaitForLastTask();
 
-	//设置RTC分频器，使RTC时钟为1Hz
+	//?柚肦TC分频器，使RTC时钟为1Hz
 	//RTC period = RTCCLK/RTC_PR = (32.768 KHz)/(32767+1)
 	RTC_SetPrescaler(32767);
 
@@ -152,7 +151,7 @@ void RTC_Configuration(void)
 
 /*******************************************************************************
 * Function Name  : RTC_Config
-* Description    : 上电时调用本函数，自动检查是否需要RTC初始化， 
+* Description    : ?系缡钡饔帽竞?数，自动检查是否需要RTC初始化， 
 * 					若需要重新初始化RTC，则调用RTC_Configuration()完成相应操作
 * Input          : None
 * Output         : None
@@ -161,7 +160,7 @@ void RTC_Configuration(void)
 void RTC_Config(void)
 {
 	//我们在BKP的后备寄存器1中，存了一个特殊字符0xA5A5
-	//第一次上电或后备电源掉电后，该寄存器数据丢失，
+	//第一次?系缁蚝蟊傅缭吹舻绾螅眉拇嫫魇荻В?
 	//表明RTC数据丢失，需要重新配置
 	if (BKP_ReadBackupRegister(BKP_DR1) != 0xA5A5)
 	{
@@ -176,7 +175,7 @@ void RTC_Config(void)
 		//这里我们可以利用RCC_GetFlagStatus()函数查看本次复位类型
 		if (RCC_GetFlagStatus(RCC_FLAG_PORRST) != RESET)
 		{
-			//这是上电复位
+			//这是?系绺次?
 		}
 		else if (RCC_GetFlagStatus(RCC_FLAG_PINRST) != RESET)
 		{
@@ -188,7 +187,7 @@ void RTC_Config(void)
 		//虽然RTC模块不需要重新配置，且掉电后依靠后备电池依然运行
 		RCC_RTCCLKCmd(ENABLE);
 		//等待RTC时钟与APB1时钟同步
-		
+
 		RTC_WaitForSynchro();
 
 		//使能秒中断
@@ -204,6 +203,6 @@ void RTC_Config(void)
 	/* Allow access to BKP Domain */
 	PWR_BackupAccessCmd(ENABLE);
 
-	
+
 	return;
 }

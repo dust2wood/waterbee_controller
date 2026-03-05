@@ -17,118 +17,6 @@ uint8_t imageBuffer[40960] = {0,};
 
 uint16_t* GlobalMemory;
 
-/*void DrawTextETC(uint32_t x, uint32_t y, uint32_t image, uint32_t draw) {
-    const uint32_t imageData[13][3] = {
-        {0, 70, 30},
-        {2100, 40, 30},
-        {3300, 70, 30},
-        {5400, 40, 30},
-        {6600, 40, 30},
-        {7800, 70, 30},
-        {9900, 70, 30},
-        {12000, 70, 30},
-        {14100, 70, 30},
-        {16200, 70, 30},
-        {18300, 70, 30},
-        {20400, 70, 30},
-        {985, 250, 60}};
-
-    if (image > TEXT_ETC_F_RESET_MESSAGE)
-        return;
-
-    NAND_ReadTextETC(image);
-    if (draw == DRAW_IMAGE_ENABLE)
-        TFT_DrawImage(x, y, x + imageData[image][1], y + imageData[image][2], &GlobalMemory[imageData[image][0]], DRAW_REVERSE);
-    else
-        TFT_Fill(x, y, x + imageData[image][1], y + imageData[image][2], WHITE);
-} 
-
-void DrawTextsize260(uint32_t x, uint32_t y, uint32_t image, uint32_t draw) {
-    uint32_t imageStartAddr = 0;
-    if (image > TEXT260_S2_PRIME_ING_Y)
-        return;
-
-    if (draw == DRAW_IMAGE_ENABLE) {
-        NAND_ReadTextsize260(image);
-        imageStartAddr = image * 7800;
-        imageStartAddr = imageStartAddr % 1024;
-        TFT_DrawImage(x, y, x + 260, y + 30, &GlobalMemory[imageStartAddr], DRAW_REVERSE);
-    } else
-        TFT_Fill(x, y, x + 260, y + 30, WHITE);
-}
-  
-void DrawTextsize180(uint32_t x, uint32_t y, uint32_t image, uint32_t draw) {
-    uint32_t imageStartAddr = 0;
-    if (image > TEXT180_S1_Current_Measure)
-        return;
-
-    if (draw == DRAW_IMAGE_ENABLE) {
-        NAND_ReadTextsize180(image);
-        imageStartAddr = image * 5400;
-        imageStartAddr = imageStartAddr % 1024;
-        TFT_DrawImage(x, y, x + 180, y + 30, &GlobalMemory[imageStartAddr], DRAW_REVERSE);
-    } else
-        TFT_Fill(x, y, x + 180, y + 30, WHITE);
-}
-
-void DrawTextsize120(uint32_t x, uint32_t y, uint32_t image, uint32_t draw) {
-    uint32_t imageStartAddr = 0;
-    if (image > TEXT120_ZERO_ALARM)
-        return;
-
-    if (draw == DRAW_IMAGE_ENABLE) {
-        NAND_ReadTextsize120(image);
-        imageStartAddr = image * 3600;
-        imageStartAddr = imageStartAddr % 1024;
-        TFT_DrawImage(x, y, x + 120, y + 30, &GlobalMemory[imageStartAddr], DRAW_REVERSE);
-    } else
-        TFT_Fill(x, y, x + 120, y + 30, WHITE);
-}
-
-void DrawTextsize96(uint32_t x, uint32_t y, uint32_t image, uint32_t draw) {
-    uint32_t imageStartAddr = 0;
-    //if(image > TEXT96_FILTER)
-    //if(image > TEXT96_CI3)
-    if (image > TEXT96_MANUAL_OPERATION)
-        return;
-
-    if (image == 0) {
-        image = 0;
-    }
-
-    if (draw == DRAW_IMAGE_ENABLE) {
-        NAND_ReadTextsize96(image);
-        imageStartAddr = image * 2880;
-        imageStartAddr = imageStartAddr % 1024;
-        TFT_DrawImage(x, y, x + 96, y + 30, &GlobalMemory[imageStartAddr], DRAW_REVERSE);
-    } else
-        TFT_Fill(x, y, x + 96, y + 30, WHITE);
-}
-
-void DrawTextsize55(uint32_t x, uint32_t y, uint32_t image, uint32_t draw) {
-    if (image > TEXT55_CYCLE)
-        return;
-
-    if (draw == DRAW_IMAGE_ENABLE) {
-        NAND_ReadTextsize55();
-        TFT_DrawImage(x, y, x + 55, y + 30, &GlobalMemory[1650 * image], DRAW_REVERSE);
-
-    } else
-        TFT_Fill(x, y, x + 55, y + 30, WHITE);
-}
-  
-void DrawUnit(uint32_t x, uint32_t y, uint32_t image, uint32_t draw) {
-    if (image > UNIT_SEC)
-        return;
-
-    if (draw == DRAW_IMAGE_ENABLE) {
-        NAND_ReadUnit();
-        TFT_DrawImage(x, y, x + 30, y + 30, &GlobalMemory[900 * image], DRAW_REVERSE);
-    } else
-        TFT_Fill(x, y, x + 30, y + 30, WHITE);
-}
-  */
-
 
 void DrawIcon(uint32_t icon, uint32_t draw) {
     //	const uint16_t axis[4][3] = {{1,1,0},{390,1,1600},{435,1,3200},{70,110,4800}};
@@ -192,7 +80,6 @@ void DrawIcon(uint32_t icon, uint32_t draw) {
         };
     }
 }
-
 
 
 //================================================
@@ -286,7 +173,6 @@ void DrawBottomLine(void) {
 }
 
 
-
 //=====================================
 #include "back_corner.h"
 #include "back_corner2.h"
@@ -304,8 +190,6 @@ void ClearTitle(void) {
     //	TFT_Fill(110, 0, 290, TITLE_Y_END, WHITE);
     TFT_Fill(90, 0, 330, TITLE_Y_END, WHITE);
 }
-
-
 
 
 // VIEW  °¡¿îµ¥
@@ -455,14 +339,10 @@ void ClearViewArea5(void) {
 }
 
 
-
-
 void DrawBack2(void) {
     TFT_Fill(0, 0, 480, 272, WHITE);
 
     ClearViewArea2();
 }
-
-
 
 

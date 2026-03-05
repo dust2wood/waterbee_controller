@@ -13,7 +13,6 @@ uint16_t WirteSDCard_flag = 0;
 uint32_t reseult = 1520;
 
 
-
 uint8_t  SD_WriteMin=0;
 
 // sd 카드에 한달에 한개 데이터 생성하고 1분에 60개씩 저장한다.
@@ -55,7 +54,7 @@ void MicroSD_Write(void) {
 		}
 	}
 #endif
-	
+
 	SD_WriteMin = currentTime.tm_min;
 
 
@@ -73,10 +72,8 @@ void MicroSD_Write(void) {
 #endif
 
 
-
 	// 해야하는거, 데이터를  60개 write 하는데 알맞는 데이터를 write해야한다.
 //	aaa
-
 
 
 	// 먼저 파일이 있으면 이어쓰기한다.
@@ -100,7 +97,7 @@ void MicroSD_Write(void) {
 			i =1;
 #endif
 		   {
-                
+
 #ifndef SENSOR_PH_EC				
 				if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
 					if (TEMP_card_Data[i]<0) 	f_printf(&fsrc, "%4d-%02d-%02d %02d:%02d:%02d, %1d.%02d, mg/L, -%2d.%d, C\r\n", currentTime.tm_year, currentTime.tm_mon + 1, currentTime.tm_mday, currentTime.tm_hour, currentTime.tm_min, i, PPmSD_card_Data[i] / 100, PPmSD_card_Data[i] % 100, abs(TEMP_card_Data[i]) / 100, (abs(TEMP_card_Data[i])/10) % 10);
@@ -118,7 +115,7 @@ void MicroSD_Write(void) {
 					if (TEMP_card_Data[i]<0) 	f_printf(&fsrc, "%4d-%02d-%02d %02d:%02d:%02d, %1d.%02d, pH, -%2d.%d, C\r\n", \
 									currentTime.tm_year, currentTime.tm_mon + 1, currentTime.tm_mday, currentTime.tm_hour, currentTime.tm_min, i, \
 									PPmSD_card_Data[i] / 100, PPmSD_card_Data[i] % 100, abs(TEMP_card_Data[i]) / 10, abs(TEMP_card_Data[i]) % 10);
-                    
+
 					else 						f_printf(&fsrc, "%4d-%02d-%02d %02d:%02d:%02d, %1d.%02d, pH, %2d.%d, C\r\n", 					   \
 									currentTime.tm_year, currentTime.tm_mon + 1, currentTime.tm_mday, currentTime.tm_hour, currentTime.tm_min, i,  \
 									PPmSD_card_Data[i] / 100, PPmSD_card_Data[i] % 100,     TEMP_card_Data[i]  / 10,     TEMP_card_Data[i]  % 10);
@@ -204,8 +201,6 @@ int SD_TotalSize(void) {
 }
 
 
-
-
 extern int16_t trandData[6][61] ;
 extern uint8_t trandData_TIME[6][61][6] ;
 
@@ -282,9 +277,7 @@ void MicroSD_Trand_Read(void) {
 }
 
 
-
 extern char flag_write_trand1, flag_write_trand6, flag_write_trand12, flag_write_trand24, flag_write_trand168, flag_write_trand336;
-
 
 
 void Write_TrandData(unsigned char no)
@@ -311,7 +304,6 @@ void Write_TrandData(unsigned char no)
     }
     f_close(&fsrc);
 }
-
 
 
 void MicroSD_Trand_Write(void) {
@@ -403,7 +395,6 @@ void Read_SetHistory (void)
 }
 
 
-
 void Write_SetHistory(void)
 {
     uint16_t i = 0;
@@ -429,6 +420,5 @@ void Write_SetHistory(void)
     }
     f_close(&fsrc);
 }
-
 
 

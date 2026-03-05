@@ -17,14 +17,14 @@ void Flash_Write(u32 Addr, vu32* Data, uint32_t Size)
 	uint32_t TempSaveSize = Size;
 	uint16_t* TempSaveDataPointer = (uint16_t*)Data;
 	uint16_t TempSaveData = 0;
-	
+
 	FLASH_Unlock();	  
 	FLASH_ClearFlag(FLASH_FLAG_BSY | FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);
-	
+
 	FLASHStatus=FLASH_ErasePage(Address);	
 	FLASHStatus=FLASH_ErasePage(Address);
-	
-		
+
+
 	for(i = 0 ; i < TempSaveSize ; i+=2)
 	{
 		TempSaveData = *TempSaveDataPointer;
@@ -179,11 +179,5 @@ const uint16_t YellowMinus[] = {
 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, };
-
-
-
-
-
-
 
 

@@ -246,13 +246,7 @@ TouchPoint read_once(void) {
     b >>= 3;
     Point.X = b;
     TCS_SET(1);
-    /*
-    if(Point.X>100&&Point.Y>100&&Point.X<4090&&Point.Y<4090)
-    return Point;
-    else 
-    {
-    Point.X = 0;
-    Point.Y = 0;*/
+
     return Point;
     //	}
 }
@@ -263,11 +257,5 @@ void delay_us(uint32_t nCount) {
     for (i = 0; i < nCount; i++)
         for (j = 0; j < 5; j++);
 }
-
-
-
-
-
-
 
 

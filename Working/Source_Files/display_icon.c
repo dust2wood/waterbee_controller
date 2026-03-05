@@ -1,13 +1,10 @@
 #include "Main.h"
 
 
-
-
 void NAND_Read_SET_ICON(unsigned short no)
 {
 	NAND_ReadData(imageBuffer, 0, 7); 
 }
-
 
 
 //=========================================================
@@ -23,7 +20,7 @@ void NAND_ReadData2(uint8_t* buf, uint32_t BLOCK, uint32_t startPage, uint32_t p
 	NAND_ADDRESS WriteReadAddr = {0, 0, 0};
 	uint32_t i = startPage;
 	uint32_t j = 0;
-	
+
 	while(j < pageSize)
 	{
 		WriteReadAddr.Block = BLOCK+(i/64);
@@ -202,13 +199,7 @@ void DrawMediumNumber(uint32_t x, uint32_t y, char* str, uint16_t color) {
     uint32_t i = 0;
     uint16_t* buffer;
 
-/*    if (color == YELLOW) {
-        NAND_ReadMNumberY();
-        buffer = (uint16_t*) YellowMinus;
-    } else {
-        NAND_ReadMNumberW();
-        buffer = (uint16_t*) WhiteMinus;
-    }*/
+
     while (str[i] != 0) {
         if (str[i] > 0x2F && str[i] < 0x3A)
 			NEMERIC_18X23_BK_W(x,y,str[i]-0x30,color);
@@ -254,9 +245,6 @@ void DrawXLargeNumber(uint32_t x, uint32_t y, char* str) {
 }
 
 
-
-
-					  
 void DrawLargeNumber(uint32_t x, uint32_t y, char* str) {
     uint32_t i = 0;
 
@@ -280,13 +268,6 @@ void DrawLargeNumber(uint32_t x, uint32_t y, char* str) {
 
     }
 }
-
-
-
-
-
-
-
 
 
 //=========================================
@@ -387,8 +368,6 @@ void Draw_Back_Oval4_uscm(unsigned int x, unsigned int y)
 }
 
 
-
-
 void Draw_Back_Oval4(unsigned int x, unsigned int y)
 {
 	NAND_ReadData2(	imageBuffer, 45,38,11);
@@ -412,9 +391,6 @@ void Draw_Back_Oval4_ntu(unsigned int x, unsigned int y)	// used in ANALOG menu
 	NAND_ReadData2(	imageBuffer, 45,53,6);
 	TFT_DrawImage(x, y,  x+180, y+32,  (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
-
-
-
 
 
 //=========================================
@@ -504,7 +480,6 @@ void display_set2_time(unsigned char select)
 }
 
 
-
 //=====================================================
 
 
@@ -531,7 +506,6 @@ void display_set3_temp(unsigned char select)
 	else 			NAND_ReadData2(	imageBuffer, 51,15,3);
 	TFT_DrawImage(  246, 225, 246+100, 225+30,  (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
-
 
 
 // IMG_set3_zero1
@@ -581,7 +555,6 @@ void display_set4_slope(unsigned char select)
 	else 			NAND_ReadData2(	imageBuffer, 51,45,3);
 	TFT_DrawImage(   20, 225, 20+100, 225+30,  (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
-
 
 
 //=========================================
@@ -646,7 +619,6 @@ void display_set7_manwash(unsigned char select)
 }
 
 
-
 //============================================
 
 // IMG_set8_autoalarm1
@@ -663,7 +635,6 @@ void display_set8_noalarm(unsigned char select)
 	else 			NAND_ReadData2(	imageBuffer, 53,49,7);
 	TFT_DrawImage( 249, 225, 249+212, 225+30,  (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
-
 
 
 //=========================================
@@ -717,7 +688,7 @@ void display_set11_manwash(void)
 	NAND_ReadData2(	imageBuffer, 55,14,2);
 	TFT_DrawImage( 203, 74, 203+73, 74+21,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
-		
+
 // IMG_set11_running
 void display_set11_running(void)
 {
@@ -733,7 +704,7 @@ void display_Calib_Buff_ph4(unsigned char select)
 	else 			NAND_ReadData2(	imageBuffer, 55,34,7);
 	TFT_DrawImage(   20, 225, 20+212, 225+30,  (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
-		
+
 // IMG_set11_running
 void display_Calib_Buff_ph7(unsigned char select)
 {
@@ -751,7 +722,7 @@ void display_Calib_Buff_ph7(unsigned char select)
 
 #define X_NAME_END	(180+120)
 #define Y_NAME_END 	(68+30)
-			
+
 
 // IMG_name_back
 void display_name_back(void)
@@ -802,7 +773,6 @@ void display_comm_databit(void)
 	NAND_ReadData2(	imageBuffer, 62, 37, 2);
 	TFT_DrawImage( 258,189, 258+70, 189+20,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
-
 
 
 //====================================
@@ -969,7 +939,6 @@ void display_temp(void)
 //=============================
 
 
-
 //=============================
 
 // IMG_zero
@@ -1029,7 +998,6 @@ void display_buffer_W_XY(unsigned int X, unsigned int Y)
 	NAND_ReadData2(	imageBuffer, 55, 55, 4);	
 	TFT_DrawImage( X, Y, X+120, Y+30,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
-
 
 
 //=============================
@@ -1327,8 +1295,6 @@ void display_ph10(void)
 }
 
 
-
-
 // IMG_message5
 void display_message_STOP(void)
 {
@@ -1375,7 +1341,7 @@ void display_RS_485(void)
 	NAND_ReadData2(	imageBuffer, 62, 57, 6);
 	TFT_DrawImage(322, 220,  322+140, 220+42,  (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
-									   
+
 
 //===================================================
 // IMG_message1	, 세정화면 클리어  
@@ -1414,7 +1380,7 @@ void display_message4(void)
 	NAND_ReadData2(	imageBuffer, 63, 48, 16);
 	TFT_DrawImage( 120,140, 120+250,140+64,    (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
-						 
+
 
 // IMG_message6, 초기화
 void display_message6(void)
@@ -1442,19 +1408,6 @@ void display_trend_hour(unsigned char n)
 
 
 // IMG_back_gtaph, 그래프배경
-/*void display_back_graph(void)
-{
-	NAND_ReadData2(	imageBuffer, 65, 0, 19);
-	TFT_DrawImage( 40,60, 40+400, 60+48,   (uint16_t *)imageBuffer, DRAW_NORMAL);
-
-	NAND_ReadData2(	imageBuffer, 65, 19, 19);
-	TFT_DrawImage( 40,108, 40+400, 108+48,   (uint16_t *)imageBuffer, DRAW_NORMAL);
-
-	NAND_ReadData2(	imageBuffer, 65, 38, 19);
-	TFT_DrawImage( 40,156, 40+400, 156+48,   (uint16_t *)imageBuffer, DRAW_NORMAL);
-}
-*/
-
 
 
 extern uint16_t  trand_select_Y;
@@ -1471,11 +1424,11 @@ void display_back_graph(void)
 		}
 		else if (trand_select_Y==1) {
 			sprintf(strBuffer, "1   ");   DrawSmallNumber(29, 80,   strBuffer, BLUE);
-			
+
 			sprintf(strBuffer, ".");   DrawSmallNumber(38, 144,  strBuffer, BLUE);
 			sprintf(strBuffer, "0");   DrawSmallNumber(29, 144,  strBuffer, BLUE);
 			sprintf(strBuffer, "5 ");   DrawSmallNumber(47, 144,  strBuffer, BLUE);
-			
+
 			sprintf(strBuffer, "0 ");   DrawSmallNumber(29, 208, strBuffer, BLUE);
 //			NAND_ReadData2(	imageBuffer, 72, 13, 13);
 		}
@@ -1508,11 +1461,11 @@ void display_back_graph(void)
 		else if (trand_select_Y==2) {
 //			NAND_ReadData2(	imageBuffer, 73, 26, 13);
 			sprintf(strBuffer, "1   ");   DrawSmallNumber(29, 80,   strBuffer, BLUE);
-			
+
 			sprintf(strBuffer, ".");   DrawSmallNumber(38, 144,  strBuffer, BLUE);
 			sprintf(strBuffer, "0");   DrawSmallNumber(29, 144,  strBuffer, BLUE);
 			sprintf(strBuffer, "5 ");   DrawSmallNumber(47, 144,  strBuffer, BLUE);
-			
+
 			sprintf(strBuffer, "0 ");   DrawSmallNumber(29, 208, strBuffer, BLUE);
 
 		}
@@ -1540,7 +1493,7 @@ void display_back_graph(void)
 			sprintf(strBuffer, "14 ");   DrawSmallNumber(41, 80,   strBuffer, BLUE);
 			sprintf(strBuffer, " 7 ");   DrawSmallNumber(41, 144,  strBuffer, BLUE);
 			sprintf(strBuffer, " 0 ");     DrawSmallNumber(41, 208, strBuffer, BLUE);
-															
+
 		}
 		else if (trand_select_Y==1) {
 //			NAND_ReadData2(	imageBuffer, 74, 13, 13);
@@ -1586,29 +1539,9 @@ void display_back_graph(void)
 #endif
 
 
-
-
-  /*
-	// back 
-	NAND_ReadData2(	imageBuffer, 70, 0, 20);
-	TFT_DrawImage( 90,40, 90+350, 40+58,   (uint16_t *)imageBuffer, DRAW_NORMAL);
-
-	NAND_ReadData2(	imageBuffer, 70, 20, 20);
-	TFT_DrawImage( 90,98, 90+350, 98+58,   (uint16_t *)imageBuffer, DRAW_NORMAL);
-
-	NAND_ReadData2(	imageBuffer, 71, 0, 20);
-//	TFT_DrawImage( 90,175, 90+350, 175+58,   (uint16_t *)imageBuffer, DRAW_NORMAL);
-	TFT_DrawImage( 90,125, 90+350, 125+58,   (uint16_t *)imageBuffer, DRAW_NORMAL);
-
-	NAND_ReadData2(	imageBuffer, 71, 0, 20);
-//	TFT_DrawImage( 90,233, 90+350, 175+115,   (uint16_t *)imageBuffer, DRAW_NORMAL);
-	TFT_DrawImage( 90,183, 90+350, 240,   (uint16_t *)imageBuffer, DRAW_NORMAL);
-*/
-
     TFT_Fill(GRAPH_X_START, GRAPH_Y_MAX-3, GRAPH_X_MAX, GRAPH_Y_ZERO+3, WHITE);
 
 }
-
 
 
 void display_logo(void)

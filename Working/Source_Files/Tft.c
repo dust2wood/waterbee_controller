@@ -21,7 +21,7 @@
 #define MAX_CHAR_POSY 264 
 //#define MAX_CHAR_POSX 792
 //#define MAX_CHAR_POSY 472 
-	
+
 uint16_t  HDP=479;   
 uint16_t  HT=531;
 uint16_t  HPS=43;
@@ -50,19 +50,19 @@ void TFT_Line(uint16_t x1, uint16_t  y1, uint16_t  x2, uint16_t  y2, uint16_t co
 		 z = x1;		 x1 = y1;		 y1 = z;
 		 z = x2;		 x2 = y2;		 y2 = z;
      }
- 
+
      if (x1 > x2)
      {
 		 z = x1;		 x1 = x2;		 x2 = z;
 		 z = y1;		 y1 = y2;		 y2 = z;
      }
- 
+
      deltax = x2 - x1;
      deltay = ((y2>y1)?(y2-y1):(y1-y2));  
      lerror = deltax / 2;
      y = y1;
      if(y1 < y2) ystep = 1;  else ystep = -1;
- 
+
      for(x = x1; x <= x2; x++)
      {
          if (steep) TFT_Point(y,x, color); else TFT_Point(x,y, color);
@@ -141,7 +141,7 @@ void TFT_SET_Addr(uint16_t x, uint16_t y){
 	TFT_WR_Data(y&0x00ff);
 	TFT_WR_Data(VDP>>8);	 
 	TFT_WR_Data(VDP&0x00ff);
-	
+
 	TFT_WR_REG(WRITE_MEM_START); 
 
 }
@@ -159,16 +159,16 @@ void TFT_DrawNumeric(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t y
 	TFT_WR_Data(xStart&0x00ff);
 	TFT_WR_Data((xEnd-1)>>8);	    
 	TFT_WR_Data((xEnd-1)&0x00ff);
-	
+
     TFT_WR_REG(SET_PAGE_ADDR);	
 	TFT_WR_Data(yStart>>8);	    
 	TFT_WR_Data(yStart&0x00ff);
 	TFT_WR_Data((yEnd-1)>>8);	    
 	TFT_WR_Data((yEnd-1)&0x00ff);
-	
+
 	TFT_WR_REG(WRITE_MEM_START);
-	
-	
+
+
 	if(Flag == BACK_COLOR3)
 	{
 		for(i = 0 ; i < n ; ++i)
@@ -298,16 +298,16 @@ void TFT_DrawImageSmall(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_
 	TFT_WR_Data(xStart&0x00ff);
 	TFT_WR_Data((xEnd-1)>>8);	    
 	TFT_WR_Data((xEnd-1)&0x00ff);
-	
+
     TFT_WR_REG(SET_PAGE_ADDR);	
 	TFT_WR_Data(yStart>>8);	    
 	TFT_WR_Data(yStart&0x00ff);
 	TFT_WR_Data((yEnd-1)>>8);	    
 	TFT_WR_Data((yEnd-1)&0x00ff);
-	
+
 	TFT_WR_REG(WRITE_MEM_START);
-	
-	
+
+
 	if(Flag == BACK_COLOR3)
 	{
 		for(i = 0 ; i < n ; ++i)
@@ -420,9 +420,6 @@ void TFT_DrawImageSmall(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_
 }
 
 
-
-
-
 void TFT_DrawImage(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd, uint16_t *Image, uint16_t Flag)
 {
     uint32_t i, j, n = (xEnd - xStart) * (yEnd - yStart);
@@ -434,15 +431,15 @@ void TFT_DrawImage(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEn
 	TFT_WR_Data(xStart&0x00ff);
 	TFT_WR_Data((xEnd-1)>>8);	    
 	TFT_WR_Data((xEnd-1)&0x00ff);
-	
+
     TFT_WR_REG(SET_PAGE_ADDR);	
 	TFT_WR_Data(yStart>>8);	    
 	TFT_WR_Data(yStart&0x00ff);
 	TFT_WR_Data((yEnd-1)>>8);	    
 	TFT_WR_Data((yEnd-1)&0x00ff);
-	
+
 	TFT_WR_REG(WRITE_MEM_START);
-	
+
 	if(Flag == DRAW_REVERSE)
 	{
 		for(i = 0 ; i < n ; ++i)
@@ -504,7 +501,7 @@ void TFT_Init(void)
 	TFT_WR_Data(0x0023);	    //N=0x36 for 6.5M, 0x23 for 10M crystal
 	TFT_WR_Data(0x0002);
 	TFT_WR_Data(0x0004);
-	
+
 	TFT_WR_REG(0x00E0);  // PLL enable
 	TFT_WR_Data(0x0001);
 	TFT_DelayTime(1);
@@ -559,7 +556,7 @@ void TFT_Init(void)
 	TFT_WR_REG(0x00B8);
 	TFT_WR_Data(0x0007);    //GPIO3=input, GPIO[2:0]=output
 	TFT_WR_Data(0x0001);    //GPIO0 normal
-	
+
 	TFT_WR_REG(0x00BA);
 	TFT_WR_Data(0x000F);    //GPIO[3:0] out 1
 
@@ -569,8 +566,8 @@ void TFT_Init(void)
 	TFT_WR_REG(0x00F0); //pixel data interface
 	TFT_WR_Data(0x0003);
 
-	TFT_WR_REG(0x0021);	//进入图形颜色翻转模式
-	
+	TFT_WR_REG(0x0021);	//进入图形颜??转模式
+
     TFT_WR_REG(0x00BC);//重要
 	TFT_WR_Data(0x0080);//对比度
     TFT_WR_Data(0x0080);//亮度
@@ -586,20 +583,20 @@ void TFT_Init(void)
 	TFT_WR_REG(0x000D);		TFT_WR_Data(0x080C);
 	TFT_WR_REG(0x000E);		TFT_WR_Data(0x2B00);
 	TFT_WR_REG(0x001E);		TFT_WR_Data(0x00B0);
-	
+
 	TFT_WR_REG(0x0001);		TFT_WR_Data(0x2B3F);
 	TFT_WR_REG(0x0002);		TFT_WR_Data(0x0600);
 	TFT_WR_REG(0x0010);		TFT_WR_Data(0x0000);
-	
+
 	TFT_WR_REG(0x0011);		TFT_WR_Data(0x6070);
-	
+
 	TFT_WR_REG(0x0005);		TFT_WR_Data(0x0000);
 	TFT_WR_REG(0x0006);		TFT_WR_Data(0x0000);
 	TFT_WR_REG(0x0016);		TFT_WR_Data(0xEF1C);
-	
+
 	TFT_WR_REG(0x0017);		TFT_WR_Data(0x0003);
 	TFT_WR_REG(0x0007);		TFT_WR_Data(0x0233);
-	
+
 	TFT_WR_REG(0x000B);		TFT_WR_Data(0x0000);
 	TFT_WR_REG(0x000F);		TFT_WR_Data(0x0000);
 	TFT_WR_REG(0x0041);		TFT_WR_Data(0x0000);
@@ -624,17 +621,13 @@ void TFT_Init(void)
 	TFT_WR_REG(0x0023);		TFT_WR_Data(0x0000);
 	TFT_WR_REG(0x0024);		TFT_WR_Data(0x0000);
 	TFT_WR_REG(0x0025);		TFT_WR_Data(0x8000);
-	
+
 	TFT_WR_REG(0x004F);	ZA	TFT_WR_Data(0x0000);
 	TFT_WR_REG(0x004E);		TFT_WR_Data(0x0000);
-	
+
 	TFT_WR_REG(0x0022);
 #endif
 }
-
-
-
-
 
 
 /* ===================================================== */
@@ -646,30 +639,27 @@ void TFT_clear(uint16_t color)
 
 	l=HDP+1;
 	w=VDP+1;
-	
+
 
   	TFT_WR_REG(SET_CMD_ADDR);	
     TFT_WR_Data(0);	    
 	TFT_WR_Data(0);
 	TFT_WR_Data(HDP>>8);	    
 	TFT_WR_Data(HDP&0x00ff);
-	
+
     TFT_WR_REG(SET_PAGE_ADDR);	
 	TFT_WR_Data(0);	    
 	TFT_WR_Data(0);
 	TFT_WR_Data(VDP>>8);	    
 	TFT_WR_Data(VDP&0x00ff);
 
-	
+
 	TFT_WR_REG(WRITE_MEM_START);	
     while(l--) {
 	      for(i=0;i<w;i++) TFT_WR_Data(color);
     } 
 
 }
-
-
-
 
 
 /* ===================================================== */
@@ -688,15 +678,14 @@ void TFT_Fill(uint16_t xsta,uint16_t ysta,uint16_t xend,uint16_t yend,uint16_t c
 //	TFT_WR_CMD(0x0053, yend); // Vertical GRAM Start Address	 
 //	TFT_WR_CMD(32, xsta);
 //   	TFT_WR_CMD(33, ysta);
-	
-	 
+
 
 	TFT_WR_REG(SET_CMD_ADDR);	
 	TFT_WR_Data(xsta>>8);	    
 	TFT_WR_Data(xsta&0x00ff);
 	TFT_WR_Data((xend-1)>>8);	    
 	TFT_WR_Data((xend-1)&0x00ff);
-	
+
     TFT_WR_REG(SET_PAGE_ADDR);	
 	TFT_WR_Data(ysta>>8);	    
 	TFT_WR_Data(ysta&0x00ff);
@@ -704,9 +693,9 @@ void TFT_Fill(uint16_t xsta,uint16_t ysta,uint16_t xend,uint16_t yend,uint16_t c
 	TFT_WR_Data((yend-1)&0x00ff);
 
 	TFT_WR_REG(WRITE_MEM_START);
-  
-	while(n--)TFT_WR_Data(color);//显示白色 
-	
+
+	while(n--)TFT_WR_Data(color);//显示白?? 
+
 } 
 
 
@@ -728,14 +717,14 @@ void TFT_Point(uint16_t x,uint16_t y,uint16_t fontcolor)
 	   TFT_WR_Data(x&0x00ff);
 	   TFT_WR_Data(HDP>>8);	    
 	   TFT_WR_Data(HDP&0x00ff);
-	   
+
        TFT_WR_REG(SET_PAGE_ADDR);	
 	   TFT_WR_Data(y>>8);	    
 	   TFT_WR_Data(y&0x00ff);
 	   TFT_WR_Data(VDP>>8);	    
 	   TFT_WR_Data(VDP&0x00ff);
 	   TFT_WR_REG(WRITE_MEM_START);	
-	
+
 	   TFT_WR_Data(fontcolor); 
 
 }  
@@ -758,6 +747,6 @@ void lcd_rst(void)
 void Delay(__IO uint32_t nCount)
 {
   for(; nCount != 0; nCount--);
-	
+
 }
 

@@ -1,7 +1,6 @@
 #include "Main.h"
 
 
-
 //====================================================
 void NEMERIC_2CH_HOME(unsigned int x, unsigned int y, unsigned char data, uint16_t color)
 {
@@ -76,8 +75,6 @@ void Draw_2CH_TEMP_Number(uint32_t x, uint32_t y, char* str, uint16_t color) {
         ++i;
     }
 }
-
-
 
 
 //====================================================
@@ -159,10 +156,6 @@ void Draw_4CH_TEMP_Number(uint32_t x, uint32_t y, char* str, uint16_t color) {
 }
 
 
-
-
-
-
 //***************************
 // 2ch icon
 //***************************
@@ -231,14 +224,12 @@ void display_2ch_small_unit_ph(void)
 }
 
 
-
 // ph_trand
 void display_2ch_small_ph_xy(unsigned int x, unsigned int y)
 {
 	NAND_ReadData2(	imageBuffer, 80, 29, 1);
 	TFT_DrawImage( x, y, x+19, y+14,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
-
 
 
 // 2ch unit_cl
@@ -360,9 +351,6 @@ void display_2ch_set_tu2(void)
 }
 
 
-
-
-
 //***************************
 // 4ch icon
 //***************************
@@ -461,7 +449,6 @@ void display_4ch_unit_tu(void)
 //==================================
 
 
-
 // 4CH set_cl1
 #define ch4_set_cl1_x	350
 #define ch4_set_cl1_y	105
@@ -540,7 +527,5 @@ void display_4CH_set_tu2(void)
 	NAND_ReadData2(	imageBuffer, 83, 28, 3);
 	TFT_DrawImage( ch4_set_tu2_x, ch4_set_tu2_y, ch4_set_tu2_x+100, ch4_set_tu2_y+30,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
-
-
 
 

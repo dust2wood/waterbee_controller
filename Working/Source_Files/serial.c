@@ -20,7 +20,7 @@ void Serial_Open(SERIAL_PORT Port, uint32_t Baudrate)
 		case SERIAL_PORT1:
 			RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);
 			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_USART1, ENABLE);		
-		
+
 			GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;						
 			GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
 			GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
@@ -28,18 +28,17 @@ void Serial_Open(SERIAL_PORT Port, uint32_t Baudrate)
 			GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;						
 			GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 			GPIO_Init(GPIOA, &GPIO_InitStruct);
-		
 
-		
+
 			USART_Port = USART1;
 
 			break;
-			
+
 		case SERIAL_PORT2 :			
 			RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOD, ENABLE);
 			RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);			
 
-	
+
 			GPIO_InitStruct.GPIO_Pin = GPIO_Pin_2;						
 			GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
 			GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
@@ -47,10 +46,10 @@ void Serial_Open(SERIAL_PORT Port, uint32_t Baudrate)
 			GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3;						
 			GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 			GPIO_Init(GPIOA, &GPIO_InitStruct);	
-	
+
 			USART_Port = USART2;
 			break;
-			
+
 		case SERIAL_PORT3 :			
 			RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 			RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);		 
@@ -61,10 +60,10 @@ void Serial_Open(SERIAL_PORT Port, uint32_t Baudrate)
 			GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;							
 			GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 			GPIO_Init(GPIOB, &GPIO_InitStruct);			
-		
+
 			USART_Port = USART3;
 			break;
-			
+
 		case SERIAL_PORT4 :			
 			RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART4, ENABLE);		 
 			GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;						
@@ -76,7 +75,7 @@ void Serial_Open(SERIAL_PORT Port, uint32_t Baudrate)
 			GPIO_Init(GPIOC, &GPIO_InitStruct);	
 			USART_Port = UART4;
 			break;
-			
+
 		default :
 			break;
 	}
@@ -100,7 +99,7 @@ void Serial_Open(SERIAL_PORT Port, uint32_t Baudrate)
 	}
 
 	USARTDiv = APBClock * 2 / Baudrate;		
-	
+
 	if(USARTDiv	& 0x00000001)	
 	{
 		USARTDiv >>= 1;
@@ -113,7 +112,6 @@ void Serial_Open(SERIAL_PORT Port, uint32_t Baudrate)
 	USART_Port->BRR = USARTDiv;
 
 
-	
 	switch(Port)			 
 	{
 		case SERIAL_PORT1 :
@@ -143,15 +141,14 @@ void Serial_Open(SERIAL_PORT Port, uint32_t Baudrate)
 	NVIC_Init(&NVIC_InitStructure);
 
 
-
 }
 
 
 void Serial_Close(SERIAL_PORT Port)
 {
 	NVIC_InitTypeDef NVIC_InitStructure;
-	
-	
+
+
 	switch(Port)			
 	{
 		case SERIAL_PORT1 :
@@ -173,8 +170,8 @@ void Serial_Close(SERIAL_PORT Port)
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;
 	NVIC_Init(&NVIC_InitStructure);	
-	
-	
+
+
 	SerialCallbackTable[Port] = (void *)0;
 }
 

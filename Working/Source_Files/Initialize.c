@@ -13,7 +13,7 @@ void Initialize(void)
 //	RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE);
 
 	GPIO_Configuration();
-	
+
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
 	RTC_Config();
 	FSMC_LCD_Init();
@@ -22,11 +22,11 @@ void Initialize(void)
 	Serial_Open(SERIAL_PORT2,115200);
 	Serial_Open(SERIAL_PORT3,9600);
 	FSMC_NAND_Init();
-	
+
 	System_TIMConfig();
 	System_InterruptConfig();
 	TIM8_Configuration();
-	
+
 	Spi_configuration();
 
 
@@ -41,53 +41,35 @@ void Initialize(void)
 
 //	I2C_configuration();
 
-	
+
 	TFT_clear(BLACK);
 //	Set_IWDG_ResetTime(5);
 //	IWDG_Start();
-	
+
 	TIM_Cmd(TIM3, ENABLE);
 	TIM_Cmd(TIM2, ENABLE);
-	
+
 	InitEeprom();
 	SDIO_DeInit();
-	
+
 	RS485_DRIVE_LOW;
-	
+
 	RELAY1_OFF;
 	RELAY2_OFF;
 	RELAY3_OFF;
-	
-	
-	
+
+
 	GlobalMemory = (uint16_t*)imageBuffer;
 }
 
-  /*
-void I2C_configuration (void)
-{	 	
-	I2C_InitTypeDef  I2C_InitStructure;   
 
-    I2C_InitStructure.I2C_ClockSpeed = 100000;                            
-    I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;                            
-    I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;                            
-    I2C_InitStructure.I2C_OwnAddress1 = 0; 
-    I2C_InitStructure.I2C_Ack = I2C_Ack_Disable;                            
-    I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;	// I2C_AcknowledgedAddress_10bit
-
-	I2C_DeInit(I2C1);
-    I2C_Init(I2C1, &I2C_InitStructure);
-	   / * Enable SPI1 * /
-    I2C_Cmd(I2C1, ENABLE);
-}
-	*/
 void Spi_configuration (void)
 {	 	
 	  SPI_InitTypeDef   SPI_InitStructure;   
     SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;  
     SPI_InitStructure.SPI_Mode = SPI_Mode_Master;                       
     SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;                
-   
+
     //SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
 	  SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;                          
     SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
@@ -144,7 +126,6 @@ void GPIO_Configuration(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOF, &GPIO_InitStructure);	
-	
 
 
 #else
@@ -199,7 +180,7 @@ void GPIO_Configuration(void)
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);	
 #endif	
-	
+
 	//RS485 Drive
 #ifndef NEW_BOARD
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
@@ -212,7 +193,7 @@ void GPIO_Configuration(void)
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-   
+
 	// I2C1
 //	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 |GPIO_Pin_7;
 //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;
@@ -221,56 +202,45 @@ void GPIO_Configuration(void)
 #endif
 
 	//SPI Drive
-	/*
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5; // CS1, CS2
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOC, &GPIO_InitStructure);
-	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_7; // DAC_SPI_CLK , DAC_SPI_DOUT 
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	*/
-	
+
+
 	// 4-20mA OUT PWM 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7; // SENSOR 1
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	
+
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;  // SENSOR 2
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	
+
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;  // TEMP
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	
+
 	/*Sys INDLED*/
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_12;	// 6=buz, 12=led
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	//GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-  
+
 	/*SD_DECTIVE & SelectorJumper */
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_11;   // GPIO_Pin_8 : SD_DECTIVE ,  GPIO_Pin_11 : SelectorJumper
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	
-	
+
+
 	//----------------------------- SPI2 ---------------------------------//
-		
+
 	/* Configure SPI2 pins: SCK, MISO and MOSI */
    GPIO_InitStructure.GPIO_Pin = SPI2_PIN_SCK | SPI2_PIN_MISO | SPI2_PIN_MOSI;
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
    GPIO_Init(SPI2_GPIO, &GPIO_InitStructure);
-	
+
 	/* Configure SPI2 pins: nCS ------------------------------------------------*/
    GPIO_InitStructure.GPIO_Pin = GPIO_SPI_NCS_PIN;
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -285,8 +255,8 @@ void User_ADC_Configuration(void)
 	RCC_ADCCLKConfig(RCC_PCLK2_Div4); 
 	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_ADC2 | RCC_APB2Periph_ADC3 , ENABLE);
-	
-	
+
+
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
@@ -312,8 +282,8 @@ void User_ADC_Configuration(void)
 	ADC_StartCalibration(ADC1);
 	/* Check the end of ADC1 calibration */
 	while(ADC_GetCalibrationStatus(ADC1));		
-	
-	
+
+
 	////////////////////	
 }
 void System_TIMConfig(void)
@@ -359,7 +329,7 @@ void System_TIMConfig(void)
 
 void TIM8_Configuration(void)
 {
-	
+
 	TIM_TimeBaseInitTypeDef	TIM_TimeBaseStructure;
 	TIM_OCInitTypeDef		TIM_OCInitStructure;
 
@@ -377,7 +347,7 @@ void TIM8_Configuration(void)
 	TIM_TimeBaseStructure.TIM_RepetitionCounter	= 0;
 
 	TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
-	
+
 	// 3. PWM mode
 	TIM_OCInitStructure.TIM_OCMode		= TIM_OCMode_PWM1;				    // CCMR1.OC2M
 
@@ -399,13 +369,13 @@ void TIM8_Configuration(void)
   //  TIM_ITConfig(TIM8, TIM_IT_CC1 | TIM_IT_CC2 | TIM_IT_CC3 | TIM_IT_CC4, ENABLE);
   //  TIM_ITConfig(TIM8, TIM_IT_CC1 , ENABLE);
  TIM_ITConfig(TIM8, TIM_IT_Update, ENABLE);	// DIER.UIE
-	 
+
 	// 4.TIM8 Enable
 	TIM_Cmd(TIM8, ENABLE);							// CR1.CEN
 
 	// 5.Main Output Enable
 	TIM_CtrlPWMOutputs(TIM8, ENABLE);				// BDTR.MOE	
-	
+
 }
 
 void System_InterruptConfig(void)
@@ -423,7 +393,7 @@ void System_InterruptConfig(void)
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure); 
-	
+
 	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;
@@ -537,7 +507,7 @@ void FSMC_LCD_Init(void)
 #else
 	FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM1, ENABLE);  
 #endif
-  
+
 }
 void RCC_Configuration(void)
 {   
@@ -549,7 +519,6 @@ void RCC_Configuration(void)
 }
 
 
-
 void DAC_Conf(void)
 {
 	DAC_InitTypeDef DAC_Type;
@@ -559,7 +528,7 @@ void DAC_Conf(void)
 	DAC_Type.DAC_WaveGeneration	 = DAC_WaveGeneration_None;
 	//DAC_Type.DAC_LFSRUnmask_TriangleAmplitude = DAC_TriangleAmplitude_1;
 	DAC_Type.DAC_OutputBuffer = DAC_OutputBuffer_Enable;
-	
+
 //  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
 //  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 //  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
@@ -578,9 +547,9 @@ void DAC_Conf(void)
 //	DAC_SetChannel1Data(DAC_Align_12b_R, 0);
 	DAC_SetChannel2Data(DAC_Align_12b_R, 0);
 
-	
+
 	DAC_DualSoftwareTriggerCmd(ENABLE);
-	
+
 }
 
 

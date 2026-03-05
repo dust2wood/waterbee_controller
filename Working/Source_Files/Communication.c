@@ -81,148 +81,6 @@ unsigned char	Sensor4_OK_TIME=20;
 
 void SensorComHandler(void) {
 
-			
-/*	UART1 INT 에서 처리하자.
-
-    if (rx1Size < 19) {
-		rx1_read_ptr=0;
-	}
-	else 	  {
-
-        if (flag10ms & FLAG10MS_RX1) {	// 10msec 마다 실행함
-            flag10ms &= ~FLAG10MS_RX1;
-
-  			
-            ++rx1HandlerCount;
-            if (rx1HandlerCount > 1) {
-                if (rx1Buffer[0] == '$') {
-                    if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
-                        if (rx1Buffer[1] == 'R' && rx1Buffer[2] == 'E' && rx1Buffer[3] == 'S' && rx1Buffer[4] == 'V' && rx1Buffer[5] == ',' && manual_cal_flag == 0 && manual_cal_temp_flag == 0 && zero_cal_update_flag == 0) {
-//                            if (state == 0) {
-							{
-                                //DrawTextsize120(MEASURE_X2, MEASURE_Y, TEXT120_MEASURING, DRAW_IMAGE_ENABLE);
-								if (WORKING_TIMER==0) { DrawIcon(ICON_WORKING, DRAW_IMAGE_ENABLE); WORKING_TIMER=1;}
-								else 				  { DrawIcon(ICON_WORKING, DRAW_IMAGE_DISABLE); WORKING_TIMER=0;}
-								Sensor_State=SENSOR_OK;
-                            }
-                            if (rx1Buffer[6] != 0x2D) {
-                                currentData.comm_S1PPM = (rx1Buffer[6] - 0x30) * 100 + (rx1Buffer[7] - 0x30) * 10 + (rx1Buffer[8] - 0x30);
-                            }
-                            ComCouter++;
-
-                            if (rx1Buffer[9] == ',') {
-                                currentData.S1mVolt = (rx1Buffer[10] - 0x30) * 1000 + (rx1Buffer[11] - 0x30) * 100 + (rx1Buffer[12] - 0x30) * 10 + (rx1Buffer[13] - 0x30);
-                                currentData.S1mV = currentData.S1mVolt;
-                            }
-
-                            S1PPm_Filter_OUT_function();
-                            S1PPm_Data_offset_function();
-                            RedrawValue();
-
-                            if (rx1Buffer[14] == ',') {
-                                currentData.temperature = (rx1Buffer[15] - 0x30) * 1000 + (rx1Buffer[16] - 0x30) * 100 + (rx1Buffer[17] - 0x30) * 10 + (rx1Buffer[18] - 0x30);
-                            }
-                            comm_run_flag = 2;
-                        } else if (rx1Buffer[1] == 'R' && rx1Buffer[2] == 'E' && rx1Buffer[3] == 'S' && rx1Buffer[4] == 'D' && rx1Buffer[5] == ',') {
-                            REqParmeterPPM = (rx1Buffer[6] - 0x30) * 100 + (rx1Buffer[7] - 0x30) * 10 + (rx1Buffer[8] - 0x30);
-                            if (REqParmeterPPM == Tx_S1manualCal && manual_cal_flag == 1) {
-                                req_ppm_com_flag = 1;
-
-                            }
-                            Couter_1++;
-                        } else if (rx1Buffer[1] == 'R' && rx1Buffer[2] == 'E' && rx1Buffer[3] == 'S' && rx1Buffer[4] == 'C' && rx1Buffer[5] == ',') {
-                            REqParmeterCurrent = (rx1Buffer[6] - 0x30) * 1000 + (rx1Buffer[7] - 0x30) * 100 + (rx1Buffer[8] - 0x30) * 10 + (rx1Buffer[9] - 0x30);
-                            if (REqParmeterCurrent == SendParmeter_Current && manual_cal_flag == 1) {
-                                req_current_com_flag = 1;
-
-                            }
-                            Couter_2++;
-                        } else if (rx1Buffer[1] == 'R' && rx1Buffer[2] == 'E' && rx1Buffer[3] == 'S' && rx1Buffer[4] == 'T' && rx1Buffer[5] == ',') {
-                            ReqParmeterTemp = (rx1Buffer[6] - 0x30) * 1000 + (rx1Buffer[7] - 0x30) * 100 + (rx1Buffer[8] - 0x30) * 10 + (rx1Buffer[9] - 0x30);
-                            if (ReqParmeterTemp == Tx_Adj_TempertureVaule && manual_cal_temp_flag == 1) {
-                                req_temp_com_flag = 1;
-
-                            }
-                            Couter_3++;
-                        } else if (rx1Buffer[1] == 'R' && rx1Buffer[2] == 'E' && rx1Buffer[3] == 'S' && rx1Buffer[4] == 'B' && rx1Buffer[5] == ',') {
-							
-							// - 일때 처리해야하는데 지금은 안됨...프로토콜이 안맞음
-							//if (rx1Buffer[6]=='-') REqParmeterZero_PPM = (rx1Buffer[6] - 0x30) * 100 + (rx1Buffer[7] - 0x30) * 10 + (rx1Buffer[8] - 0x30);
-                            
-							REqParmeterZero_PPM = (rx1Buffer[6] - 0x30) * 100 + (rx1Buffer[7] - 0x30) * 10 + (rx1Buffer[8] - 0x30);
-                            if (REqParmeterZero_PPM == Tx_S1ZeroCal && zero_cal_update_flag == 1) {
-                                req_zero_ppm_com_flag = 1;
-
-                            }
-                            Couter_4++;
-                        } else if (rx1Buffer[1] == 'R' && rx1Buffer[2] == 'E' && rx1Buffer[3] == 'S' && rx1Buffer[4] == 'A' && rx1Buffer[5] == ',') {
-                            REqParmeterZero_Current = (rx1Buffer[6] - 0x30) * 1000 + (rx1Buffer[7] - 0x30) * 100 + (rx1Buffer[8] - 0x30) * 10 + (rx1Buffer[9] - 0x30);
-                            if (REqParmeterZero_Current == SendParmeter_Zero_Current && req_zero_ppm_com_flag == 1) {
-                                req_zero_current_com_flag = 1;
-
-                            }
-                        } else if (rx1Buffer[1] == 'R' && rx1Buffer[2] == 'E' && rx1Buffer[3] == 'S' && rx1Buffer[4] == 'E' && rx1Buffer[5] == ',') {
-                            ErrorCodeRecive = (rx1Buffer[6] - 0x30) * 10 + (rx1Buffer[7] - 0x30);
-                        }
-
-
-
-                    } else if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
-//                        if (rx1Buffer[1] == 'R' && rx1Buffer[2] == 'E' && rx1Buffer[3] == 'S' && rx1Buffer[4] == 'V' && rx1Buffer[5] == ',' && manual_cal_flag == 0 && manual_cal_temp_flag == 0) {
-                        if (rx1Buffer[1] == 'R' && rx1Buffer[2] == 'E' && rx1Buffer[3] == 'S' && rx1Buffer[4] == 'V' && rx1Buffer[5] == ',' && manual_cal_temp_flag == 0) {
-//                            if (state == 0) {
-							{
-                                //DrawTextsize120(MEASURE_X1, MEASURE_Y, TEXT120_MEASURING, DRAW_IMAGE_ENABLE);
-								if (WORKING_TIMER==0) { DrawIcon(ICON_WORKING, DRAW_IMAGE_ENABLE); WORKING_TIMER=1;}
-								else 				  { DrawIcon(ICON_WORKING, DRAW_IMAGE_DISABLE); WORKING_TIMER=0;}
-								Sensor_State=SENSOR_OK;
-                            }
-                            if (rx1Buffer[6] != 0x2D) {
-                                currentData.comm_S2NTU = (rx1Buffer[6] - 0x30) * 10000 + (rx1Buffer[7] - 0x30) * 1000 + (rx1Buffer[8] - 0x30) * 100 + (rx1Buffer[9] - 0x30) * 10 + (rx1Buffer[10] - 0x30);
-                                ComCouter++;
-                            }
-
-                            S1PPm_Filter_OUT_function();
-                            S1PPm_Data_offset_function();
-                            RedrawValue();
-
-                            if (rx1Buffer[11] == ',') {
-                                currentData.S2mVolt = (rx1Buffer[12] - 0x30) * 1000 + (rx1Buffer[13] - 0x30) * 100 + (rx1Buffer[14] - 0x30) * 10 + (rx1Buffer[15] - 0x30);
-                                currentData.S2mV = currentData.S2mVolt;
-                            }
-                            if (rx1Buffer[16] == ',') {
-                                currentData.temperature = (rx1Buffer[17] - 0x30) * 1000 + (rx1Buffer[18] - 0x30) * 100 + (rx1Buffer[19] - 0x30) * 10 + (rx1Buffer[20] - 0x30);
-                            }
-                            comm_run_flag = 2;
-                        } else if (rx1Buffer[1] == 'R' && rx1Buffer[2] == 'E' && rx1Buffer[3] == 'S' && rx1Buffer[4] == 'D' && rx1Buffer[5] == ',') {
-                            REqParmeterNTU = (rx1Buffer[6] - 0x30) * 10000 + (rx1Buffer[7] - 0x30) * 1000 + (rx1Buffer[8] - 0x30) * 100 + (rx1Buffer[9] - 0x30) * 10 + (rx1Buffer[10] - 0x30);
-                            if (REqParmeterNTU == Tx_S2manualCal && manual_cal_flag == 1) {
-                                req_ppm_com_flag = 1;
-
-                            }
-                        } else if (rx1Buffer[1] == 'R' && rx1Buffer[2] == 'E' && rx1Buffer[3] == 'S' && rx1Buffer[4] == 'A' && rx1Buffer[5] == ',') {
-                            ReqParmeterZero_NTU = (rx1Buffer[6] - 0x30) * 1000 + (rx1Buffer[7] - 0x30) * 100 + (rx1Buffer[8] - 0x30)*10 + (rx1Buffer[9] - 0x30);
-                            if (ReqParmeterZero_NTU == Tx_S2ZeroCal && zero_cal_update_flag == 1) {
-                                req_zero_ppm_com_flag = 1;
-
-                            }
-                        } else if (rx1Buffer[1] == 'R' && rx1Buffer[2] == 'E' && rx1Buffer[3] == 'S' && rx1Buffer[4] == 'E' && rx1Buffer[5] == ',') {
-                            ErrorCodeRecive = (rx1Buffer[6] - 0x30) * 10 + (rx1Buffer[7] - 0x30);
-                        }
-                    }
-                }
-                //rx1HandlerCount = 0;
-                //rx1Size = 0;
-            }
-
-        }
-
-//    } else {
-//        rx1HandlerCount = 0;
-    }
-
-aaa:
-*/
 
 	 // 0=no comm, 1=DISPLAY, 2=no DISPLAY
 	if (WORKING_TIMER==1) { DrawIcon(ICON_WORKING, DRAW_IMAGE_ENABLE); }
@@ -232,8 +90,6 @@ aaa:
 
 	if (state==0) 			{ ComCouter++; ComCouter2=0; }
     else if (state==0x15) 	{ ComCouter=0; ComCouter2++; }
-
-
 
 
 #ifndef SENSOR_PH_EC
@@ -321,84 +177,6 @@ void zero_cal_data_update(void) {
 }
 
 
-/* old
-void S1PPm_Filter_OUT_function(void) {
-    if (configData.adjustConfig.filterS1 != 0) {
-        if (configData.adjustConfig.filter_update_flag == 1) {
-            if (conter_Filter < configData.adjustConfig.filterS1) {
-
-                if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
-
-                    Filter_Data_Value[0][conter_Filter] = currentData.comm_S1PPM;
-                    Filter_Data_Value[1][conter_Filter] = currentData.S1mVolt;
-                } else if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
-                    Filter_Data_Value[0][conter_Filter] = currentData.comm_S2NTU;
-                }
-
-                conter_Filter++;
-                if (conter_Filter >= configData.adjustConfig.filterS1) {
-                    conter_Filter = 0;
-                    configData.adjustConfig.filter_update_flag = 2;
-                }
-
-                if (configData.adjustConfig.filter_update_flag == 2) {
-                    filterSumData = 0;
-                    filterSumData2 = 0;
-                    for (conter_Filter2 = 0; conter_Filter2 < configData.adjustConfig.filterS1; conter_Filter2++) {
-                        filterSumData = filterSumData + (float) Filter_Data_Value[0][conter_Filter2];
-                        filterSumData2 = filterSumData2 + (float) Filter_Data_Value[1][conter_Filter2];
-                    }
-                    filterSumData = (filterSumData / configData.adjustConfig.filterS1);
-                    filterSumData2 = (filterSumData2 / configData.adjustConfig.filterS1);
-
-                    if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
-                        currentData.filterout_S1PPM = (uint32_t) filterSumData;
-                        currentData.filterout_S1Current = (uint32_t) filterSumData2;
-                    } else if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
-                        currentData.filterout_S2PPM = (uint32_t) filterSumData;
-                    }
-                    configData.adjustConfig.filter_update_flag = 3;
-                }
-            }
-        }
-        if (configData.adjustConfig.filter_update_flag == 3) {
-
-            if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
-                Filter_Data_Value[0][conter_Filter] = currentData.comm_S1PPM;
-                Filter_Data_Value[1][conter_Filter] = currentData.S1mVolt;
-            } else if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
-                Filter_Data_Value[0][conter_Filter] = currentData.comm_S2NTU;
-            }
-            conter_Filter++;
-            filterSumData = 0;
-            filterSumData2 = 0;
-            for (conter_Filter2 = 0; conter_Filter2 < configData.adjustConfig.filterS1; conter_Filter2++) {
-                filterSumData = filterSumData + (float) Filter_Data_Value[0][conter_Filter2];
-                filterSumData2 = filterSumData2 + (float) Filter_Data_Value[1][conter_Filter2];
-            }
-            filterSumData = (filterSumData / configData.adjustConfig.filterS1);
-            filterSumData2 = (filterSumData2 / configData.adjustConfig.filterS1);
-
-            if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
-                currentData.filterout_S1PPM = (uint32_t) filterSumData;
-                currentData.filterout_S1Current = (uint32_t) filterSumData2;
-            } else if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
-                currentData.filterout_S2PPM = (uint32_t) filterSumData;
-            }
-
-            if (conter_Filter >= configData.adjustConfig.filterS1) {
-                conter_Filter = 0;
-                first_flag = 1;
-            }
-        }
-    } else {
-        configData.adjustConfig.filter_update_flag = 0;
-    }
-
-}
-*/
-
-
 // 센서입력값을 필터값으로 평군하기 
 uint32_t S1PPm_Filter_OUT_function(uint8_t sensor_no, uint32_t sensor) {
 	static int cnt[4]={0,}, cnt2, i;
@@ -425,18 +203,11 @@ uint32_t S1PPm_Filter_OUT_function(uint8_t sensor_no, uint32_t sensor) {
 }
 
 
-
-
-
-
-
-
 void S1PPm_Data_offset_function(void) {
     int i = 0;
 
 	int32_t a,b,c,d, e,f;
 	uint32_t imsi, imsi2, imsi_S1, imsi_S2;
-
 
 
 	//=====================
@@ -470,7 +241,6 @@ void S1PPm_Data_offset_function(void) {
 	Sensor1_OK_TIME=10;	// 10=10sec
 
 
-
 	//=====================
 	// EC 교정 적용하기
 	//=====================
@@ -490,12 +260,6 @@ void S1PPm_Data_offset_function(void) {
 
 	imsi_S2 = (d-b)*(data_EC-a)/(c-a) +b;
 	Sensor2_OK_TIME=10;	// 10=10sec
-
-
-
-
-
-
 
 
 	//===========================
@@ -535,27 +299,7 @@ void S1PPm_Data_offset_function(void) {
 			if (currentData.S2PPM <0) currentData.S2PPM=0;	// 최소값 0.015
 #endif
 
-/*
-        if (couter_vaule_ppm < 60) {
-            Mesure_Data_Value[0][couter_vaule_ppm] = currentData.S1PPM;
-            Mesure_Data_Value[1][couter_vaule_ppm] = currentData.temperature;
-            Mesure_Data_Value[2][couter_vaule_ppm] = currentData.S2PPM;
-            Mesure_Data_Value[3][couter_vaule_ppm] = currentData.temperature1;
-            couter_vaule_ppm++;
-            if (couter_vaule_ppm == 60) {
-                if (WirteSDCard_flag == 0) {
 
-                    for (i = 0; i < 60; i++) {
-                        PPmSD_card_Data[i] = Mesure_Data_Value[0][i];
-                        TEMP_card_Data[i] = Mesure_Data_Value[1][i];
-                        PPmSD_card_Data2[i] = Mesure_Data_Value[2][i];
-                        TEMP_card_Data2[i] = Mesure_Data_Value[3][i];
-                    }
-                    WirteSDCard_flag = 1;
-                }
-                couter_vaule_ppm = 0;
-            }
-*/
         if (couter_vaule_ppm < 60) {
             PPmSD_card_Data[couter_vaule_ppm] = currentData.S1PPM;
             TEMP_card_Data[couter_vaule_ppm] = currentData.temperature;
@@ -609,7 +353,6 @@ void SendCalData000(char dest, uint8_t name, uint32_t vaule) {
 }
 
 
-
 void SendCalData(char dest, uint32_t value) {
 	SendCalData000(dest, 'D', value);
 }
@@ -629,9 +372,6 @@ void SendCalZeroDataCurrent(char dest, uint32_t value) {
 void SendCalDataTemp(char dest, uint32_t value) {
 	SendCalData000(dest, 'T', value);
 }
-
-
-
 
 
 //============================================					 
@@ -740,8 +480,6 @@ void Modbus232Handler(void) {
 }
 
 
-
-
 #ifdef  SENSOR_PH_EC
 void init_tx3Buffer(void)
 {
@@ -770,7 +508,6 @@ void init_tx3Buffer(void)
     tx3Buffer[5] = 1;
 
 
- 
     crc = CRC16Modbus(tx3Buffer, 6);
     tx3Buffer[6] = crc & 0xFF;
     tx3Buffer[7] = ((crc & 0xFF00) >> 8);
@@ -788,14 +525,6 @@ void init_tx3Buffer(void)
 #endif
 
 
-
-
-
-
-
-
-
-
 void Modbus485Handler(void) {
     uint16_t crc = 0;
     uint16_t startAddr = 0, addrCount = 0, i = 0;
@@ -809,7 +538,6 @@ void Modbus485Handler(void) {
         case 0:
 
 
-
 #ifdef  SENSOR_PH_EC
 	// 통신이 안되면 처음부터 다시 통신시도한다.
 	init_count++;
@@ -820,12 +548,10 @@ void Modbus485Handler(void) {
 #endif
 
 
-
             if (rx3Size > 0) {
                 if (flag10ms & FLAG10MS_RX3) {
                     flag10ms &= ~FLAG10MS_RX3;
                     ++rx3HandlerCount;
-
 
 
 #ifdef  SENSOR_PH_EC
@@ -851,8 +577,8 @@ void Modbus485Handler(void) {
 
 											if (data_pH<0) 		data_pH=0;
 											if (data_pH>1400) 	data_pH=1400;
-	
-	
+
+
 											//=====================
 											// 버퍼교정 적용하기
 											//=====================
@@ -860,16 +586,16 @@ void Modbus485Handler(void) {
 											// c,d=ph7 의 센서값, 교정값
 											// x 현재 센서값
 											// y 현재 교정값
-	
+
 											//data_pH = (d-b)/(c-a) * (x-a) +b;
 											//data_pH = (d-b)*(data_pH-a)/(c-a) +b;
 											a=configData.calibrationConfig.PH4_Value;
 											b=configData.calibrationConfig.PH4_Cal;
 											c=configData.calibrationConfig.PH7_Value;
 											d=configData.calibrationConfig.PH7_Cal;
-	
+
 											data_pH_imsi = (d-b)*(data_pH-a)/(c-a) +b;
-	
+
 											//=====================
 											// 스팬교정 적용하기
 											//=====================
@@ -878,7 +604,7 @@ void Modbus485Handler(void) {
 											f = configData.calibrationConfig.PH_Span_Cal;
 											e = configData.calibrationConfig.PH_Span_Value;
 											imsi2 = data_pH_imsi*f/e;
-	
+
 											currentData.S1PPM = imsi2;
 											Sensor1_OK_TIME=10;	// 10=10sec
 
@@ -895,7 +621,7 @@ void Modbus485Handler(void) {
 											f = configData.calibrationConfig.TEMP_Span_Cal1;
 											e = configData.calibrationConfig.TEMP_Span_Value1;
 											imsi2 = data_TEMP*f/e;
-	
+
 											currentData.temperature = imsi2;
 											//6 = data_TEMP;
 										  	if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
@@ -931,7 +657,7 @@ void Modbus485Handler(void) {
 
 	                                    com485State = 1;
 	                                    rs485DriveCount = 0;
-	
+
 										comm_type=COMM_RS485;
 										rx3_time_count=0;
 									}
@@ -954,10 +680,8 @@ void Modbus485Handler(void) {
 											data_EC *=9.999;
 											if (data_EC<0) data_EC=0;
 											if (data_EC>20000) data_EC=20000;
-	
-	
-	
-	
+
+
 											//=====================
 											// 교정 적용하기
 											//=====================
@@ -965,29 +689,28 @@ void Modbus485Handler(void) {
 											// c,d=스팬교정의 센서값, 교정값
 											// x 현재 센서값
 											// y 현재 교정값
-	
+
 											//data_pH = (d-b)/(c-a) * (x-a) +b;
 											//data_pH = (d-b)*(data_pH-a)/(c-a) +b;
 											a=configData.calibrationConfig.EC_Value;
 											b=configData.calibrationConfig.EC_Cal;
 											c=configData.calibrationConfig.EC_Span_Value;
 											d=configData.calibrationConfig.EC_Span_Cal;
-	
+
 											currentData.S2PPM = (d-b)*(data_EC-a)/(c-a) +b;
 											if (currentData.S2PPM<0) 		currentData.S2PPM=0;
 											if (currentData.S2PPM>20000) 	currentData.S2PPM=20000;
 
 											Sensor2_OK_TIME=10;	// 10=10sec
 
-	
+
 										}
 										else if (init_count>1 && init_count<8){
-	
+
 											if (rx3Size==7)	data_TEMP = ((rx3Buffer[3]<<8) | rx3Buffer[4])*10;
 											else if (rx3Size==15)	data_TEMP = ((rx3Buffer[8+3]<<8) | rx3Buffer[8+4])*10;
-										 	
 
-	
+
 											//=====================
 											// 온도 데이터 받아서 게산하기
 											//=====================
@@ -996,9 +719,9 @@ void Modbus485Handler(void) {
 											f = configData.calibrationConfig.TEMP_Span_Cal2;
 											e = configData.calibrationConfig.TEMP_Span_Value2;
 											imsi2 = data_TEMP*f/e;
-	
+
 											currentData.temperature1 = imsi2;
-	
+
 											//currentData.S2PPM = data_EC;
 											//currentData.temperature = data_TEMP*10;
 										  	if (currentData.Device_Selector_Mode & SENSOR_1_MODE) { }
@@ -1033,7 +756,7 @@ void Modbus485Handler(void) {
 
 	                                    com485State = 1;
 	                                    rs485DriveCount = 0;
-	
+
 										comm_type=COMM_RS485;
 										rx3_time_count=0;
 									}
@@ -1043,8 +766,6 @@ void Modbus485Handler(void) {
                             }
 					}
 #endif
-
-
 
 
                     if (rx3HandlerCount > 1) {
@@ -1096,7 +817,6 @@ void Modbus485Handler(void) {
                             }
 //#else
 //#endif
-
 
 
                         } else if (rx3Buffer[1] == 0x10) {

@@ -432,30 +432,7 @@ void FSMC_NAND_Test(void)
 
 	/* ºÏ≤‚NAND Flash */
 	FSMC_NAND_ReadID(&NAND_ID);
-/*
-	sprintf((char*)tmp,"Nand Flash ID = %02X,%02X,%02X,%02X  ",NAND_ID.Maker_ID, NAND_ID.Device_ID,
-																				NAND_ID.Third_ID, NAND_ID.Fourth_ID );
-	TFT_String(50,30, tmp, WHITE, BLACK);
-	if ((NAND_ID.Maker_ID == 0xEC) && (NAND_ID.Device_ID == 0xF1)
-	&& (NAND_ID.Third_ID == 0x80) && (NAND_ID.Fourth_ID == 0x15))
-	{
-		TFT_String(50,50,"Type = K9F1G08U0A", WHITE, BLACK);
-	}
-	else if ((NAND_ID.Maker_ID == 0xEC) && (NAND_ID.Device_ID == 0xF1)
-	&& (NAND_ID.Third_ID == 0x00) && (NAND_ID.Fourth_ID == 0x95))
-	{
-		TFT_String(50,50,"Type = K9F1G08U0B", WHITE, BLACK);	
-	}
-	else if ((NAND_ID.Maker_ID == 0xAD) && (NAND_ID.Device_ID == 0xF1)
-	&& (NAND_ID.Third_ID == 0x80) && (NAND_ID.Fourth_ID == 0x1D))
-	{
-		TFT_String(50,50,"Type = HY27UF081G2A", WHITE, BLACK);	
-	}
-	else
-	{
-		TFT_String(50,50,"Type = Unknow", WHITE, BLACK);	
-	}
-*/
+
 	/* NAND memory address to write to */
 	WriteReadAddr.Zone = 0x00;
 	WriteReadAddr.Block = 0x00;
@@ -494,10 +471,5 @@ const NANDTYPE nand_db[11] =
 	{		K9F8G08U,		2048,		(2048*64),		64,		8192,		64,		160,		19,		8,		8192-8-160,		0,		},
 	{		K9GAG08U,		(8*1024),		(8*1024*128),		128,		2048,		436,		58,		19,		1,	    2048-1-58,		24,	},
 	{0,},};
-
-
-
-
-
 
 

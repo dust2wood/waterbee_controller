@@ -38,7 +38,6 @@ void DrawTrandDiamond(uint32_t cur) {
 	TFT_Line(GRAPH_X_START + (GRAPH_X_MAX-GRAPH_X_START)*3/4, GRAPH_Y_ZERO, GRAPH_X_START + (GRAPH_X_MAX-GRAPH_X_START)*3/4, GRAPH_Y_MAX, BLACK);
 
 
-
     for (i = 1; i < 61; ++i) {
 
 
@@ -70,15 +69,7 @@ void DrawTrandDiamond(uint32_t cur) {
 	    if (currentData.Device_Selector_Mode & SENSOR_1_MODE) 
 		{
 			data = (trendValue[compareValue][i - 1]);
-/*			// ph 0-14, 4-10, 5-9, 6-8
-			if (trand_select_Y==0) data=data*1.42;	   	// 0~20 -> 0~14
-//			else if (trand_select_Y==1) data=(data-4)*3.3/2;	// 0~20 -> 4~10
-			else if (trand_select_Y==1) data=(data+13.3)*0.3;	// 0~20 -> 0~10
-//			else if (trand_select_Y==1) data=data*2;	// 0~20 -> 0~10
-//			else if (trand_select_Y==1) data=data;	// 0~20 -> 10~20
-			else if (trand_select_Y==2) data=data*20;
-			else if (trand_select_Y==3) data=data*40;
-*/
+
 
 			// ph 0-14, 0-10, 0-8, 0-6
 			if (trand_select_Y==0) data=data*20/14;	   		// 0~20 -> 0~14
@@ -199,7 +190,7 @@ void DrawTrandText(uint32_t cur) {
     sprintf(strBuffer, "%02d:%02d:%02d ", trandData_TIME[trand_select_time][cur][3], trandData_TIME[trand_select_time][cur][4], trandData_TIME[trand_select_time][cur][5]);
     DrawSmallNumber(218, 60, strBuffer, CYAN);
 
-	
+
 	display_trend_hour(trand_select_time);
 
   /*
@@ -448,28 +439,7 @@ void DrawAdjustFilter(uint32_t cur, uint32_t sen, uint32_t color) {
         //DrawSmallNumber(210, 175, strBuffer, color);
         DrawMediumNumber(210, 175, strBuffer, color);
     } else {
-/*        if (cur == 0) {
-            if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
-                if (color == YELLOW)
-                    DrawTextsize96(90, 100, TEXT96_CI, DRAW_IMAGE_ENABLE);
-                else
-                    DrawTextsize96(90, 100, TEXT96_NORAMAL, DRAW_IMAGE_ENABLE);
-                DrawTextsize96(90, 100, TEXT96_CI, DRAW_IMAGE_ENABLE);
-            } else if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
-                if (color == YELLOW)
-                    DrawTextsize96(90, 100, TEXT96_CI2, DRAW_IMAGE_ENABLE);
-                else
-                    DrawTextsize96(90, 100, TEXT96_CI2, DRAW_IMAGE_ENABLE);
-            }
-        } else {
-            if (sen == 0) {
-                sprintf(strBuffer, "%3d", tempConfigData.adjustConfig.filterS1);
-                DrawMediumNumber(250, 200, strBuffer, color);
-            } else {
-                sprintf(strBuffer, "%3d", tempConfigData.adjustConfig.filterS2);
-                DrawMediumNumber(250, 200, strBuffer, color);
-            }
-        }*/
+
     }
 }
 
@@ -529,28 +499,7 @@ void DrawAdjustGradient(uint32_t cur, uint32_t sen, uint32_t color) {
         //DrawSmallNumber(210, 175, strBuffer, color);
         DrawMediumNumber(200, 175, strBuffer, color);
     } else {
-/*        if (cur == 0) {
-            if (sen == 0) {
-                if (color == YELLOW)
-                    DrawTextsize96(90, 100, TEXT96_NORAMAL, DRAW_IMAGE_ENABLE);
-]                else
-                    //	DrawTextsize96(90, 100, TEXT96_SENSOR1_WHITE, DRAW_IMAGE_ENABLE);
-                    DrawTextsize96(90, 100, TEXT96_CI, DRAW_IMAGE_ENABLE);
-            } else {
-                if (color == YELLOW)
-                    DrawTextsize96(90, 100, TEXT96_NORAMAL, DRAW_IMAGE_ENABLE);
-                else
-                    DrawTextsize96(90, 100, TEXT96_NORAMAL, DRAW_IMAGE_ENABLE);
-            }
-        } else {
-            if (sen == 0) {
-                sprintf(strBuffer, "%d.%02d", tempConfigData.adjustConfig.gradientS1 / 100, tempConfigData.adjustConfig.gradientS1 % 100);
-                DrawMediumNumber(250, 200, strBuffer, color);
-            } else {
-                sprintf(strBuffer, "%d.%02d", tempConfigData.adjustConfig.gradientS2 / 100, tempConfigData.adjustConfig.gradientS2 % 100);
-                DrawMediumNumber(250, 200, strBuffer, color);
-            }
-        }*/
+
     }
 }
 
@@ -575,7 +524,7 @@ void DrawCalibAuto(uint32_t cur, uint32_t color) {
 	                //DrawMediumNumber(260, 120, strBuffer, color);
 	                //DrawSmallNumber(210, 175, strBuffer, color);
 	                DrawMediumNumber(182, 175, strBuffer, color);
-	                
+
 					sprintf(strBuffer, "%01d", (compareSignValue % 100)/10);
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, WHITE);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, WHITE);
@@ -589,7 +538,7 @@ void DrawCalibAuto(uint32_t cur, uint32_t color) {
 	                //DrawMediumNumber(260, 120, strBuffer, color);
 	                //DrawSmallNumber(210, 175, strBuffer, color);
 	                DrawMediumNumber(200, 175, strBuffer, color);
-	                
+
 					sprintf(strBuffer, "%01d", (compareSignValue % 100)/10);
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, WHITE);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, WHITE);
@@ -603,11 +552,11 @@ void DrawCalibAuto(uint32_t cur, uint32_t color) {
 	                    sprintf(strBuffer, "-%d.%01d", tempIntVal / 100, (tempIntVal % 100)/10);
 	                else
 	                    sprintf(strBuffer, " %d.%01d", compareSignValue / 100, (compareSignValue % 100)/10);
-	
+
 	                //DrawMediumNumber(260, 120, strBuffer, WHITE);
 	                //DrawSmallNumber(210, 175, strBuffer, WHITE);
 	                DrawMediumNumber(182, 175, strBuffer, WHITE);
-	                
+
 					sprintf(strBuffer, "%01d", (compareSignValue % 100)/10);
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, color);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, color);
@@ -618,11 +567,11 @@ void DrawCalibAuto(uint32_t cur, uint32_t color) {
 	                    sprintf(strBuffer, "-%d.%01d", tempIntVal / 100, (tempIntVal % 100)/10);
 	                else
 	                    sprintf(strBuffer, " %d.%01d", compareSignValue / 100, (compareSignValue % 100)/10);
-	
+
 	                //DrawMediumNumber(260, 120, strBuffer, WHITE);
 	                //DrawSmallNumber(210, 175, strBuffer, WHITE);
 	                DrawMediumNumber(200, 175, strBuffer, WHITE);
-	                
+
 					sprintf(strBuffer, "%01d", (compareSignValue % 100)/10);
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, color);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, color);
@@ -640,7 +589,7 @@ void DrawCalibAuto(uint32_t cur, uint32_t color) {
                 //DrawMediumNumber(270, 120, strBuffer, color);
                 //DrawSmallNumber(210, 175, strBuffer, color);
                 DrawMediumNumber(192, 175, strBuffer, color);
-                
+
 				sprintf(strBuffer, "%2d", tempConfigData.calibrationConfig.S1Value % 100);
                 //DrawMediumNumber(270 + (22 * 3), 120, strBuffer, WHITE);
                 //DrawSmallNumber(210+12*3, 175, strBuffer, WHITE);
@@ -651,7 +600,7 @@ void DrawCalibAuto(uint32_t cur, uint32_t color) {
                 //DrawMediumNumber(270, 120, strBuffer, WHITE);
                 //DrawSmallNumber(210, 175, strBuffer, WHITE);
                 DrawMediumNumber(192, 175, strBuffer, WHITE);
-                
+
 				sprintf(strBuffer, "%2d", tempConfigData.calibrationConfig.S1Value % 100);
                 //DrawMediumNumber(270 + (22 * 3), 120, strBuffer, color);
                 //DrawSmallNumber(210+12*3, 175, strBuffer, color);
@@ -664,9 +613,6 @@ void DrawCalibAuto(uint32_t cur, uint32_t color) {
 
     }
 }
-
-
-
 
 
 // 스팬교정 span
@@ -719,16 +665,7 @@ void DrawCalibManual(uint32_t cur, uint32_t color) {
 				}
                 break;
             case 2:
-                /*
-                tempIntVal = compareSignValue;
-                if(tempIntVal < 0)
-                    tempIntVal =  tempIntVal * (-1);
-                if(compareSignValue < 0)
-                    sprintf(strBuffer, "-%02d.%02d", tempIntVal/100, tempIntVal%100);
-                else
-                    sprintf(strBuffer, "%02d.%02d", compareSignValue/100, compareSignValue%100);
-                DrawMediumNumber(270, 180, strBuffer, color);
-                 */
+
                 break;
         }
     }
@@ -789,9 +726,6 @@ void DrawCalibManual(uint32_t cur, uint32_t color) {
 }
 
 
-
-
-
 // 제로교정
 void DrawCalibZero(uint32_t cur, uint32_t color) {
 
@@ -830,7 +764,7 @@ void DrawCalibZero(uint32_t cur, uint32_t color) {
 	                //DrawMediumNumber(270, 120, strBuffer, color);
 	                //DrawSmallNumber(210, 175, strBuffer, color);
 	                DrawMediumNumber(192, 175, strBuffer, color);
-	
+
 	                sprintf(strBuffer, "%d", tempConfigData.calibrationConfig.S1zeroCal % 10);
 	                //DrawMediumNumber(270 + (22 * 4), 120, strBuffer, WHITE);
 	                //DrawSmallNumber(210 + (22 * 4), 175, strBuffer, WHITE);
@@ -877,7 +811,7 @@ void DrawCalibZero(uint32_t cur, uint32_t color) {
 
         }
     }        
-	
+
 	// 탁도계 -----------------------------------------------------------------------//
     else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
         zerointVal = tempConfigData.calibrationConfig.S2zeroCal;
@@ -937,8 +871,6 @@ void DrawCalibZero(uint32_t cur, uint32_t color) {
 }
 
 
-
-
 // 버퍼교정
 void DrawCalibPH4(uint32_t cur, uint32_t color) {
 
@@ -959,7 +891,7 @@ void DrawCalibPH4(uint32_t cur, uint32_t color) {
             DrawMediumNumber(192, 175, strBuffer, color);
         }
     }        
-	
+
 }
 
 
@@ -982,10 +914,8 @@ void DrawCalibPH7(uint32_t cur, uint32_t color) {
             DrawMediumNumber(192, 175, strBuffer, color);
         }
     }        
-	
+
 }
-
-
 
 
 void DrawCalib_EC(uint32_t cur, uint32_t color) {
@@ -1007,8 +937,6 @@ void DrawCalib_EC(uint32_t cur, uint32_t color) {
         }
     }
 }
-
-
 
 
 // 버퍼교정
@@ -1049,7 +977,7 @@ void DrawCalibBuff(uint32_t cur, uint32_t color) {
 	                //DrawMediumNumber(270, 120, strBuffer, color);
 	                //DrawSmallNumber(210, 175, strBuffer, color);
 	                DrawMediumNumber(192, 175, strBuffer, color);
-	
+
 	                sprintf(strBuffer, "%d", tempConfigData.calibrationConfig.S1zeroCal % 10);
 	                //DrawMediumNumber(270 + (22 * 4), 120, strBuffer, WHITE);
 	                //DrawSmallNumber(210 + (22 * 4), 175, strBuffer, WHITE);
@@ -1096,7 +1024,7 @@ void DrawCalibBuff(uint32_t cur, uint32_t color) {
 
         }
     }        
-	
+
 	// 탁도계 -----------------------------------------------------------------------//
     else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
         zerointVal = tempConfigData.calibrationConfig.S2zeroCal;
@@ -1208,16 +1136,7 @@ void DrawCalibSpan(uint32_t cur, uint32_t color) {
 				}
                 break;
             case 2:
-                /*
-                tempIntVal = compareSignValue;
-                if(tempIntVal < 0)
-                    tempIntVal =  tempIntVal * (-1);
-                if(compareSignValue < 0)
-                    sprintf(strBuffer, "-%02d.%02d", tempIntVal/100, tempIntVal%100);
-                else
-                    sprintf(strBuffer, "%02d.%02d", compareSignValue/100, compareSignValue%100);
-                DrawMediumNumber(270, 180, strBuffer, color);
-                 */
+
                 break;
         }
     }
@@ -1330,106 +1249,71 @@ void DrawCalibSpan(uint32_t cur, uint32_t color) {
 				}
                 break;
             case 2:
-                /*
-                tempIntVal = compareSignValue;
-                if(tempIntVal < 0)
-                    tempIntVal =  tempIntVal * (-1);
-                if(compareSignValue < 0)
-                    sprintf(strBuffer, "-%02d.%02d", tempIntVal/100, tempIntVal%100);
-                else
-                    sprintf(strBuffer, "%02d.%02d", compareSignValue/100, compareSignValue%100);
-                DrawMediumNumber(270, 180, strBuffer, color);
-                 */
+
                 break;
         }
     }
     else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
         switch (cur) {
             case 0:
-/*				if ((tempConfigData.calibrationConfig.EC_Span_Cal)>=10000) {
-	                sprintf(strBuffer, " %d ", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
-	                DrawMediumNumber(174, 175, strBuffer, color);
-	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
-	                DrawMediumNumber(174+18*5, 175, strBuffer, WHITE);
-				}
-				else {
-	                sprintf(strBuffer, " %d ", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
-	                DrawMediumNumber(192, 175, strBuffer, color);
-	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
-	                DrawMediumNumber(192+18*4, 175, strBuffer, WHITE);
-				}
-*/
+
 				if ((tempConfigData.calibrationConfig.EC_Span_Cal)>=10000) {
 	                sprintf(strBuffer, " %d", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
 	                DrawMediumNumber(174, 175, strBuffer, color);
-	
+
 	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
 	                DrawMediumNumber(174+18*4, 175, strBuffer, WHITE);
 				}
 				else if ((tempConfigData.calibrationConfig.EC_Span_Cal)>=1000) {
 	                sprintf(strBuffer, "  %d", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
 	                DrawMediumNumber(174, 175, strBuffer, color);
-	
+
 	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
 	                DrawMediumNumber(174+18*4, 175, strBuffer, WHITE);
 				}
 				else if ((tempConfigData.calibrationConfig.EC_Span_Cal)>=100) {
 	                sprintf(strBuffer, "   %d", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
 	                DrawMediumNumber(174, 175, strBuffer, color);
-	
+
 	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
 	                DrawMediumNumber(174+18*4, 175, strBuffer, WHITE);
 				}
 				else {
 	                sprintf(strBuffer, "     %d", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
 	                DrawMediumNumber(174, 175, strBuffer, color);
-	
+
 	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
 	                DrawMediumNumber(174+18*4, 175, strBuffer, WHITE);
 				}
 
                 break;
             case 1:
-/*				if ((tempConfigData.calibrationConfig.EC_Span_Cal)>=10000) {
-	                sprintf(strBuffer, " %d ", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
-	                DrawMediumNumber(174, 175, strBuffer, WHITE);
 
-	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
-	                DrawMediumNumber(174+18*5, 175, strBuffer, color);
-				}
-				else {
-	                sprintf(strBuffer, " %d ", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
-	                DrawMediumNumber(192, 175, strBuffer, WHITE);
-
-	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
-	                DrawMediumNumber(192+18*4, 175, strBuffer, color);
-				}
-*/
 				if ((tempConfigData.calibrationConfig.EC_Span_Cal)>=10000) {
 	                sprintf(strBuffer, " %d", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
 	                DrawMediumNumber(174, 175, strBuffer, WHITE);
-	
+
 	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
 	                DrawMediumNumber(174+18*4, 175, strBuffer, color);
 				}
 				else if ((tempConfigData.calibrationConfig.EC_Span_Cal)>=1000) {
 	                sprintf(strBuffer, "  %d", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
 	                DrawMediumNumber(174, 175, strBuffer, WHITE);
-	
+
 	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
 	                DrawMediumNumber(174+18*4, 175, strBuffer, color);
 				}
 				else if ((tempConfigData.calibrationConfig.EC_Span_Cal)>=100) {
 	                sprintf(strBuffer, "   %d", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
 	                DrawMediumNumber(174, 175, strBuffer, WHITE);
-	
+
 	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
 	                DrawMediumNumber(174+18*4, 175, strBuffer, color);
 				}
 				else {
 	                sprintf(strBuffer, "     %d", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
 	                DrawMediumNumber(174, 175, strBuffer, WHITE);
-	
+
 	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
 	                DrawMediumNumber(174+18*4, 175, strBuffer, color);
 				}
@@ -1470,7 +1354,7 @@ void DrawCalibTemp(uint32_t cur, uint32_t color) {
 	                //DrawMediumNumber(260, 120, strBuffer, color);
 	                //DrawSmallNumber(210, 175, strBuffer, color);
 	                DrawMediumNumber(182, 175, strBuffer, color);
-	                
+
 					sprintf(strBuffer, "%01d", (TEMP_Span_Cal % 10));
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, WHITE);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, WHITE);
@@ -1484,7 +1368,7 @@ void DrawCalibTemp(uint32_t cur, uint32_t color) {
 	                //DrawMediumNumber(260, 120, strBuffer, color);
 	                //DrawSmallNumber(210, 175, strBuffer, color);
 	                DrawMediumNumber(200, 175, strBuffer, color);
-	                
+
 					sprintf(strBuffer, "%01d", (TEMP_Span_Cal % 10));
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, WHITE);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, WHITE);
@@ -1498,11 +1382,11 @@ void DrawCalibTemp(uint32_t cur, uint32_t color) {
 	                    sprintf(strBuffer, "-%d.%01d", tempIntVal / 10, (tempIntVal % 10));
 	                else
 	                    sprintf(strBuffer, " %d.%01d", TEMP_Span_Cal / 10, (TEMP_Span_Cal % 10));
-	
+
 	                //DrawMediumNumber(260, 120, strBuffer, WHITE);
 	                //DrawSmallNumber(210, 175, strBuffer, WHITE);
 	                DrawMediumNumber(182, 175, strBuffer, WHITE);
-	                
+
 					sprintf(strBuffer, "%01d", (TEMP_Span_Cal % 10));
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, color);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, color);
@@ -1513,11 +1397,11 @@ void DrawCalibTemp(uint32_t cur, uint32_t color) {
 	                    sprintf(strBuffer, "-%d.%01d", tempIntVal / 10, (tempIntVal % 10));
 	                else
 	                    sprintf(strBuffer, " %d.%01d", TEMP_Span_Cal / 10, (TEMP_Span_Cal % 10));
-	
+
 	                //DrawMediumNumber(260, 120, strBuffer, WHITE);
 	                //DrawSmallNumber(210, 175, strBuffer, WHITE);
 	                DrawMediumNumber(200, 175, strBuffer, WHITE);
-	                
+
 					sprintf(strBuffer, "%01d", (TEMP_Span_Cal % 10));
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, color);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, color);
@@ -1530,89 +1414,14 @@ void DrawCalibTemp(uint32_t cur, uint32_t color) {
 }
 
 
-
 //==========================
-
-
-
-
 
 
 // analog
 
 void DrawOutputConfig(uint32_t cur, uint32_t color) {
     switch (cur) {
-  /*
-        case 0:
-            //		DrawMediumNumber(230, 70, strBuffer, color);
-			if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
-		            sprintf(strBuffer, "%d.%d", configData.outputConfig.output4mA / 1000, (configData.outputConfig.output4mA / 100) % 10);
-		            DrawSmallNumber(100, 152, strBuffer, color);
-            		sprintf(strBuffer, "%01d", (configData.outputConfig.output4mA%100)/10); 
-		            DrawSmallNumber(100+12*3, 152, strBuffer, WHITE);
-			}
-			if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
-		            sprintf(strBuffer, "%d.%d", configData.outputConfig.output4mA2 / 1000, (configData.outputConfig.output4mA2 / 100) % 10);
-		            DrawSmallNumber(115, 152, strBuffer, WHITE);
-            		//sprintf(strBuffer, "%02d", configData.outputConfig.output4mA2%100); 
-		            //DrawSmallNumber(90+12*3, 152, strBuffer, WHITE);
-			}
 
-            //		DrawMediumNumber(230+(22*3), 70, strBuffer, WHITE);
-            break;
-        case 1:
-            //		DrawMediumNumber(230, 70, strBuffer, WHITE);
-			if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
-		        sprintf(strBuffer, "%d.%d", configData.outputConfig.output4mA / 1000, (configData.outputConfig.output4mA / 100) % 10);
-	            DrawSmallNumber(100, 152, strBuffer, WHITE);
-	            sprintf(strBuffer, "%01d", (configData.outputConfig.output4mA%100)/10); 
-	            DrawSmallNumber(100+12*3, 152, strBuffer, color);
-			}
-			if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
-		        sprintf(strBuffer, "%d.%d", configData.outputConfig.output4mA2 / 1000, (configData.outputConfig.output4mA2 / 100) % 10);
-                DrawSmallNumber(115, 152, strBuffer, WHITE);
-		        //sprintf(strBuffer, "%02d", (configData.outputConfig.output4mA2%100));	
-	            //DrawSmallNumber(90+12*3, 152, strBuffer, color);
-			}
-            //		DrawMediumNumber(230+(22*3), 70, strBuffer, color);
-            break;
-        case 2:
-            if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
-//                sprintf(strBuffer, "%d.%d", configData.outputConfig.output20mA / 1000, (configData.outputConfig.output20mA / 100) % 10);
-//	            DrawSmallNumber(100, 217, strBuffer, color);
-//				sprintf(strBuffer, "%01d", (configData.outputConfig.output20mA%100)/10);
-//	            DrawSmallNumber(100+12*3, 217, strBuffer, WHITE);
-//                sprintf(strBuffer, "14.00");
-//	            DrawSmallNumber(100, 217, strBuffer, color);
-            }
-            else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
-//                sprintf(strBuffer, "%02d.%d", configData.outputConfig.output20mA2 / 1000, (configData.outputConfig.output20mA2 / 100) % 10);
-//	            DrawSmallNumber(90, 217, strBuffer, color);
-//				sprintf(strBuffer, "%02d", configData.outputConfig.output20mA2%100);
-//	            DrawSmallNumber(90+12*3, 217, strBuffer, WHITE);
-//                sprintf(strBuffer, "2000.0");
-//  	            DrawSmallNumber(90, 217, strBuffer, color);
-          }
-            break;
-        case 3:
-            if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
-//                sprintf(strBuffer, "%d.%d", configData.outputConfig.output20mA / 1000, (configData.outputConfig.output20mA / 100) % 10);
-//	            DrawSmallNumber(100, 217, strBuffer, WHITE);
-//				sprintf(strBuffer, "%01d", (configData.outputConfig.output20mA%100)/10);
-//                DrawSmallNumber(100+12*3, 217, strBuffer, color);
-                sprintf(strBuffer, "14.00");
-	            DrawSmallNumber(100, 217, strBuffer, color);
-	        }
-            else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
-//                sprintf(strBuffer, "%02d.%d", configData.outputConfig.output20mA2 / 1000, (configData.outputConfig.output20mA2 / 100) % 10);
-//	            DrawSmallNumber(90, 217, strBuffer, WHITE);
-//				sprintf(strBuffer, "%03d", configData.outputConfig.output20mA2%1000);
-//	            DrawSmallNumber(90+12*3, 217, strBuffer, color);
-                sprintf(strBuffer, "2000.0");
-  	            DrawSmallNumber(90, 217, strBuffer, color);
-            }													
-            break;
-*/
         case 4:
             if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
 	            sprintf(strBuffer, "%03d", tempConfigData.outputConfig.outputReal4mA / 100);
@@ -1630,7 +1439,7 @@ void DrawOutputConfig(uint32_t cur, uint32_t color) {
 	            //		DrawMediumNumber(230+(22*3), 170, strBuffer, WHITE);
 	            DrawSmallNumber(320+12*3, 152, strBuffer, WHITE);
 			}
-            
+
             break;
         case 5:
             if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
@@ -1686,25 +1495,7 @@ void DrawOutputConfig(uint32_t cur, uint32_t color) {
 	            DrawSmallNumber(320+12*3, 217, strBuffer, color);
 			}
             break;
-            /*
-                case 8:
-                    if(compareValue)
-                    {
-                        if(color == WHITE)
-                            DrawTextETC(10, 220, TEXT_ETC_HOLD_W, DRAW_IMAGE_ENABLE);
-                        else
-                            DrawTextETC(10, 220, TEXT_ETC_HOLD_Y, DRAW_IMAGE_ENABLE);
-			
-                    }
-                    else
-                    {
-                        if(color == WHITE)
-                            DrawTextETC(10, 220, TEXT_ETC_RUN_W, DRAW_IMAGE_ENABLE);
-                        else
-                            DrawTextETC(10, 220, TEXT_ETC_RUN_Y, DRAW_IMAGE_ENABLE);
-                    }
-                break;
-             */
+
     }
 }
 
@@ -1813,7 +1604,6 @@ void DrawAlarmConfig(uint32_t cur, uint32_t color) {
 #endif
 
 
-
         }
     }
     else if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
@@ -1894,55 +1684,6 @@ void DrawAlarmConfig(uint32_t cur, uint32_t color) {
 #endif
 
 
-
-
-
-
-/*            case 0:
-                sprintf(strBuffer, " %d.%d", tempConfigData.alarmConfig.highLimit / 1000, (tempConfigData.alarmConfig.highLimit / 100) % 10);
-                //DrawMediumNumber(200, 90, strBuffer, color);
-				if (tempConfigData.alarmConfig.highLimit>=10000) 	DrawSmallNumber(43-12,180, strBuffer, color);
-                else 											DrawSmallNumber(43,   180, strBuffer, color);
-
-                sprintf(strBuffer, "%02d", tempConfigData.alarmConfig.highLimit % 100);
-                //DrawMediumNumber(200 + (22 * 3), 90, strBuffer, WHITE);
-                DrawSmallNumber(56+ (12*3), 180, strBuffer, WHITE);
-                break;
-            case 1:
-                sprintf(strBuffer, " %d.%d", tempConfigData.alarmConfig.highLimit / 1000, (tempConfigData.alarmConfig.highLimit / 100) % 10);
-                //DrawMediumNumber(200, 90, strBuffer, WHITE);
-				if (tempConfigData.alarmConfig.highLimit>=10000) 	DrawSmallNumber(43-12,180, strBuffer, WHITE);
-                else 											DrawSmallNumber(43,   180, strBuffer, WHITE);
-
-                sprintf(strBuffer, "%02d", tempConfigData.alarmConfig.highLimit % 100);
-                //DrawMediumNumber(200 + (22 * 3), 90, strBuffer, color);
-                DrawSmallNumber(56 + (12*3), 180, strBuffer, color);
-                break;
-            case 2:
-                sprintf(strBuffer, " %d.%d", tempConfigData.alarmConfig.lowLimit / 1000, (tempConfigData.alarmConfig.lowLimit / 100) % 10);
-                //DrawMediumNumber(200, 140, strBuffer, color);
-				if (tempConfigData.alarmConfig.lowLimit>=10000) 	DrawSmallNumber(195-12,180, strBuffer, color);
-                else 												DrawSmallNumber(195,   180, strBuffer, color);
-
-                sprintf(strBuffer, "%02d", tempConfigData.alarmConfig.lowLimit % 100);
-                //DrawMediumNumber(200 + (22 * 3), 140, strBuffer, WHITE);
-                DrawSmallNumber(207 + (12*3), 180, strBuffer, WHITE);
-                break;
-            case 3:
-                sprintf(strBuffer, " %d.%d", tempConfigData.alarmConfig.lowLimit / 1000, (tempConfigData.alarmConfig.lowLimit / 100) % 10);
-                //DrawMediumNumber(200, 140, strBuffer, WHITE);
-				if (tempConfigData.alarmConfig.lowLimit>=10000) 	DrawSmallNumber(195-12,180, strBuffer, WHITE);
-                else 												DrawSmallNumber(195,   180, strBuffer, WHITE);
-
-                sprintf(strBuffer, "%02d", tempConfigData.alarmConfig.lowLimit % 100);
-                //DrawMediumNumber(200 + (22 * 3), 140, strBuffer, color);
-                DrawSmallNumber(207 + (12*3), 180, strBuffer, color);
-                break;
-            case 4:
-                sprintf(strBuffer, "%3d", tempConfigData.alarmConfig.zeroAlarm);
-                //DrawMediumNumber(200 + 22, 190, strBuffer, color);
-				DrawSmallNumber(350,180, strBuffer, color);
-                break;*/
         }
     }
 
@@ -2024,8 +1765,6 @@ void DrawCommConfig(uint32_t cur, uint32_t color) {
             break;
     }
 }
-
-
 
 
 void DrawCommEthernetConfig(uint32_t cur, uint32_t color) {

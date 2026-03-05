@@ -1,7 +1,5 @@
 #include "Main.h"
-
-
-
+#include "Sensor_Manager.h"
 
 
 unsigned int buz_time;	// max=65535*10msec=655.35sec
@@ -41,9 +39,8 @@ int16_t data_TEMP, SET_data_TEMP;
 #define DEFAULT_20MA2	41971// 2710   //2525
 
 
-
-//uint32_t adjdefault4mA = 400; 	//600;	  4-20mA 조정에서 밑의부분을 좀더 내린다. 원래는 600이다.
-uint32_t adjdefault4mA = 0; 	//600;	  4-20mA 조정에서 밑의부분을 좀더 내린다. 원래는 600이다.
+//uint32_t adjdefault4mA = 400; 	//600;	  4-20mA ???????? ????????? ???? ??????. ?????? 600???.
+uint32_t adjdefault4mA = 0; 	//600;	  4-20mA ???????? ????????? ???? ??????. ?????? 600???.
 uint32_t adjdefault20mA = 0; 	// 5000;
 uint32_t campare_4mA = 0;
 uint32_t campare_20mA = 0;
@@ -79,19 +76,17 @@ uint32_t Run_ON_RelayVaule3 = 0;
 CalibrationLogValue calibLog[4];
 
 
-
-
-// trand 하기위한 변수들 
-// 매분마다 체크해서 해당하는 분마다 데이터를 업데이트 한다.
+// trand ??????? ?????? 
+// ??????? ????? ?????? ?????? ??????? ??????? ???.
 uint16_t trand_time1, trand_time6, trand_time12, trand_time24, trand_time168, trand_time336;
 
-// Trand 는 60분(1분단위), 6시간(6분단위), 12시간(12분단위), 24시간(24분단위), 168시간=7일(168분단위), 336시간=14일(336분단위)
-#define trand_select_time_NO 6		// 시간범위 선택하는거
-uint16_t trand_select_time=0;		// 시간범위 선택하는거
-uint16_t trand_select_Y=0, trand_select_Y_NO=3;		// Y 축 확대축소 선택하는거
+// Trand ?? 60??(1??????), 6????(6??????), 12????(12??????), 24????(24??????), 168????=7??(168??????), 336????=14??(336??????)
+#define trand_select_time_NO 6		// ???????? ?????????
+uint16_t trand_select_time=0;		// ???????? ?????????
+uint16_t trand_select_Y=0, trand_select_Y_NO=3;		// Y ?? ?????? ?????????
 
 
-// 저장해라고 하는 변수
+// ???????? ??? ????
 char flag_write_trand1, flag_write_trand6, flag_write_trand12, flag_write_trand24, flag_write_trand168, flag_write_trand336;
 
 
@@ -103,7 +98,7 @@ int16_t trandData[trand_select_time_NO][61] = {	 // [6][61]
     {0,},
     {0,}};
 
-int16_t trandData2[trand_select_time_NO][61] = {	 // [6][61]  탁도
+int16_t trandData2[trand_select_time_NO][61] = {	 // [6][61]  ???
     {0,},
     {0,},
     {0,},
@@ -113,24 +108,12 @@ int16_t trandData2[trand_select_time_NO][61] = {	 // [6][61]  탁도
 
 
 uint8_t trandData_TIME[trand_select_time_NO][61][6]; 
-/* = {	 // [6][61]
-    {0,},
-    {0,},
-    {0,},
-    {0,},
-    {0,},
-    {0,}};
-*/
 
 
 uint16_t trendValue[2][61] = {
     {0,},
     {0,}};
-/*int16_t Mesure_Data_Value[4][61] = {	 // [3][61]
-    {0,},
-    {0,},
-    {0,},
-    {0,}};*/
+
 uint16_t Filter_Data_Value[4][50] = {	 //  [2][100]
     {0,},
     {0,},
@@ -140,10 +123,8 @@ uint16_t Filter_Data_Value[4][50] = {	 //  [2][100]
 int16_t PPmSD_card_Data [60] = {0,};
 int16_t TEMP_card_Data [60] = {0,};
 
-int16_t PPmSD_card_Data2 [60] = {0,};	 // 탁도 
+int16_t PPmSD_card_Data2 [60] = {0,};	 // ??? 
 int16_t TEMP_card_Data2 [60] = {0,};
-
-
 
 
 unsigned char LogData [111] = {0,};
@@ -178,10 +159,8 @@ uint16_t tp_counter = 0;
 uint16_t tx_trans_flag = 0;
 
 
-
 extern uint16_t Counter10msec;
 extern uint16_t Comm_time_flag;
-
 
 
 void display_set_set(unsigned char select);
@@ -197,9 +176,6 @@ void State_CalibBuffPH7(void);
 void State_CalibSpan(void);
 
 void State_CalibBuff_EC(void);
-
-
-
 
 
 //Static IP ADDRESS: IP_ADDR0.IP_ADDR1.IP_ADDR2.IP_ADDR3 
@@ -232,7 +208,6 @@ void State_ConfigEthernet(void);
 //extern int16_t trandData[trand_select_time_NO][61];
 
 
-
 #ifdef CH2
 	#include "Redisplay_ch2.c"
 #elif CH4
@@ -242,18 +217,13 @@ void State_ConfigEthernet(void);
 #endif
 
 
-
-
 int main(void) 
 {
 	char led;
 	unsigned int data=0;
 
 
-
 //Update_CurrentTrans();
-
-
 
 
     Initialize();
@@ -279,6 +249,8 @@ BUZ_ON;
 	init_tx3Buffer();
 #endif
 
+	Sensor_Manager_Init();   /* ???? ??? ???? ????? ???? */
+
     // test
     //	DrawBack2();
     //	DrawIcon(ICON_CI, DRAW_IMAGE_ENABLE);		// test
@@ -286,14 +258,6 @@ BUZ_ON;
     //	DrawIcon(ICON_BELL, DRAW_IMAGE_ENABLE);		// test
     //	DrawIcon(ICON_CAUTION, DRAW_IMAGE_ENABLE);	// test
     //	DrawIcon(ICON_WORKING, DRAW_IMAGE_ENABLE);	// test
-/*
-NEMERIC_8X10_BU_W(0,0,0);
-NEMERIC_8X10_BU_G(0,10,0);
-NEMERIC_12X16_BK_W(0,20,0);
-NEMERIC_12X16_BU_W(0,40,0);
-NEMERIC_18X23_BK_G(0,60,0);
-NEMERIC_23X28_BK_G(0,100,0);
-  */
 
 
 //for (data=0;;)
@@ -314,7 +278,7 @@ data=1000;
 //    	for (;;){
 //			DAC_output(1, data);
 			TIM8_Chage_Duty_Channel(2,data);   	// PB0, LAN.5
-		
+
 			DAC_output(2, data);
   			 Delay_10msec(50);
 //		}
@@ -322,9 +286,9 @@ data=1000;
     DrawBack1();
 
 
-	// 자동세정 동작하기
+	// ??????? ???????
 	if (configData.relayConfig.relay1WashCycle>0) wash_run_flag = 1;	
-	// 세정3 동작하기
+	// ????3 ???????
 	if (configData.relayConfig.relay3WashCycle>0) wash_run_flag3 = 1;
 
 	//======================================
@@ -333,19 +297,19 @@ data=1000;
 		IP_ADDR1=configData.EthernetConfig.IP_ADDR1;
 		IP_ADDR2=configData.EthernetConfig.IP_ADDR2;
 		IP_ADDR3=configData.EthernetConfig.IP_ADDR3;
-		
+
 		//NETMASK
 		NETMASK_ADDR0 =  configData.EthernetConfig.NETMASK_ADDR0;
 		NETMASK_ADDR1 =  configData.EthernetConfig.NETMASK_ADDR1;
 		NETMASK_ADDR2 =  configData.EthernetConfig.NETMASK_ADDR2;
 		NETMASK_ADDR3 =  configData.EthernetConfig.NETMASK_ADDR3;
-		
+
 		//Gateway Address
 		GW_ADDR0 =  configData.EthernetConfig.GW_ADDR0;
 		GW_ADDR1 =  configData.EthernetConfig.GW_ADDR1;
 		GW_ADDR2 =  configData.EthernetConfig.GW_ADDR2;
 		GW_ADDR3 =  configData.EthernetConfig.GW_ADDR3;
-		
+
 		ETHERNET_PORT = configData.EthernetConfig.ETHERNET_PORT;
 	}
 	else {
@@ -354,19 +318,19 @@ data=1000;
 		IP_ADDR1=168;
 		IP_ADDR2=1;
 		IP_ADDR3=25;
-		
+
 		//NETMASK
 		NETMASK_ADDR0 =  255;
 		NETMASK_ADDR1 =  255;
 		NETMASK_ADDR2 =  255;
 		NETMASK_ADDR3 =  0;
-		
+
 		//Gateway Address
 		GW_ADDR0 =  192;
 		GW_ADDR1 =  168;
 		GW_ADDR2 =  1;
 		GW_ADDR3 =  1;
-		
+
 		ETHERNET_PORT=502;
 
 		configData.EthernetConfig.IP_ADDR0 = IP_ADDR0;
@@ -395,14 +359,12 @@ data=1000;
 BUZ_OFF;
 
 
-
     while (1) {
 
 		if (led==0) { INDLED_ON; led=1; }
 		else 		{ INDLED_OFF; led=0; }
 
 
-		
         // STATE, LCD OUT
         StateHandler();
 
@@ -410,6 +372,9 @@ BUZ_OFF;
 
         // SENSOR INPUT
         SensorComHandler();
+
+        /* 범용 외부 센서 폴링 (Modbus485Handler 보다 먼저 호출해야 함) */
+        Update_All_External_Sensors();
 
         // 4-20mA ???
         Update_CurrentTrans();
@@ -434,7 +399,7 @@ BUZ_OFF;
        		Ethernet_loop();
         }
 
-        // CALIBRATION. 보정 매뉴				
+        // CALIBRATION. ???? ???				
         if (manual_cal_flag == 1) {
             if ((currentData.Device_Selector_Mode & SENSOR_1_MODE) && (req_ppm_com_flag == 0)) {
                 SendCalData(1, Tx_S1manualCal);
@@ -475,7 +440,7 @@ BUZ_OFF;
             }
         }
 
-        // TEMP. CAL 온도 보정
+        // TEMP. CAL ??? ????
         if (manual_cal_temp_flag == 1) {
             manual_cal_temp_flag = 0;
 
@@ -502,7 +467,7 @@ BUZ_OFF;
             }
         }
 
-        // ZERO CAL   영점 조정
+        // ZERO CAL   ???? ????
         if (zero_cal_update_flag == 1 && manual_cal_flag == 0) {
             zero_cal_update_flag = 0;
 
@@ -533,7 +498,7 @@ BUZ_OFF;
             }
         }
 
-        // SD 에 저장하기
+        // SD ?? ???????
 #ifdef SD_TEST
         if (sd_dec_flag == 1) {	  
 #else
@@ -545,7 +510,7 @@ BUZ_OFF;
 
 
 		MicroSD_Trand_Write();
-		
+
     }//while
 
 }
@@ -609,7 +574,7 @@ void bufferData_reset_function(void) {
 }
 
 
-#define RELAY2_OFF_TIME	300		// 5분...
+#define RELAY2_OFF_TIME	300		// 5??...
 
 uint32_t warning_counter = 0;
 uint32_t warning_counter1 = 0;
@@ -662,7 +627,7 @@ void Warning_Process_function(void) {
 	   		if (currentData.S1PPM == 0) {
 	            if (zero_Alarm_Time_couter >= 10 && zero_error_flag == 0) {
 					zero_Alarm_Time_couter =0;
-	
+
 	                zero_Alarm_sec++;
 		            if (zero_Alarm_sec >= 60) {
 		                zero_Alarm_sec = 0;
@@ -706,7 +671,7 @@ void Warning_Process_function(void) {
 	   		if (currentData.S1PPM == 0) {
 	            if (zero_Alarm_Time_couter >= 10 && zero_error_flag == 0) {
 					zero_Alarm_Time_couter =0;
-	
+
 	                zero_Alarm_sec++;
 		            if (zero_Alarm_sec >= 60) {
 		                zero_Alarm_sec = 0;
@@ -750,7 +715,6 @@ void Warning_Process_function(void) {
 //		}
 
 
-
 		if (Ext_Input2!=0)  RELAY2_ON;
 
         else if (Relay2_off_time==0 && (warning_counter >=20 || warning_counter1 >=20 || zero_error_flag == 1)) {
@@ -770,7 +734,7 @@ void Warning_Process_function(void) {
                 DrawIcon(ICON_BELL, DRAW_IMAGE_DISABLE);
             }
             RELAY2_ON;
-        
+
 		} else {
             if (state == 0) {
                 DrawIcon(ICON_BELL, DRAW_IMAGE_DISABLE);
@@ -779,7 +743,6 @@ void Warning_Process_function(void) {
                 RELAY2_OFF;
 //            }
         }
-
 
 
 //    } else if (Alarm_OP_flag == 0 && configData.relayConfig.relay2AlarmOFF == 1) {
@@ -803,28 +766,9 @@ void Warning_Process_function(void) {
 			warning_counter2=0;
 			warning_counter3=0;
 	}
-	 
-/*	
-	else if (Alarm_OP_flag == 0 && configData.relayConfig.relay2AutoAlarm == 1) {
-        RELAY2_OFF;
-        DrawIcon(ICON_BELL, DRAW_IMAGE_DISABLE);
-        //configData.relayConfig.relay2AutoAlarm = 0;
-        warning_counter = 0;
-        warning_counter2 = 0;
-        zero_error_flag = 0;
-        Alarm_OP_flag = 1;
-    } else {
-        RELAY2_OFF;
-        DrawIcon(ICON_BELL, DRAW_IMAGE_DISABLE);
-        warning_counter = 0;
-        warning_counter2 = 0;
-        zero_error_flag = 0;
-        Alarm_OP_flag = 1;
-    }
-	*/
 
-	
-	// 센서이상있을때 메인메뉴에서만 표시하기. 
+
+	// ????????????? ????????????? ??????. 
 	if (state==0) {	
     	if (Sensor_State2 == SENSOR_OK) DrawIcon(ICON_CAUTION, DRAW_IMAGE_DISABLE);
     	else 							DrawIcon(ICON_CAUTION, DRAW_IMAGE_ENABLE);
@@ -836,24 +780,24 @@ void Warning_Process_function(void) {
 }
 
 
-// 자동세정...
+// ???????...
 void Wash1_Run_Handler(void) {
 
 	if (configData.relayConfig.relay1manual == 0) 
 	{
 	    WashCycleVaule1 =    (configData.relayConfig.relay1WashCycle * 60) / 0.1;
 	    Run_ON_RelayVaule1 = (configData.relayConfig.relay1WashTime  * 60) / 0.1;
-	
+
 	    if ((WashCycleVaule1 < flag_wash1_time_counter) && (wash_run_flag == 1)) {
 	        flag_wash1_time_counter = 0;
 	        wash_run_flag = 0;
 	        Relay1_run_on_flag = 1;
 	    } else {
-	
+
 	    }
-		
+
 		if (Ext_Input1!=0)  RELAY1_ON;
-	
+
 	    else if ((Run_ON_RelayVaule1 > flag_wash1_relay_time_counter) && (Relay1_run_on_flag == 1)) {
 	        if (state == 0) {
 	            if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
@@ -871,7 +815,7 @@ void Wash1_Run_Handler(void) {
 	        Relay2_off_time2 = RELAY2_OFF_TIME;
 
 	    } else if ((Run_ON_RelayVaule1 < flag_wash1_relay_time_counter) && (Relay1_run_on_flag == 1)) {
-	
+
 	        if (state == 0) {
 	            if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
 	                //DrawTextsize120(40, 140, TEXT120_WASHING, DRAW_IMAGE_DISABLE);
@@ -905,17 +849,17 @@ void Set_Relay_OP_Run_Handler(void) {
 	{
 	    WashCycleVaule3    = (configData.relayConfig.relay3WashCycle * 60) / 0.1;
 	    Run_ON_RelayVaule3 = (configData.relayConfig.relay3WashTime  * 60) / 0.1;
-	
+
 	    if ((WashCycleVaule3 < flag_wash3_time_counter) && (wash_run_flag3 == 1)) {
 	        flag_wash3_time_counter = 0;
 	        wash_run_flag3 = 0;
 	        Relay3_run_on_flag = 1;
 	    } else {
-	
+
 	    }				  	
-	
+
 		if (Ext_Input3!=0)  RELAY3_ON;
-	
+
 		else if ((Run_ON_RelayVaule3 > flag_wash3_relay_time_counter) && (Relay3_run_on_flag == 1)) {
 	        if (state == 0) {
 	            // DrawTextsize120(40, 140, TEXT120_WASHING, DRAW_IMAGE_ENABLE);
@@ -925,14 +869,14 @@ void Set_Relay_OP_Run_Handler(void) {
 	        }
 	        RELAY3_ON;
 	    } else if ((Run_ON_RelayVaule3 < flag_wash3_relay_time_counter) && (Relay3_run_on_flag == 1)) {
-	
+
 	        if (state == 0) {
 	            //DrawTextsize120(40, 140, TEXT120_WASHING, DRAW_IMAGE_DISABLE);
 				display_message1();
 	        } else {
 	            RedrawValue();
 	        }
-	
+
 	        RELAY3_OFF;
 	        Relay3_run_on_flag = 0;
 	        flag_wash3_relay_time_counter = 0;
@@ -971,7 +915,7 @@ void SystemSetting(void) {
 	if (configData.calibrationConfig.PH7_Value<=0 || configData.calibrationConfig.PH7_Value>1400)
 		configData.calibrationConfig.PH7_Value=700;
 
-	// 전기전도도
+	// ??????????
 	if (configData.calibrationConfig.EC_Value<=0 || configData.calibrationConfig.EC_Value>20000)
 		configData.calibrationConfig.EC_Value=0;
 
@@ -1016,7 +960,6 @@ void SystemSetting(void) {
 }
 
 
-
 char sd_detect=0;
 void SD_Detect_Draw(void) {
 
@@ -1032,30 +975,6 @@ void SD_Detect_Draw(void) {
     }
 }
 
-
-/*
-void Alarm_Icon_Draw(void) {
-//    if (configData.relayConfig.relay2AutoAlarm == 0 && configData.alarmConfig.highLimit == 0 && configData.alarmConfig.lowLimit == 0 && configData.alarmConfig.zeroAlarm == 0 ) {
-//        DrawIcon(ICON_BELL, DRAW_IMAGE_DISABLE);
-//        warning_counter = 0;
-//        warning_counter2 = 0;
-//        zero_error_flag = 0;
-//        Alarm_OP_flag = 1;
-//    }
-
-    if ((configData.relayConfig.relay2AutoAlarm == 1)&&(configData.alarmConfig.highLimit != 0 || configData.alarmConfig.lowLimit != 0 || configData.alarmConfig.zeroAlarm != 0)) {
-        DrawIcon(ICON_BELL, DRAW_IMAGE_ENABLE);
-        Alarm_OP_flag = 0;
-
-    } else {
-        DrawIcon(ICON_BELL, DRAW_IMAGE_DISABLE);
-        warning_counter = 0;
-        warning_counter2 = 0;
-        zero_error_flag = 0;
-        Alarm_OP_flag = 1;
-    }
-}
-*/
 
 //====================================
 // STATE, LCD OUT
@@ -1102,12 +1021,9 @@ void StateHandler(void) {
             break;
 
 
-
-
         case STATE_CONFIG_COMM_ETHERNET:
             State_ConfigEthernet();
             break;
-
 
 
         case STATE_CONFIG_RELAY:
@@ -1123,7 +1039,7 @@ void StateHandler(void) {
         case STATE_CALIB_ZERO:
             State_CalibZero();
             break;
-		// 스팬교정
+		// ???????
         case STATE_CALIB_MANUAL:
             State_CalibManual();
             break;
@@ -1133,7 +1049,7 @@ void StateHandler(void) {
 #else
         case STATE_CALIB_ZERO:
 		    if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
-				// 버퍼교정
+				// ???????
 	            State_CalibBuff();
 			}
 			else 
@@ -1150,7 +1066,7 @@ void StateHandler(void) {
             State_CalibBuffPH7();
             break;
 
-		// 스팬교정
+		// ???????
         case STATE_CALIB_SPAN:
             State_CalibSpan();
             break;
@@ -1165,69 +1081,68 @@ void StateHandler(void) {
             State_CalibLog();
             break;
 
-		// 	설정 - 릴레이- 세정 : 자동세정-수동세정
+		// 	???? - ??????- ???? : ???????-????????
         case STATE_CONFIG_RELAY_RELAY1:
             State_ConfigRelayRelay1();
             break;
-		// 설정 - 릴레이- 경보 : 자동알림, 알림해제
+		// ???? - ??????- ?? : ??????, ???????
         case STATE_CONFIG_RELAY_RELAY2:
             State_ConfigRelayRelay2();
             break;
 
-		// 설정 - 릴레이- 릴레이 : 설정동작, 수동동작
+		// ???? - ??????- ?????? : ????????, ????????
         case STATE_CONFIG_RELAY_RELAY3:
             State_ConfigRelayRelay3();
             break;
 
 
-		// 설정 - 조정 - 기울기
+		// ???? - ???? - ????
         case STATE_CONFIG_ADJUST_GRADIENT:
             State_ConfigAdjustGradient();
             break;
-		// 설정 - 조정 - 옵셋
+		// ???? - ???? - ???
         case STATE_CONFIG_ADJUST_OFFSET:
             State_ConfigAdjustOffset();
             break;
-		// 설정 - 조정 - 필터
+		// ???? - ???? - ????
         case STATE_CONFIG_ADJUST_FILTER:
             State_ConfigAdjustFilter();
             break;
-		// 설정 - 조정 - 초기화
+		// ???? - ???? - ????
         case STATE_CONFIG_ADJUST_FACTORYRESET:
             State_ConfigAdjustFactoryReset();
             break;
 
 
-		//  설정 - 릴레이- 세정 - 자동세정
+		//  ???? - ??????- ???? - ???????
         case STATE_CONFIG_RELAY_RELAY1_AUTO_WASH:
             State_ConfigRelayRelay1AutoWash();
             break;
-		//  설정 - 릴레이- 세정 - 수동세정
+		//  ???? - ??????- ???? - ????????
         case STATE_CONFIG_RELAY_RELAY1_MAN_WASH:
             State_ConfigRelayRelay1manualWASH();
             break;
 
-		//  설정 - 릴레이- 경보 - 자동알람 
+		//  ???? - ??????- ?? - ?????? 
         case STATE_CONFIG_RELAY_RELAY2_AUTO_ALARM:
             State_ConfigRelayRelay2AutoAlarm();
             break;
-		//  설정 - 릴레이- 경보 - 알람해제
+		//  ???? - ??????- ?? - ???????
         case STATE_CONFIG_RELAY_RELAY2_ALARM_OFF:
             State_ConfigRelayRelay2AlarmOFF();
             break;
 
-        // 설정-릴레이-릴레이-설정동작
+        // ????-??????-??????-????????
         case STATE_CONFIG_RELAY_RELAY3_SET:
             State_ConfigRelayRelay3SetOP();
             break;
 
-        // 설정-릴레이-릴레이-수동동작
+        // ????-??????-??????-????????
         case STATE_CONFIG_RELAY_RELAY3_MAN:
             State_ConfigRelayRelay3manualOP();
             break;
     }
 }
-
 
 
 //====================================
@@ -1251,18 +1166,7 @@ void State_Main(void) {
             subState = 2;
             break;
         case 2:
-/*            if (flag10ms & FLAG10MS_BUTTON) {
-                flag10ms &= ~FLAG10MS_BUTTON;
-                if (CheckButton() == BUTTON_MENU) {
-                    subState = 3;
-                    cursor = 0;
-              //      MoveSelectedState();
-            		ClearBottomArea();
-                } else
-                    //RedrawTime();
-					RedrawBottomArea();
-            }
-            break;*/
+
 			if (flag10ms & FLAG10MS_BUTTON) {
 				flag10ms &= ~FLAG10MS_BUTTON;
 				btn = 	CheckButton();
@@ -1277,13 +1181,13 @@ void State_Main(void) {
 					case BUTTON_ENTER:
 						//RedrawTime();
 						RedrawBottomArea();
-						
+
 						if (btn1==BUTTON_LEFT && btn2==BUTTON_LEFT)
 						{
 							if (currentData.holdState==0) currentData.holdState=1;
 							else currentData.holdState=0;
 						}
-						
+
 						break;
 					default:
 					//RedrawTime();
@@ -1291,7 +1195,7 @@ void State_Main(void) {
 				}
 			}
             break;
-            
+
         case 3:
             if (flag10ms & FLAG10MS_BUTTON) {
                 flag10ms &= ~FLAG10MS_BUTTON;
@@ -1310,14 +1214,14 @@ void State_Main(void) {
 						if  (currentData.Device_Selector_Mode & SENSOR_1_MODE) 
 							 currentData.Device_Selector_Mode = SENSOR_2_MODE; 
 						else currentData.Device_Selector_Mode = SENSOR_1_MODE; 
-	
+
 						RedrawBottomArea_CH2();
 						break;
                 	case BUTTON_RIGHT:
 						if  (currentData.Device_Selector_Mode & SENSOR_1_MODE) 
 							 currentData.Device_Selector_Mode = SENSOR_2_MODE; 
 						else currentData.Device_Selector_Mode = SENSOR_1_MODE; 
-	
+
 						RedrawBottomArea_CH2();
 						break;
 					default:
@@ -1328,8 +1232,6 @@ void State_Main(void) {
             break;
     }
 }
-
-
 
 
 //====================================
@@ -1461,7 +1363,6 @@ void State_Config(void) {
 }
 
 
-
 //==========================================
 #ifndef   SENSOR_PH_EC
 
@@ -1498,9 +1399,6 @@ void display_calib_icon(void) {
 }
 
 #endif
-
-
-
 
 
 void State_Calib(void) {
@@ -1580,20 +1478,7 @@ void Trend_Data_calc(void) {
         comm_run_flag = 0;
     }
 } 
-/*
-void Trend_Data(void) {
-    int i = 0;
-    if (comm_run_flag != 1) {
-        comm_run_flag = 7;
-        if (Mesure_Data_Value[0][59] != 0xFFFF) {
-            for (i = 0; i < 60; i++) {
-                trendValue[0][i] = Mesure_Data_Value[0][i];
-            }
-        }
-        comm_run_flag = 0;
-    }
-}
-*/
+
 void State_Trend(void) {
 
 #ifndef    SENSOR_PH_EC
@@ -1602,7 +1487,6 @@ void State_Trend(void) {
 	if (currentData.Device_Selector_Mode == SENSOR_2_MODE) trand_select_Y_NO=3;
 #endif
 	else trand_select_Y_NO=4;
-
 
 
     switch (subState) {
@@ -1861,7 +1745,7 @@ void State_Alarm(void) {
                         if (configData.alarmConfig.highLimit != tempConfigData.alarmConfig.highLimit 
 						 || configData.alarmConfig.lowLimit != tempConfigData.alarmConfig.lowLimit
                          || configData.alarmConfig.zeroAlarm != tempConfigData.alarmConfig.zeroAlarm
-						 
+
 						 || configData.alarmConfig.highLimit2 != tempConfigData.alarmConfig.highLimit2 
 						 || configData.alarmConfig.lowLimit2 != tempConfigData.alarmConfig.lowLimit2
                          || configData.alarmConfig.zeroAlarm2 != tempConfigData.alarmConfig.zeroAlarm2	) {
@@ -1922,27 +1806,7 @@ uint16_t output20ma_flag = 0;
 int32_t output_temp4 = 0;
 int32_t output_temp20 = 0;
 
-/*
-void adj_Current_Cal(void) {
-    if (output4ma_flag == 1 && output20ma_flag == 0) {
-        if (campare_4mA != tempConfigData.outputConfig.outputReal4mA) {
-            configData.outputConfig.outputReal4mA = adjdefault4mA + tempConfigData.outputConfig.outputReal4mA;
-        }
-        TIM8_Chage_Duty_Channel(2, configData.outputConfig.outputReal4mA);
-        campare_4mA = configData.outputConfig.outputReal4mA;
-    } else if (output4ma_flag == 0 && output20ma_flag == 1) {
-        if (campare_20mA != tempConfigData.outputConfig.outputReal20mA) {
-            configData.outputConfig.outputReal20mA = adjdefault20mA + tempConfigData.outputConfig.outputReal20mA;
-        }
-        TIM8_Chage_Duty_Channel(2, configData.outputConfig.outputReal20mA);
-        campare_20mA = configData.outputConfig.outputReal20mA;
-    }
-    else {
-        campare_4mA = 0;
-        campare_20mA = 0;
-    }
-}
-*/  
+
 void adj_Current_Cal(void) {
     if (output4ma_flag == 1 && output20ma_flag == 0) {
         if (campare_4mA != tempConfigData.outputConfig.outputReal4mA) {
@@ -1984,7 +1848,6 @@ void adj_Current_Cal2(void) {
 }
 
 
-
 uint16_t dac_imsi=0;
 
 void DAC_output_imsi(uint16_t  data)
@@ -2010,8 +1873,6 @@ TIM8_Chage_Duty_Channel(2, dac_imsi);
 void DAC_output_imsi2(uint16_t  data) {
 	TIM8_Chage_Duty_Channel(3, data);
 }
-
-
 
 
 // ANALOG
@@ -2150,7 +2011,7 @@ void State_ConfigOutput(void) {
                                 break;
                             case 8:
 								//compareValue ^= 1;	
-                                compareValue=1; // 항상1로하자
+                                compareValue=1; // ???1??????
                                 break;
                         }
                         DrawOutputConfig(cursor, YELLOW);
@@ -2159,14 +2020,14 @@ void State_ConfigOutput(void) {
                         if (configData.outputConfig.output4mA     != tempConfigData.outputConfig.output4mA     || configData.outputConfig.output20mA     != tempConfigData.outputConfig.output20mA
                          || configData.outputConfig.outputReal4mA != tempConfigData.outputConfig.outputReal4mA || configData.outputConfig.outputReal20mA != tempConfigData.outputConfig.outputReal20mA) {
 
-						 	
+
 							configData = tempConfigData;
                             Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
                         }
                         if (configData.outputConfig.output4mA2     != tempConfigData.outputConfig.output4mA2     || configData.outputConfig.output20mA2     != tempConfigData.outputConfig.output20mA2
                          || configData.outputConfig.outputReal4mA2 != tempConfigData.outputConfig.outputReal4mA2 || configData.outputConfig.outputReal20mA2 != tempConfigData.outputConfig.outputReal20mA2) {
 
-						 	
+
 							configData = tempConfigData;
                             Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
                         }
@@ -2184,7 +2045,6 @@ void State_ConfigOutput(void) {
             break;
     }
 }
-
 
 
 void State_ConfigOutput2(void) {
@@ -2322,7 +2182,7 @@ void State_ConfigOutput2(void) {
                                 break;
                             case 8:
 								//compareValue ^= 1;	
-                                compareValue=1; // 항상1로하자
+                                compareValue=1; // ???1??????
                                 break;
                         }
                         DrawOutputConfig(cursor, YELLOW);
@@ -2331,14 +2191,14 @@ void State_ConfigOutput2(void) {
                         if (configData.outputConfig.output4mA     != tempConfigData.outputConfig.output4mA     || configData.outputConfig.output20mA     != tempConfigData.outputConfig.output20mA
                          || configData.outputConfig.outputReal4mA != tempConfigData.outputConfig.outputReal4mA || configData.outputConfig.outputReal20mA != tempConfigData.outputConfig.outputReal20mA) {
 
-						 	
+
 							configData = tempConfigData;
                             Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
                         }
                         if (configData.outputConfig.output4mA2     != tempConfigData.outputConfig.output4mA2     || configData.outputConfig.output20mA2     != tempConfigData.outputConfig.output20mA2
                          || configData.outputConfig.outputReal4mA2 != tempConfigData.outputConfig.outputReal4mA2 || configData.outputConfig.outputReal20mA2 != tempConfigData.outputConfig.outputReal20mA2) {
 
-						 	
+
 							configData = tempConfigData;
                             Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
                         }
@@ -2573,30 +2433,30 @@ void State_ConfigEthernet(void) {
 						IP_ADDR1=tempConfigData.EthernetConfig.IP_ADDR1;
 						IP_ADDR2=tempConfigData.EthernetConfig.IP_ADDR2;
 						IP_ADDR3=tempConfigData.EthernetConfig.IP_ADDR3;
-						
+
 						//NETMASK
 						NETMASK_ADDR0 =  tempConfigData.EthernetConfig.NETMASK_ADDR0;
 						NETMASK_ADDR1 =  tempConfigData.EthernetConfig.NETMASK_ADDR1;
 						NETMASK_ADDR2 =  tempConfigData.EthernetConfig.NETMASK_ADDR2;
 						NETMASK_ADDR3 =  tempConfigData.EthernetConfig.NETMASK_ADDR3;
-						
+
 						//Gateway Address
 						GW_ADDR0 =  tempConfigData.EthernetConfig.GW_ADDR0;
 						GW_ADDR1 =  tempConfigData.EthernetConfig.GW_ADDR1;
 						GW_ADDR2 =  tempConfigData.EthernetConfig.GW_ADDR2;
 						GW_ADDR3 =  tempConfigData.EthernetConfig.GW_ADDR3;
-						
+
 						ETHERNET_PORT=tempConfigData.EthernetConfig.ETHERNET_PORT;
 
 					  	/* Initilaize the LwIP stack */
 //					    lwip_init();
-					
+
 					    /* Configure the Network interface */
 //					    Netif_Config();
-					
+
 					    /* tcp echo server Init */
 //					    tcp_echoserver_init();
-					
+
 					    /* Notify user about the network interface config */
 //					    User_notification(&gnetif);
 
@@ -2613,8 +2473,6 @@ void State_ConfigEthernet(void) {
             break;
     }
 }
-
-
 
 
 //========================================
@@ -2780,7 +2638,6 @@ void State_ConfigTime(void) {
 }
 
 
-
 //==========================================
 
 void display_ConfigAdjust_icon(void) {
@@ -2805,7 +2662,6 @@ void State_ConfigAdjust(void) {
             RedrawBottomArea();
             subState = 1;
             cursor = 2;
-
 
 
         	configData.adjustConfig.gradientS1 = 100;
@@ -2912,7 +2768,6 @@ void State_ConfigAdjust(void) {
 #endif
 
 
-
 void Save_CalLog_Data(uint16_t Type, int32_t calvaule) {
     uint16_t address_start = 0;
     uint16_t upcounter = 0;
@@ -2981,7 +2836,6 @@ void Save_CalLog_Data(uint16_t Type, int32_t calvaule) {
 //    LogDataCounter = 0;
 
 
-
     EEpromdata.ReadEEpromData_Buffer[110] = LogData[110];
     EEpromdata.WriteEEpromData_Buffer[110] = LogData[110];
     MpuToEEprom(EEpromdata.WriteEEpromData_Buffer, address_start, 11);
@@ -2990,7 +2844,7 @@ void Save_CalLog_Data(uint16_t Type, int32_t calvaule) {
 }
 
 
-//제로교정
+//????????
 void State_CalibZero(void) {
 
     switch (subState) {
@@ -3148,8 +3002,7 @@ void State_CalibZero(void) {
 }
 
 
-
-// 기존의 스팬교정 span
+// ?????? ??????? span
 void State_CalibManual(void) {
     switch (subState) {
         case 0:
@@ -3308,9 +3161,7 @@ void State_CalibManual(void) {
 }
 
 
-
-
-// PH,EC 스팬교정 span
+// PH,EC ??????? span
 void State_CalibSpan(void) {
     switch (subState) {
         case 0:
@@ -3474,7 +3325,7 @@ void State_CalibSpan(void) {
 
 #ifndef  SENSOR_PH_EC
 
-// 이전 온도교정
+// ???? ???????
 void State_CalibTemp(void) {
     switch (subState) {
         case 0:
@@ -3613,7 +3464,7 @@ void State_CalibTemp(void) {
 
 #else
 
-// PH, EC 온도교정
+// PH, EC ???????
 void State_CalibTemp(void) {
     switch (subState) {
         case 0:
@@ -3718,7 +3569,7 @@ void State_CalibTemp(void) {
 
                         configData.calibrationConfig = tempConfigData.calibrationConfig;
                         Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
-						 
+
                         manual_cal_temp_flag = 1;
                         Save_CalLog_Data(TEXT96_TEMP_CALIBRATION, Tx_Adj_TempertureVaule);
                         Update_Cal_Logdata();
@@ -3786,7 +3637,7 @@ void State_CalibS2Cycle(void) {
 }
 
 
-// 교정이력 
+// ??????? 
 void State_CalibLog(void) {
     int year_temp = 0;
     int vaule_temp = 0;
@@ -3902,7 +3753,7 @@ void State_CalibLog(void) {
                         if (cursor > 0) {
                             --cursor;
                             caldisp_counter--;
-                            caldisp_counter = caldisp_counter - 3;	// 메뉴4개라서 -3해줌
+                            caldisp_counter = caldisp_counter - 3;	// ???4???? -3????
                             if (caldisp_counter < 0) {
                                 caldisp_counter = 0;
                             }
@@ -4032,7 +3883,7 @@ void State_CalibLog(void) {
                     case BUTTON_DOWN:
                         if (cursor < 95) {
                             caldisp_counter++;
-                            caldisp_counter = caldisp_counter - 3;	// 메뉴 4개라서 -3해줌
+                            caldisp_counter = caldisp_counter - 3;	// ??? 4???? -3????
 
                             ++cursor;
                             if (caldisp_counter == LogData[caldisp_counter * 11]) // cursor + 1
@@ -4165,11 +4016,10 @@ void State_CalibLog(void) {
 }
 
 
-
 //==========================================
 
 //=========================================
-// 버퍼교정 ph4
+// ??????? ph4
 
 //uint16_t buffer_calib_value=0;
 
@@ -4315,12 +4165,11 @@ void State_CalibBuffPH4(void) {
             break;
 
 
-
     }
 }
 
 //=========================================
-// 버퍼교정 ph7
+// ??????? ph7
 
 //uint16_t buffer_calib_value=0;
 
@@ -4464,7 +4313,6 @@ void State_CalibBuffPH7(void) {
             break;
 
 
-
     }
 }
 
@@ -4572,10 +4420,8 @@ void State_CalibBuff_EC(void) {
             break;
 
 
-
     }
 }
-
 
 
 //==========================================
@@ -4634,7 +4480,7 @@ void State_CalibBuff(void) {
 
 //==========================================
 
-// 자동세정-수동세정
+// ???????-????????
 void display_RelayRelay1_icon(void) {
     display_set7_autowash(0);
     display_set7_manwash(0);
@@ -4696,8 +4542,7 @@ void display_RelayRelay2_icon(void) {
 }
 
 
-
-// 경보-자동알림, 알림해제
+// ??-??????, ???????
 
 void State_ConfigRelayRelay2(void) {
     switch (subState) {
@@ -4875,7 +4720,7 @@ void State_ConfigAdjustGradient(void) {
                                 --tempConfigData.adjustConfig.gradientS2;
                             DrawAdjustGradient(0, 0, YELLOW);
                         }
-                        
+
                         break;
                     case BUTTON_ENTER:
                         if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
@@ -5145,7 +4990,7 @@ void State_ConfigAdjustFactoryReset(void) {
     }
 }
 
-//  설정 - 릴레이- 세정 - 자동세정
+//  ???? - ??????- ???? - ???????
 void State_ConfigRelayRelay1AutoWash(void) {
     switch (subState) {
         case 0:
@@ -5240,7 +5085,7 @@ void State_ConfigRelayRelay1AutoWash(void) {
 }
 
 
-// 수동세정
+// ????????
 void State_ConfigRelayRelay1manualWASH(void) {
     switch (subState) {
         case 0:
@@ -5309,7 +5154,7 @@ void State_ConfigRelayRelay1manualWASH(void) {
                         subState = 0;
                         state = STATE_MAIN;
 
-						// 자동세정 동작하기
+						// ??????? ???????
 						if (configData.relayConfig.relay1WashCycle>0) wash_run_flag = 1;	
 
                         break;
@@ -5337,8 +5182,7 @@ void State_ConfigRelayRelay2AutoAlarm(void) {
             display_set11_stop(0);
 
 
-
-			// 그냥 설정한다.
+			// ??? ???????.
 			{
             	configData.relayConfig.relay2AutoAlarm = 1;
 				tempConfigData.relayConfig.relay2AutoAlarm =1;
@@ -5353,65 +5197,7 @@ void State_ConfigRelayRelay2AutoAlarm(void) {
 
 
             break;
-/*
-        case 1:
-            if (flag10ms & FLAG10MS_BUTTON) {
-                flag10ms &= ~FLAG10MS_BUTTON;
-                switch (CheckButton()) {
-                    case BUTTON_HOME:
-                        subState = 0;
-                        state = STATE_MAIN;
-                        break;
-                    case BUTTON_BACK:
-                        subState = 0;
-                        RedrawMainView();
-                        MoveBackState();
-                        break;
-                    case BUTTON_LEFT:
-                        if (currentData.Device_Selector_Mode == SENSOR_1_MODE || currentData.Device_Selector_Mode == SENSOR_2_MODE) {
-                        } else if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
-                            if (cursor == 0)
-                                cursor = 2;
-                            else
-                                --cursor;
-                        }
-                        break;
-                    case BUTTON_RIGHT:
-                        if (currentData.Device_Selector_Mode == SENSOR_1_MODE || currentData.Device_Selector_Mode == SENSOR_2_MODE) {
-                        } else if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
-                        }
-                        break;
 
-                    case BUTTON_UP:
-                    case BUTTON_DOWN:
-                        if (currentData.Device_Selector_Mode == SENSOR_1_MODE || currentData.Device_Selector_Mode == SENSOR_2_MODE) {
-                            tempConfigData.relayConfig.relay2AutoAlarm ^= 1;
-                        } else {
-                        }
-                        //				DrawRelay2Alarm(tempConfigData.relayConfig.relay2AutoAlarm, YELLOW);
-                        if ((tempConfigData.relayConfig.relay2AutoAlarm & 0x01) == 0x01) {
-                            //		     DrawTextETC(L_NUMBER1_X, L_NUMBER3_Y, TEXT_ETC_RUN_Y, DRAW_IMAGE_ENABLE);
-                            display_set11_run(1);
-                            display_set11_stop(0);
-                        } else {
-                            //			   DrawTextETC(L_NUMBER1_X, L_NUMBER3_Y, TEXT_ETC_STOP_Y, DRAW_IMAGE_ENABLE);
-                            display_set11_run(0);
-                            display_set11_stop(1);
-                        }
-
-                        break;
-                    case BUTTON_ENTER:
-                        if (configData.relayConfig.relay2AutoAlarm != tempConfigData.relayConfig.relay2AutoAlarm) {
-                            configData.relayConfig.relay2AutoAlarm = tempConfigData.relayConfig.relay2AutoAlarm;
-                            Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
-                        }
-                        subState = 0;
-                        state = STATE_MAIN;
-                        break;
-                }
-            }
-            break;
-			*/
     }
 }
 
@@ -5434,8 +5220,7 @@ void State_ConfigRelayRelay2AlarmOFF(void) {
             display_set11_stop(0);
 
 
-
-			// 그냥 설정한다.
+			// ??? ???????.
 			{
             	configData.relayConfig.relay2AutoAlarm = 0;
 				tempConfigData.relayConfig.relay2AutoAlarm =0;
@@ -5450,54 +5235,8 @@ void State_ConfigRelayRelay2AlarmOFF(void) {
             state = STATE_MAIN;
 
 
-
             break;
-/*        case 1:
-            if (flag10ms & FLAG10MS_BUTTON) {
-                flag10ms &= ~FLAG10MS_BUTTON;
-                switch (CheckButton()) {
-                    case BUTTON_HOME:
-                        subState = 0;
-                        state = STATE_MAIN;
-                        break;
-                    case BUTTON_BACK:
-                        subState = 0;
-                        RedrawMainView();
-                        MoveBackState();
-                        break;
-                    case BUTTON_LEFT:
-                        break;
-                    case BUTTON_RIGHT:
-                        break;
 
-                    case BUTTON_UP:
-                    case BUTTON_DOWN:
-                        tempConfigData.relayConfig.relay2AlarmOFF ^= 1;
-                        //				DrawRelayAlarm(tempConfigData.relayConfig.relay2AlarmOFF);
-
-                        if ((tempConfigData.relayConfig.relay2AlarmOFF & 0x01) == 0) {
-                            //		     DrawTextETC(L_NUMBER1_X, L_NUMBER3_Y, TEXT_ETC_RUN_Y, DRAW_IMAGE_ENABLE);
-                            display_set11_run(1);
-                            display_set11_stop(0);
-                        } else {
-                            //			   DrawTextETC(L_NUMBER1_X, L_NUMBER3_Y, TEXT_ETC_STOP_Y, DRAW_IMAGE_ENABLE);
-                            display_set11_run(0);
-                            display_set11_stop(1);
-                        }
-
-                        break;
-                    case BUTTON_ENTER:
-                        if (configData.relayConfig.relay2AlarmOFF != tempConfigData.relayConfig.relay2AlarmOFF) {
-                            configData.relayConfig.relay2AlarmOFF = tempConfigData.relayConfig.relay2AlarmOFF;
-                            Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
-                        }
-                        subState = 0;
-                        state = STATE_MAIN;
-                        break;
-                }
-            }
-            break;
-			*/
     }
 }
 
@@ -5664,7 +5403,7 @@ void State_ConfigRelayRelay3manualOP(void) {
                         subState = 0;
                         state = STATE_MAIN;
 
-						// 세정3 동작하기
+						// ????3 ???????
 						if (configData.relayConfig.relay3WashCycle>0) wash_run_flag3 = 1;	
 
                         break;
@@ -5770,10 +5509,6 @@ void FactoryReset(void) {
 }
 
 
-
-
-
-
 #define DAY_X 28	//10
 #define DAY_Y 233
 #define TIME_X 193	//179
@@ -5797,29 +5532,16 @@ void RedrawTime(void) {
 
 
         sprintf(strBuffer, "%02d:%02d:%02d", currentTime.tm_hour, currentTime.tm_min, currentTime.tm_sec);
-	    
+
 		if (time_up>0) {
 			Draw_Back_Oval_140x42(172, 220);
 			time_up--;
 		}
 		if (currentTime.tm_min != prevTime.tm_min) time_up=2;
 
-		//TFT_Fill(269,228, 269+35,228+28, WHITE);	 // 안해도 된다.
+		//TFT_Fill(269,228, 269+35,228+28, WHITE);	 // ????? ???.
         DrawSmallNumber(TIME_X, TIME_Y, strBuffer, WHITE);
     }
-    /*
-        if(currentTime.tm_mday != prevTime.tm_mday)
-        {
-            Draw_Back_Oval_140x42(20,220);
-            Draw_Back_Oval_140x42(172,220);
-            Draw_Back_Oval_140x42(322,220);
-
-            sprintf(strBuffer, "%04d-%02d-%02d",  currentTime.tm_year, currentTime.tm_mon+1, currentTime.tm_mday);
-            DrawSmallNumber(DAY_X, DAY_Y, strBuffer);
-            sprintf(strBuffer, "%02d:%02d:%02d",  currentTime.tm_hour, currentTime.tm_min, currentTime.tm_sec);
-            DrawSmallNumber(TIME_X, TIME_Y, strBuffer);
-        }
-     */
 
 
     prevTime = currentTime;
