@@ -1,6 +1,7 @@
 #include "Main.h"
 #include "Sensor_Manager.h"
 #include "sensor_autodetect.h"
+#include "ui_mode.h"
 
 
 unsigned int buz_time;	// max=65535*10msec=655.35sec
@@ -220,7 +221,7 @@ void State_ConfigEthernet(void);
 
 int main(void) 
 {
-	char led;
+	char led = 0;
 	unsigned int data=0;
 
 
@@ -252,7 +253,8 @@ BUZ_ON;
 	init_tx3Buffer();
 #endif
 
-	Sensor_Manager_Init();   /* ???? ??? ???? ????? ???? */
+	sensor_manager_init();   /* ???? ??? ???? ????? ???? */
+    GetUiMode();
 
     // test
     //	DrawBack2();
@@ -377,7 +379,7 @@ BUZ_OFF;
         SensorComHandler();
 
         /* ???? ??? ???? ???? (Modbus485Handler ???? ???? ?????? ??) */
-        Update_All_External_Sensors();
+        sensor_manager_update();
 
         // 4-20mA ???
         Update_CurrentTrans();
@@ -523,7 +525,7 @@ BUZ_OFF;
 
 //=======================================================
 
-uint16_t delay_temp;
+volatile uint16_t delay_temp;
 
 void Delay_10msec(uint16_t Time) {
     int i = 0,j;

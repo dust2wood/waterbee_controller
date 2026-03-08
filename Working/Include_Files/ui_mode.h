@@ -10,10 +10,11 @@ typedef enum {
     UI_MODE_4CH
 } ui_mode_t;
 
+extern ui_mode_t g_ui_mode;  /* current UI mode set by GetUiMode() */
+
 /**
- * 1 sensor -> UI_MODE_1CH
- * 2 sensors -> UI_MODE_2CH
- * 3 or more -> UI_MODE_4CH
+ * Detects sensor count via sensor_manager_count(), sets g_ui_mode, and returns it.
+ * Call once after sensor_manager_init().
  */
 ui_mode_t GetUiMode(void);
 

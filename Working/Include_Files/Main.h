@@ -481,7 +481,7 @@ void ReadSenosr2ADC (void);
 void adj_Current_Cal (void);
 void Wash1_Run_Handler (void);
 void Set_Relay_OP_Run_Handler (void);
-void Trend_Data_move (void);
+void Trend_Data_calc (void);
 void bufferData_reset_function (void);
 void SD_Detect_Draw (void);
 void Alarm_Icon_Draw (void);

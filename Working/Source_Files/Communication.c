@@ -153,8 +153,22 @@ void SensorComHandler(void) {
 //        ComCouter2 = 0;
 //    }
 #else
-                RedrawValue();
-
+    if ((ComCouter > 1600 && state == 0) || (ComCouter2 > 500 && state == 0x15)) {
+        currentData.S1PPM = 0;
+        currentData.S2PPM = 0;
+        currentData.temperature = 0;
+        currentData.temperature1 = 0;
+        DrawIcon(ICON_WORKING, DRAW_IMAGE_DISABLE);
+        Sensor_State1 = SENSOR_ERROR3;
+        Sensor_State2 = SENSOR_ERROR3;
+        Sensor_State3 = SENSOR_ERROR3;
+        Sensor_State4 = SENSOR_ERROR3;
+        RedrawValue();
+        ComCouter_Prev = ComCouter;
+        ComCouter  = 0;
+        ComCouter2 = 0;
+        WORKING_TIMER = 0;
+    }
 #endif
 
 
@@ -679,7 +693,7 @@ void Modbus485Handler(void) {
 
 											data_EC *=9.999;
 											if (data_EC<0) data_EC=0;
-											if (data_EC>20000) data_EC=20000;
+											if (data_EC>200000) data_EC=200000;
 
 
 											//=====================
@@ -698,8 +712,8 @@ void Modbus485Handler(void) {
 											d=configData.calibrationConfig.EC_Span_Cal;
 
 											currentData.S2PPM = (d-b)*(data_EC-a)/(c-a) +b;
-											if (currentData.S2PPM<0) 		currentData.S2PPM=0;
-											if (currentData.S2PPM>20000) 	currentData.S2PPM=20000;
+											if ((int32_t)currentData.S2PPM<0) 	currentData.S2PPM=0;
+											if (currentData.S2PPM>200000) 	currentData.S2PPM=200000;
 
 											Sensor2_OK_TIME=10;	// 10=10sec
 
