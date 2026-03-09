@@ -77,21 +77,7 @@ static uint8_t probe_adc(void)
 
 void sensor_autodetect_run(void)
 {
-    uint8_t addr;
-
-    sensor_autodetect_ph  = 0;
-    sensor_autodetect_ec  = 0;
-    sensor_autodetect_adc = 0;
-
-#ifdef SENSOR_PH_EC
-    for (addr = RS485_SCAN_ADDR_MIN; addr <= RS485_SCAN_ADDR_MAX; addr++) {
-        if (probe_modbus_addr(addr)) {
-            if (addr == 2) sensor_autodetect_ph = 1;
-            if (addr == 4) sensor_autodetect_ec = 1;
-        }
-        Delay_10msec(1);
-    }
-#endif
-
-    sensor_autodetect_adc = probe_adc();
+    /* Autodetect 스캔 비활성화. pH/EC는 고정 매핑(addr 2, 4) 사용. */
+    sensor_autodetect_ph = 1;
+    sensor_autodetect_ec = 1;
 }

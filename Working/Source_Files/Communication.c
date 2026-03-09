@@ -1,4 +1,11 @@
+/**
+ * Communication.c - Modbus RS232/RS485 handlers (unified firmware)
+ *
+ * RS485: pH (slave 2), EC (slave 4) -> currentData + water_data
+ * RS232: CL ($RES1), NTU ($RES2) -> currentData + water_data
+ */
 #include "Communication.h"
+#include "Sensor_Manager.h"
 
 uint32_t rx1HandlerCount = 0, rx2HandlerCount = 0, rx3HandlerCount = 0, rs485DriveCount = 0;
 uint16_t tx2Buffering[16], tx3Buffering[16];
@@ -64,14 +71,17 @@ char WORKING_TIMER=0;
 
 uint16_t	rx1_read_ptr=0;
 
-// RS232, RS485 ½Ã°£Áö³ª¸é 4-20Ma ·Î º¹±ÍÇÏ±â
+// RS232, RS485 ï¿½??ï¿½ï¿½ï¿½ï¿½ 4-20Ma ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½
 uint16_t rx2_time_count=0, rx3_time_count=0;
 
 
 extern uint16_t data_pH, data_pH_imsi, data_EC;		// ph = 0.00  temp = 0.0  ec=0.0
 extern int16_t data_TEMP, SET_data_TEMP;
 
-char  ph_temp=0;	// ph ¶Ç´Â temp ¼±ÅÃÇÏ´Â°Å, Ç¥½ÃÇÒ¶§ Àß¸øµÇ´Â°æ¿ì°¡ ÀÖ¾î¼­ ÀÌ¸¦ »ç¿ëÇÔ...
+char  ph_temp=0;	// ph ï¿½?ï¿½ temp ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½, ?ï¿½ï¿½ï¿½?ï¿½ ï¿½?ï¿½ï¿½?ï¿½ï¿½? ï¿½?? ï¿½?ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½...
+
+/* Expected slave addr for current request - only accept matching response (multi-drop safe) */
+static uint8_t s_expected_rs485_addr = 0;
 
 unsigned char	Sensor1_OK_TIME=20;
 unsigned char	Sensor2_OK_TIME=20;
@@ -92,70 +102,31 @@ void SensorComHandler(void) {
     else if (state==0x15) 	{ ComCouter=0; ComCouter2++; }
 
 
-#ifndef SENSOR_PH_EC
+	/* í†µí•© íŽŒì›¨ì–´: í†µì‹  íƒ€ìž„ì•„ì›ƒ ì‹œ ì—ëŸ¬ê°’ ì„¤ì • (CL/NTU/PH/EC ê³µí†µ) */
+	if ((ComCouter > 1600 && state==0) || (ComCouter2 > 500 && state==0x15)) {
+		DrawIcon(ICON_WORKING, DRAW_IMAGE_DISABLE);
+		Sensor_State1=SENSOR_ERROR3;
+		Sensor_State2=SENSOR_ERROR3;
+		Sensor_State3=SENSOR_ERROR3;
+		Sensor_State4=SENSOR_ERROR3;
 
-  // Åë½ÅÀÌ ¾Èµé¾î¿À¸é ¿¡·¯ Ã³¸®ÇÏ´ÂºÎºÐ
-	// stste=0 Àº ¸ÞÀÎ¸Þ´ºÀÌ°í, state=15 ´Â Áø´Ü¸ðµå(diag) ÀÏ¶§ÀÇ Åë½Å ¿¡·¯Ã¼Å©ÀÌ´Ù.
-	// ¸ÞÀÎ¸Þ´º¿¡¼­´Â ºü¸£°Ô ¿òÁ÷ÀÌ¹Ç·Î 4000À¸·Î Çß´Ù. ¾à 4~5ÃÊ
-	// Áø´Ü¸Þ´º¿¡¼­´Â ´À¸®°Ô ¿òÁ÷ÀÌ¹Ç·Î 70À¸·Î Çß´Ù. ¾à 4~5ÃÊ
-//    if (ComCouter2 > 100 && (state == 0 || state == 0x15)) {
-//    if ((ComCouter > 150 && state==0)  || (ComCouter2 > 70 && state==0x15) ) {
-//    if ((ComCouter > 800 && state==0)  || (ComCouter2 > 200 && state==0x15) ) {
+		currentData.S1PPM = 0;
+		currentData.temperature = 0;
+		currentData.temperature1 = 0;
+		currentData.S1mV = 0;
+		currentData.S2PPM = (sensor_manager_get_display_field(1) == WATER_FIELD_NTU) ? 15 : 0;
+		currentData.S2mV = 0;
+		trans_anlog_pwmVaule = 0;
+		trans_temp_pwmVaule = 0;
+		TIM8_Chage_Duty_Channel(2, trans_anlog_pwmVaule);
+		TIM8_Chage_Duty_Channel(3, trans_temp_pwmVaule);
+		RedrawValue();
 
-//    if ((ComCouter > 1600 && state==0)  || (ComCouter2 > 500 && state==0x15) ) {
-    if ((ComCouter > 1600 && state==0)  || (ComCouter2 > 500 && state==0x15) ) {
-//        if (ComCouter_Prev == ComCouter) {
-//            if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
-                //DrawTextsize120(MEASURE_X2, MEASURE_Y, TEXT120_MEASURING, DRAW_IMAGE_DISABLE);
-//                DrawIcon(ICON_WORKING, DRAW_IMAGE_DISABLE);
-//				Sensor_State=SENSOR_ERROR3;
-
-                currentData.S1PPM = 0;
-                currentData.temperature = 0;
-				currentData.temperature1= 0;
-                currentData.S1mV = 0;
-                trans_anlog_pwmVaule = 0;
-                trans_temp_pwmVaule = 0;
-//                TIM8_Chage_Duty_Channel(2, trans_anlog_pwmVaule);
-//                TIM8_Chage_Duty_Channel(3, trans_temp_pwmVaule);
-//                RedrawValue();
-//            } else if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
-                //DrawTextsize120(MEASURE_X1, MEASURE_Y, TEXT120_MEASURING, DRAW_IMAGE_DISABLE);
-                DrawIcon(ICON_WORKING, DRAW_IMAGE_DISABLE);
-				Sensor_State1=SENSOR_ERROR3;
-				Sensor_State2=SENSOR_ERROR3;
-				Sensor_State3=SENSOR_ERROR3;
-				Sensor_State4=SENSOR_ERROR3;
-
-#ifndef SENSOR_PH_EC
-                currentData.S2PPM = 15;	// ÃÖ¼Ò°ª 0.015 
-#else
-                currentData.S2PPM = 0;	// ÃÖ¼Ò°ª 
-#endif
-
-                currentData.temperature = 0;
-				currentData.temperature1= 0;
-                currentData.S2mV = 0;
-                trans_anlog_pwmVaule = 0;
-                trans_temp_pwmVaule = 0;
-                TIM8_Chage_Duty_Channel(2, trans_anlog_pwmVaule);
-                TIM8_Chage_Duty_Channel(3, trans_temp_pwmVaule);
-                RedrawValue();
-//            }
-//        }
-        ComCouter_Prev = ComCouter;
-        ComCouter  = 0;
-        ComCouter2 = 0;
-		WORKING_TIMER=0;	// no display
+		ComCouter_Prev = ComCouter;
+		ComCouter = 0;
+		ComCouter2 = 0;
+		WORKING_TIMER = 0;
 	}
-	//else if (Sensor_State==SENSOR_ERROR3)	Sensor_State=SENSOR_OK;
-//    } else if (ComCouter2 > 4001) {
-//        ComCouter2 = 0;
-//    }
-#else
-                RedrawValue();
-
-#endif
 
 
 }
@@ -177,16 +148,16 @@ void zero_cal_data_update(void) {
 }
 
 
-// ¼¾¼­ÀÔ·Â°ªÀ» ÇÊÅÍ°ªÀ¸·Î Æò±ºÇÏ±â 
+// ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½?ï¿½ 
 uint32_t S1PPm_Filter_OUT_function(uint8_t sensor_no, uint32_t sensor) {
 	static int cnt[4]={0,}, cnt2, i;
 	uint32_t data=0;
 
-	// 1. ¼¾¼­ÀÔ·Â°ªÀ» ÀúÀåÇÏ±â
+	// 1. ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½
 	Filter_Data_Value[sensor_no][cnt[sensor_no]] = sensor;
 	cnt[sensor_no]++;	if (cnt[sensor_no]>50) cnt[sensor_no]=0;
 
-	// 2. ¼¾¼­ÀÔ·Â°ªÀ» Æò±ÕÇÏ±â
+	// 2. ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½?ï¿½
 	if (configData.adjustConfig.filterS1==0) return (sensor);
 	if (configData.adjustConfig.filterS1>100) return (sensor);
 
@@ -198,7 +169,7 @@ uint32_t S1PPm_Filter_OUT_function(uint8_t sensor_no, uint32_t sensor) {
 	}										   
 	data /=configData.adjustConfig.filterS1;
 
-	// 3. ÇöÀç ¼¾¼­°ªÀ¸·Î ´ëÄ¡
+	// 3. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½?
 	return (data);
 }
 
@@ -211,12 +182,12 @@ void S1PPm_Data_offset_function(void) {
 
 
 	//=====================
-	// PH ¹öÆÛ±³Á¤ Àû¿ëÇÏ±â
+	// PH ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½
 	//=====================
-	// a,b=ph4 ÀÇ ¼¾¼­°ª, ±³Á¤°ª
-	// c,d=ph7 ÀÇ ¼¾¼­°ª, ±³Á¤°ª
-	// x ÇöÀç ¼¾¼­°ª
-	// y ÇöÀç ±³Á¤°ª
+	// a,b=ph4 ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// c,d=ph7 ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// x ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// y ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	data_pH = currentData.comm_S1PPM;
 
@@ -230,9 +201,9 @@ void S1PPm_Data_offset_function(void) {
 	imsi = (d-b)*(data_pH-a)/(c-a) +b;
 
 	//=====================
-	// ½ºÆÒ±³Á¤ Àû¿ëÇÏ±â
+	// ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½
 	//=====================
-	// f:±³Á¤°ª, e:±³Á¤½Ã ÃøÁ¤°ª, e0:Áö±Ý ÃøÁ¤°ª 
+	// f:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, e:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, e0:ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 	// y=f/e * e0; 	
 	f = configData.calibrationConfig.PH_Span_Cal;
 	e = configData.calibrationConfig.PH_Span_Value;
@@ -242,12 +213,12 @@ void S1PPm_Data_offset_function(void) {
 
 
 	//=====================
-	// EC ±³Á¤ Àû¿ëÇÏ±â
+	// EC ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½
 	//=====================
-	// a,b=Á¦·Î±³Á¤ÀÇ ¼¾¼­°ª, ±³Á¤°ª
-	// c,d=½ºÆÒ±³Á¤ÀÇ ¼¾¼­°ª, ±³Á¤°ª
-	// x ÇöÀç ¼¾¼­°ª
-	// y ÇöÀç ±³Á¤°ª
+	// a,b=ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// c,d=ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// x ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// y ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	data_EC = currentData.comm_S2NTU;
 
@@ -263,7 +234,7 @@ void S1PPm_Data_offset_function(void) {
 
 
 	//===========================
-	// ±â¿ï±â, offset Àû¿ëÇÏ±â
+	// ï¿½ï¿½ï¿½ï¿½, offset ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½
 	//===========================
 
     //if (currentData.Device_Selector_Mode & SENSOR_1_MODE) 
@@ -289,15 +260,13 @@ void S1PPm_Data_offset_function(void) {
 //            currentData.S1PPM = (uint32_t) ((Adj_gradientS2 + Adj_offsetS2)*100);
 //        } else 
 			currentData.S1PPM = (uint32_t) ((Adj_gradientS1 + Adj_offsetS1)*100);
-            currentData.S2PPM = (uint32_t) ((Adj_gradientS2 + Adj_offsetS2)*1000);
-
-
-#ifndef SENSOR_PH_EC
-			if (currentData.S2PPM <15) currentData.S2PPM=15;	// ÃÖ¼Ò°ª 0.015 Å¹µµ 
-#else 
-            currentData.S2PPM = (uint32_t) ((Adj_gradientS2 + Adj_offsetS2/100)*1000);
-			if (currentData.S2PPM <0) currentData.S2PPM=0;	// ÃÖ¼Ò°ª 0.015
-#endif
+			if (sensor_manager_get_display_field(1) == WATER_FIELD_NTU) {
+				currentData.S2PPM = (uint32_t) ((Adj_gradientS2 + Adj_offsetS2)*1000);
+				if (currentData.S2PPM < 15) currentData.S2PPM = 15;
+			} else {
+				currentData.S2PPM = (uint32_t) ((Adj_gradientS2 + Adj_offsetS2/100)*1000);
+				if (currentData.S2PPM < 0) currentData.S2PPM = 0;
+			}
 
 
         if (couter_vaule_ppm < 60) {
@@ -480,22 +449,18 @@ void Modbus232Handler(void) {
 }
 
 
-#ifdef  SENSOR_PH_EC
 void init_tx3Buffer(void)
 {
     uint16_t crc = 0;
 
-    // µ¥ÀÌÅÍ ¿äÃ»ÇÏ±â
-    RS485_DRIVE_HIGH;
+    rx3Size = 0;
+    rx3HandlerCount = 0;
 
+    RS485_DRIVE_HIGH;
     Delay_10msec(10);
 
-    if (currentData.Device_Selector_Mode & SENSOR_1_MODE) 	{ 
-			tx3Buffer[0] = 2;
-	}
-	else 	{
-			tx3Buffer[0] = 4;
-	}
+    /* ê³ ì • ë§¤í•‘: pH=addr2, EC=addr4. autodetect ì—†ì´ í•­ìƒ í´ë§. */
+    tx3Buffer[0] = 2;  /* pH ìŠ¬ë¡¯1ë¶€í„° ì‹œìž‘ (Modbus485Handlerì—ì„œ 2â†”4 êµëŒ€) */
 
     tx3Buffer[1] = 3;
 
@@ -514,6 +479,7 @@ void init_tx3Buffer(void)
 
     tx3Size = 8;
     tx3Count = 1;
+    s_expected_rs485_addr = tx3Buffer[0];
     com485State = 1;
     rs485DriveCount = 0;
 
@@ -521,8 +487,6 @@ void init_tx3Buffer(void)
 	rx3_time_count=0;
 
 }
-
-#endif
 
 
 void Modbus485Handler(void) {
@@ -536,17 +500,11 @@ void Modbus485Handler(void) {
 
     switch (com485State) {
         case 0:
-
-
-#ifdef  SENSOR_PH_EC
-	// Åë½ÅÀÌ ¾ÈµÇ¸é Ã³À½ºÎÅÍ ´Ù½Ã Åë½Å½ÃµµÇÑ´Ù.
 	init_count++;
-	if (init_count>10) {
+	if (init_count > 10) {
 		init_tx3Buffer();
-		init_count=0;
+		init_count = 0;
 	}
-#endif
-
 
             if (rx3Size > 0) {
                 if (flag10ms & FLAG10MS_RX3) {
@@ -554,25 +512,19 @@ void Modbus485Handler(void) {
                     ++rx3HandlerCount;
 
 
-#ifdef  SENSOR_PH_EC
                         if (rx3Buffer[1] == 0x03) {
 
-							// 2. receive pH data (addr=2)	 and TEMP data
-                            if (rx3Buffer[0] == 2) {
+							/* Only accept response from sensor we requested (multi-drop safe) */
+							if (rx3Buffer[0] != s_expected_rs485_addr) {
+								rx3Size = 0;
+								rx3HandlerCount = 0;
+							} else if (rx3Buffer[0] == 2) {
                                 if (rx3Size == 7) {
 									rx3Size = 0;
                                     crc = CRC16Modbus(rx3Buffer, 5);
 									if (crc==((rx3Buffer[6]<<8) | rx3Buffer[5]))
 									{
-
-										//  currentData.S1PPM = data_pH;
-										//	currentData.temperature = data_TEMP*10;
-
-										//=====================
-										// PH, ¿Âµµ µ¥ÀÌÅÍ ¹Þ¾Æ¼­ °Ô»êÇÏ±â
-										//=====================
-
-										if ( ph_temp==1 && init_count>1 && init_count<9)		{
+										if ( ph_temp==1)	{
 											data_pH   = ((rx3Buffer[3]<<8) | rx3Buffer[4]);
 
 											if (data_pH<0) 		data_pH=0;
@@ -580,12 +532,12 @@ void Modbus485Handler(void) {
 
 
 											//=====================
-											// ¹öÆÛ±³Á¤ Àû¿ëÇÏ±â
+											// ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½
 											//=====================
-											// a,b=ph4 ÀÇ ¼¾¼­°ª, ±³Á¤°ª
-											// c,d=ph7 ÀÇ ¼¾¼­°ª, ±³Á¤°ª
-											// x ÇöÀç ¼¾¼­°ª
-											// y ÇöÀç ±³Á¤°ª
+											// a,b=ph4 ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+											// c,d=ph7 ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+											// x ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+											// y ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 											//data_pH = (d-b)/(c-a) * (x-a) +b;
 											//data_pH = (d-b)*(data_pH-a)/(c-a) +b;
@@ -597,98 +549,81 @@ void Modbus485Handler(void) {
 											data_pH_imsi = (d-b)*(data_pH-a)/(c-a) +b;
 
 											//=====================
-											// ½ºÆÒ±³Á¤ Àû¿ëÇÏ±â
+											// ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½
 											//=====================
-											// f:±³Á¤°ª, e:±³Á¤½Ã ÃøÁ¤°ª, e0:Áö±Ý ÃøÁ¤°ª 
+											// f:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, e:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, e0:ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 											// y=f/e * e0; 	
 											f = configData.calibrationConfig.PH_Span_Cal;
 											e = configData.calibrationConfig.PH_Span_Value;
 											imsi2 = data_pH_imsi*f/e;
 
 											currentData.S1PPM = imsi2;
+											water_data.ph = (float)imsi2 / 100.0f;
 											Sensor1_OK_TIME=10;	// 10=10sec
 
 
 										}
-										else if (init_count>1 && init_count<9) {
+										else {
 											data_TEMP = ((rx3Buffer[3]<<8) | rx3Buffer[4])*10;
 
-											//=====================
-											// ¿Âµµ µ¥ÀÌÅÍ ¹Þ¾Æ¼­ °Ô»êÇÏ±â
-											//=====================
-											// f:±³Á¤°ª, e:±³Á¤½Ã ÃøÁ¤°ª, e0:Áö±Ý ÃøÁ¤°ª 
-											// y=f/e * e0; 	
 											f = configData.calibrationConfig.TEMP_Span_Cal1;
 											e = configData.calibrationConfig.TEMP_Span_Value1;
 											imsi2 = data_TEMP*f/e;
 
 											currentData.temperature = imsi2;
-											//6 = data_TEMP;
 										  	if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
 												SET_data_TEMP = data_TEMP;
 											}
 										}
 
-
 										Sensor_State3=SENSOR_OK;
 										Sensor1_OK_TIME=10;	// 10=10sec
 
 
-										//=====================
-									    // µ¥ÀÌÅÍ ¿äÃ»ÇÏ±â
-										//=====================
                                         RS485_DRIVE_HIGH;
-                                        tx3Buffer[0] = 2;
+                                        tx3Buffer[0] = 4;	/* pH ì²˜ë¦¬ í›„ EC(addr4)ë¡œ êµëŒ€ */
                                         tx3Buffer[1] = 3;
-
                                         tx3Buffer[2] = 0;
-										if (ph_temp==0)  	{ ph_temp=1; tx3Buffer[3] = 1; }	// 0=temp, 1=ph
-										else			  	{ ph_temp=0; tx3Buffer[3] = 0; }	// 0=temp, 1=ph
-
+										ph_temp = 0;
+										tx3Buffer[3] = 0;
                                         tx3Buffer[4] = 0;
                                         tx3Buffer[5] = 1;
-
 									    crc = CRC16Modbus(tx3Buffer, 6);
 									    tx3Buffer[6] = crc & 0xFF;
 									    tx3Buffer[7] = ((crc & 0xFF00) >> 8);
-
                                         tx3Size = 8;
                                         tx3Count = 1;
-
+                                        s_expected_rs485_addr = 4;
 	                                    com485State = 1;
 	                                    rs485DriveCount = 0;
-
+                                        rx3Size = 0;
+	                                    rx3HandlerCount = 0;
 										comm_type=COMM_RS485;
 										rx3_time_count=0;
 									}
                                 }
                             }
 
-
-							// 3. receive EC data (addr=4)
+							/* EC (addr=4) - reject concatenated/garbled */
                             else if (rx3Buffer[0] == 4) {
-                                if (rx3Size == 7 || rx3Size == 15 ) {
-	                                if (rx3Size == 7 ) 			crc = CRC16Modbus(rx3Buffer, 5);
-	                                else if (rx3Size == 15 ) 	crc = CRC16Modbus(&rx3Buffer[8], 5);
-
-									if (crc==((rx3Buffer[6]<<8) | rx3Buffer[5]) || crc==((rx3Buffer[8+6]<<8) | rx3Buffer[8+5]))
+                                if (rx3Size == 7) {
+	                                crc = CRC16Modbus(rx3Buffer, 5);
+									if (crc==((rx3Buffer[6]<<8) | rx3Buffer[5]))
 									{
-										if ( ph_temp==1 && init_count>1 && init_count<8)	{
-											if (rx3Size==7)	data_EC   = ((rx3Buffer[3]<<8) | rx3Buffer[4]);
-											else if (rx3Size==15)	data_EC   = ((rx3Buffer[8+3]<<8) | rx3Buffer[8+4]);
-
+										if ( ph_temp==1)	{
+											data_EC = ((rx3Buffer[3]<<8) | rx3Buffer[4]);
 											data_EC *=9.999;
 											if (data_EC<0) data_EC=0;
 											if (data_EC>20000) data_EC=20000;
 
 
 											//=====================
-											// ±³Á¤ Àû¿ëÇÏ±â
+											// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½
 											//=====================
-											// a,b=Á¦·Î±³Á¤ÀÇ ¼¾¼­°ª, ±³Á¤°ª
-											// c,d=½ºÆÒ±³Á¤ÀÇ ¼¾¼­°ª, ±³Á¤°ª
-											// x ÇöÀç ¼¾¼­°ª
-											// y ÇöÀç ±³Á¤°ª
+											// a,b=ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+											// c,d=ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+											// x ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+											// y ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 											//data_pH = (d-b)/(c-a) * (x-a) +b;
 											//data_pH = (d-b)*(data_pH-a)/(c-a) +b;
@@ -700,63 +635,47 @@ void Modbus485Handler(void) {
 											currentData.S2PPM = (d-b)*(data_EC-a)/(c-a) +b;
 											if (currentData.S2PPM<0) 		currentData.S2PPM=0;
 											if (currentData.S2PPM>20000) 	currentData.S2PPM=20000;
+											water_data.ec = (currentData.S2PPM >= 20000) ?
+												(float)currentData.S2PPM / 10.0f : (float)currentData.S2PPM / 1000.0f;
 
 											Sensor2_OK_TIME=10;	// 10=10sec
 
 
 										}
-										else if (init_count>1 && init_count<8){
-
-											if (rx3Size==7)	data_TEMP = ((rx3Buffer[3]<<8) | rx3Buffer[4])*10;
-											else if (rx3Size==15)	data_TEMP = ((rx3Buffer[8+3]<<8) | rx3Buffer[8+4])*10;
-
-
-											//=====================
-											// ¿Âµµ µ¥ÀÌÅÍ ¹Þ¾Æ¼­ °Ô»êÇÏ±â
-											//=====================
-											// f:±³Á¤°ª, e:±³Á¤½Ã ÃøÁ¤°ª, e0:Áö±Ý ÃøÁ¤°ª 
-											// y=f/e * e0; 	
+										else {
+											data_TEMP = ((rx3Buffer[3]<<8) | rx3Buffer[4])*10;
 											f = configData.calibrationConfig.TEMP_Span_Cal2;
 											e = configData.calibrationConfig.TEMP_Span_Value2;
 											imsi2 = data_TEMP*f/e;
-
 											currentData.temperature1 = imsi2;
-
-											//currentData.S2PPM = data_EC;
-											//currentData.temperature = data_TEMP*10;
 										  	if (currentData.Device_Selector_Mode & SENSOR_1_MODE) { }
 											else {
 												SET_data_TEMP = data_TEMP;
 											}	
 										}
 
-
 										Sensor_State4=SENSOR_OK;
 										Sensor2_OK_TIME=10;	// 10=10sec
 
 
-									    // µ¥ÀÌÅÍ ¿äÃ»ÇÏ±â
                                         RS485_DRIVE_HIGH;
-                                        tx3Buffer[0] = 4;
+                                        tx3Buffer[0] = 2;	/* EC ì²˜ë¦¬ í›„ pH(addr2)ë¡œ êµëŒ€ */
                                         tx3Buffer[1] = 3;
-
                                         tx3Buffer[2] = 0;
-										if (ph_temp==0)   { ph_temp=1; tx3Buffer[3] = 1; }// 0=temp, 1=ph
-										else			  { ph_temp=0; tx3Buffer[3] = 0; }	// 0=temp, 1=ph
-
+										ph_temp = 0;
+										tx3Buffer[3] = 0;
                                         tx3Buffer[4] = 0;
                                         tx3Buffer[5] = 1;
-
 										crc = CRC16Modbus(tx3Buffer, 6);
 										tx3Buffer[6] = crc & 0xFF;
 										tx3Buffer[7] = ((crc & 0xFF00) >> 8);
-
                                         tx3Size = 8;
                                         tx3Count = 1;
-
+                                        s_expected_rs485_addr = 2;
 	                                    com485State = 1;
 	                                    rs485DriveCount = 0;
-
+	                                    rx3Size = 0;
+	                                    rx3HandlerCount = 0;
 										comm_type=COMM_RS485;
 										rx3_time_count=0;
 									}
@@ -765,8 +684,6 @@ void Modbus485Handler(void) {
                                 }
                             }
 					}
-#endif
-
 
                     if (rx3HandlerCount > 1) {
 
@@ -870,7 +787,7 @@ void Modbus485Handler(void) {
 
 			}
             break;
-        case 1:		// 485Àü¼ÛÇÏ´Â°Å, ÇÑ¹ø½¬¾ú´Ù°¡ µÎ¹ø¤Š¿¡, Ã¹Â° ¹ÙÀÌÆ®¸¦ Àü¼ÛÇÏ°í com485state=2·Î ÇÑ´Ù.
+        case 1:		// 485ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½, ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ com485state=2ï¿½ï¿½ ï¿½?ï¿½.
             if (flag10ms & FLAG10MS_RS485) {
                 flag10ms &= ~FLAG10MS_RS485;
                 ++rs485DriveCount;
@@ -882,9 +799,9 @@ void Modbus485Handler(void) {
                 }
             }
             break;
-        case 2:	// INT ¿¡¼­ ÀüÃ¼Àü¼ÛÇÏ±â¸¦ ±â´Ù¸°´Ù., INT ¿¡¼­ ÀüÃ¼Àü¼ÛÇÏ¸é com485state=3ÀÌ µÈ´Ù.
+        case 2:	// INT ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?? ï¿½ï¿½?ï¿½ï¿½ï¿½., INT ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ com485state=3ï¿½ï¿½ ï¿½?ï¿½.
             break;
-        case 3:	// ÀüÃ¼ Àü¼ÛÀÌ³¡³ª¸é ÇÑ¹ø½¬¾ú´Ù°¡ µÎ¹øÂ°¿¡ 485Àü¼ÛÀ» ³¡³½´Ù.
+        case 3:	// ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ ï¿½?ï¿½ï¿½ï¿½ï¿½ 485ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
             if (flag10ms & FLAG10MS_RS485) {
                 RS485_DRIVE_LOW;
 				init_count=0;

@@ -566,13 +566,13 @@ void TFT_Init(void)
 	TFT_WR_REG(0x00F0); //pixel data interface
 	TFT_WR_Data(0x0003);
 
-	TFT_WR_REG(0x0021);	//½øÈëÍ¼ÐÎÑÕ?«·?×ªÄ£Ê½
+	TFT_WR_REG(0x0021);	//ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½????×ªÄ£Ê½
 
-    TFT_WR_REG(0x00BC);//ÖØÒª
-	TFT_WR_Data(0x0080);//¶Ô±È¶È
-    TFT_WR_Data(0x0080);//ÁÁ¶È
-    TFT_WR_Data(0x0080);//±¥ºÍ¶ÈÖµ  //
-    TFT_WR_Data(0x0001);//´¦Àí»úÔÊÐí
+    TFT_WR_REG(0x00BC);//ï¿½ï¿½Òª
+	TFT_WR_Data(0x0080);//ï¿½Ô±È¶ï¿½
+    TFT_WR_Data(0x0080);//ï¿½ï¿½ï¿½ï¿½
+    TFT_WR_Data(0x0080);//ï¿½ï¿½ï¿½Í¶ï¿½Öµ  //
+    TFT_WR_Data(0x0001);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	TFT_DelayTime(5);
 	TFT_WR_REG(0x0029); //display on
 #endif
@@ -622,7 +622,7 @@ void TFT_Init(void)
 	TFT_WR_REG(0x0024);		TFT_WR_Data(0x0000);
 	TFT_WR_REG(0x0025);		TFT_WR_Data(0x8000);
 
-	TFT_WR_REG(0x004F);	ZA	TFT_WR_Data(0x0000);
+	TFT_WR_REG(0x004F);	TFT_WR_Data(0x0000);
 	TFT_WR_REG(0x004E);		TFT_WR_Data(0x0000);
 
 	TFT_WR_REG(0x0022);
@@ -694,7 +694,7 @@ void TFT_Fill(uint16_t xsta,uint16_t ysta,uint16_t xend,uint16_t yend,uint16_t c
 
 	TFT_WR_REG(WRITE_MEM_START);
 
-	while(n--)TFT_WR_Data(color);//ÏÔÊ¾°×?? 
+	while(n--)TFT_WR_Data(color);//ï¿½ï¿½Ê¾ï¿½ï¿½?? 
 
 } 
 

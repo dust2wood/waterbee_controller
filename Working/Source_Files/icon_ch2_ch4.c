@@ -2,78 +2,20 @@
 
 
 //====================================================
-void NEMERIC_2CH_HOME(unsigned int x, unsigned int y, unsigned char data, uint16_t color)
-{
-	NAND_ReadData2(	imageBuffer, 80, 6, 11);
-	TFT_DrawNumeric(x, y,  x+24, y+30,  (uint16_t *)(&imageBuffer[data*24*30*2]), color);
-}
-
+// NEMERIC_2CH_HOME (24x30) ï¿½ï¿½ï¿½ DrawMediumNumber(18x23) ï¿½ï¿½ï¿½
+// NEMERIC_2CH_TEMP (12x16) ï¿½ï¿½ï¿½ DrawSmallNumber(12x16) ï¿½ï¿½ï¿½
+// NAND Block 80 ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, display_icon ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½
+extern void DrawMediumNumber(uint32_t x, uint32_t y, char* str, uint16_t color);
+extern void DrawSmallNumber(uint32_t x, uint32_t y, char* str, uint16_t color);
 
 void Draw_2CH_HOME_Number(uint32_t x, uint32_t y, char* str, uint16_t color) {
-    uint32_t i = 0;
-//    NAND_ReadSNumber();
-    while (str[i] != 0) {
-        if (str[i] > 0x2F && str[i] < 0x3A)
-			NEMERIC_2CH_HOME(x,y,str[i]-0x30, color);
-            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[(str[i] - 0x30) * 15 * 17 * 2]), color);
-        else if (str[i] == ' ')
-			NEMERIC_2CH_HOME(x,y,13, color);
-            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[13 * 15 * 17 * 2]), color);
-        else if (str[i] == '-')
-            NEMERIC_2CH_HOME(x,y,10, color);
-			//TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[10 * 15 * 17 * 2]), color);
-        else if (str[i] == ':')
-            NEMERIC_2CH_HOME(x,y,11,color);
-            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[11 * 15 * 17 * 2]), color);
-        else if (str[i] == '.')
-            NEMERIC_2CH_HOME(x,y,12,color);
-            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[12 * 15 * 17 * 2]), color);
-        else if (str[i] == 'C')
-            NEMERIC_2CH_HOME(x,y,14,color);
-            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[14 * 15 * 17 * 2]), color); // ¿Âµµ Ç¥½Ã Ãß°¡ÇÏÀÚ.
-        else
-            return;
-        x += 24;
-        ++i;
-    }
+    /* 24x30 -> 18x23 ï¿½ï¿½È¯: ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½ï¿½ (y + 4ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß¾ï¿½ ï¿½ï¿½ï¿½ï¿½, 30px ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ 23px ï¿½ï¿½Æ®) */
+    DrawMediumNumber(x, y + 4, str, color);
 }
-
-
-//====================================================
-void NEMERIC_2CH_TEMP(unsigned int x, unsigned int y, unsigned char data, uint16_t color)
-{
-	NAND_ReadData2(	imageBuffer, 80, 21, 3);
-	TFT_DrawNumeric(x, y,  x+12, y+16,  (uint16_t *)(&imageBuffer[data*12*16*2]), color);
-}
-
 
 void Draw_2CH_TEMP_Number(uint32_t x, uint32_t y, char* str, uint16_t color) {
-    uint32_t i = 0;
-//    NAND_ReadSNumber();
-    while (str[i] != 0) {
-        if (str[i] > 0x2F && str[i] < 0x3A)
-			NEMERIC_2CH_TEMP(x,y,str[i]-0x30, color);
-            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[(str[i] - 0x30) * 15 * 17 * 2]), color);
-        else if (str[i] == ' ')
-			NEMERIC_2CH_TEMP(x,y,13, color);
-            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[13 * 15 * 17 * 2]), color);
-        else if (str[i] == '-')
-            NEMERIC_2CH_TEMP(x,y,10, color);
-			//TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[10 * 15 * 17 * 2]), color);
-        else if (str[i] == ':')
-            NEMERIC_2CH_TEMP(x,y,11,color);
-            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[11 * 15 * 17 * 2]), color);
-        else if (str[i] == '.')
-            NEMERIC_2CH_TEMP(x,y,12,color);
-            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[12 * 15 * 17 * 2]), color);
-        else if (str[i] == 'C')
-            NEMERIC_2CH_TEMP(x,y,14,color);
-            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[14 * 15 * 17 * 2]), color); // ¿Âµµ Ç¥½Ã Ãß°¡ÇÏÀÚ.
-        else
-            return;
-        x += 12;
-        ++i;
-    }
+    /* 12x16 ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½, DrawSmallNumber ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½ */
+    DrawSmallNumber(x, y, str, color);
 }
 
 
@@ -109,7 +51,7 @@ void Draw_4CH_HOME_Number(uint32_t x, uint32_t y, char* str, uint16_t color) {
             //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[12 * 15 * 17 * 2]), color);
         else if (str[i] == 'C')
             NEMERIC_4CH_HOME(x,y,14,color);
-            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[14 * 15 * 17 * 2]), color); // ¿Âµµ Ç¥½Ã Ãß°¡ÇÏÀÚ.
+            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[14 * 15 * 17 * 2]), color); // ï¿½Âµï¿½ Ç¥ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½.
         else
             return;
         x += 20;
@@ -147,7 +89,7 @@ void Draw_4CH_TEMP_Number(uint32_t x, uint32_t y, char* str, uint16_t color) {
             //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[13 * 15 * 17 * 2]), color);
         else if (str[i] == 'C')
             NEMERIC_4CH_TEMP(x,y,14,color);
-            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[14 * 15 * 17 * 2]), color); // ¿Âµµ Ç¥½Ã Ãß°¡ÇÏÀÚ.
+            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[14 * 15 * 17 * 2]), color); // ï¿½Âµï¿½ Ç¥ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½.
         else
             return;
         x += 9;

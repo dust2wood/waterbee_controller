@@ -17,11 +17,9 @@ static void sensor_ec_init(void)
 
 static float sensor_ec_read(void)
 {
-    /* S2PPM: EC in 0.001 mS/cm (e.g. 1.500 -> 1500) or 0.1 (e.g. 20.0 -> 2000) */
-    if (currentData.S2PPM > 200000) return SENSOR_INVALID_FLOAT;
-    if (currentData.S2PPM >= 20000)
-        return (float)currentData.S2PPM / 10.0f;
-    return (float)currentData.S2PPM / 1000.0f;
+    /* RS485 exclusive: water_data.ec set by Modbus485Handler */
+    if (water_data.ec < 0.0f) return SENSOR_INVALID_FLOAT;
+    return water_data.ec;
 }
 
 static uint8_t sensor_ec_status(void)

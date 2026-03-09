@@ -248,9 +248,7 @@ BUZ_ON;
 
 	MicroSD_Trand_Read();
 
-#ifdef  SENSOR_PH_EC	
-	init_tx3Buffer();
-#endif
+	init_tx3Buffer();  /* RS485 poll start (unified firmware) */
 
 	Sensor_Manager_Init();   /* ???? ??? ???? ????? ???? */
 
@@ -450,17 +448,15 @@ BUZ_OFF;
         if (manual_cal_temp_flag == 1) {
             manual_cal_temp_flag = 0;
 
-#ifndef SENSOR_PH_EC
-            if (currentData.Device_Selector_Mode & SENSOR_1_MODE) 
- 	            SendCalDataTemp(1, Tx_Adj_TempertureVaule);
-            if (currentData.Device_Selector_Mode & SENSOR_2_MODE) 
- 	            SendCalDataTemp(1, Tx_Adj_TempertureVaule);
-#else
-            if (currentData.Device_Selector_Mode & SENSOR_1_MODE) 
- 	            SendCalDataTemp(3, Tx_Adj_TempertureVaule);
-            if (currentData.Device_Selector_Mode & SENSOR_2_MODE) 
- 	            SendCalDataTemp(4, Tx_Adj_TempertureVaule);
-#endif
+            /* 통합: RS232(1,2)=CL/NTU, RS485(3,4)=PH/EC */
+            if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
+                uint8_t d = (sensor_manager_get_display_field(0) == WATER_FIELD_PH) ? 3 : 1;
+                SendCalDataTemp(d, Tx_Adj_TempertureVaule);
+            }
+            if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
+                uint8_t d = (sensor_manager_get_display_field(1) == WATER_FIELD_EC) ? 4 : 2;
+                SendCalDataTemp(d, Tx_Adj_TempertureVaule);
+            }
 
             if (state == 0) {
                 //DrawTextsize96(40, 70, TEXT96_TEMP_CALIBRATION, DRAW_IMAGE_ENABLE);
@@ -628,8 +624,6 @@ void Warning_Process_function(void) {
         }
 
 
-//       if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
- #ifndef SENSOR_PH_EC
 	   		if (currentData.S1PPM == 0) {
 	            if (zero_Alarm_Time_couter >= 10 && zero_error_flag == 0) {
 					zero_Alarm_Time_couter =0;
@@ -650,75 +644,29 @@ void Warning_Process_function(void) {
 	            zero_Alarm_min = 0;
 	            zero_error_flag = 0;
 	        }
-//		}
 
-//        if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
-			if (currentData.S2PPM == 15) { //50msec
-            	if (zero_Alarm_Time_couter2 >= 10 && zero_error_flag2 == 0) {
-					zero_Alarm_Time_couter2 =0;
-
-	                zero_Alarm_sec2++;
-		            if (zero_Alarm_sec2 >= 60) {
-	    	            zero_Alarm_sec2 = 0;
-	        	        zero_Alarm_min2++;
-	            	    zero_Alarm_Time_couter2 = 0;
-		            	if (configData.alarmConfig.zeroAlarm2 == zero_Alarm_min2) {
-		                	zero_error_flag2 = 1;
-			            }
-		            }
-        		}
-        	} else {
-	            zero_Alarm_Time_couter2 = 0;
-	            zero_Alarm_sec2 = 0;
-	            zero_Alarm_min2 = 0;
-	            zero_error_flag2 = 0;
-	        }
-#else
-	   		if (currentData.S1PPM == 0) {
-	            if (zero_Alarm_Time_couter >= 10 && zero_error_flag == 0) {
-					zero_Alarm_Time_couter =0;
-
-	                zero_Alarm_sec++;
-		            if (zero_Alarm_sec >= 60) {
-		                zero_Alarm_sec = 0;
-		                zero_Alarm_min++;
-		                zero_Alarm_Time_couter = 0;
-			            if (configData.alarmConfig.zeroAlarm == zero_Alarm_min) {
-			                zero_error_flag = 1;
-			            }
-		            }
-	            }
-	        } else {
-	            zero_Alarm_Time_couter = 0;
-	            zero_Alarm_sec = 0;
-	            zero_Alarm_min = 0;
-	            zero_error_flag = 0;
-	        }
-//		}
-
-//        if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
-			if (currentData.S2PPM == 0) { //50msec
-            	if (zero_Alarm_Time_couter2 >= 10 && zero_error_flag2 == 0) {
-					zero_Alarm_Time_couter2 =0;
-
-	                zero_Alarm_sec2++;
-		            if (zero_Alarm_sec2 >= 60) {
-	    	            zero_Alarm_sec2 = 0;
-	        	        zero_Alarm_min2++;
-	            	    zero_Alarm_Time_couter2 = 0;
-		            	if (configData.alarmConfig.zeroAlarm2 == zero_Alarm_min2) {
-		                	zero_error_flag2 = 1;
-			            }
-		            }
-        		}
-        	} else {
-	            zero_Alarm_Time_couter2 = 0;
-	            zero_Alarm_sec2 = 0;
-	            zero_Alarm_min2 = 0;
-	            zero_error_flag2 = 0;
-	        }
-#endif
-//		}
+			{ /* CH2 제로알람: NTU=15, EC=0 */
+				uint32_t s2_z = (sensor_manager_get_display_field(1) == WATER_FIELD_NTU) ? 15 : 0;
+				if (currentData.S2PPM == s2_z) {
+					if (zero_Alarm_Time_couter2 >= 10 && zero_error_flag2 == 0) {
+						zero_Alarm_Time_couter2 = 0;
+						zero_Alarm_sec2++;
+						if (zero_Alarm_sec2 >= 60) {
+							zero_Alarm_sec2 = 0;
+							zero_Alarm_min2++;
+							zero_Alarm_Time_couter2 = 0;
+							if (configData.alarmConfig.zeroAlarm2 == zero_Alarm_min2) {
+								zero_error_flag2 = 1;
+							}
+						}
+					}
+				} else {
+					zero_Alarm_Time_couter2 = 0;
+					zero_Alarm_sec2 = 0;
+					zero_Alarm_min2 = 0;
+					zero_error_flag2 = 0;
+				}
+			}
 
 
 		if (Ext_Input2!=0)  RELAY2_ON;
@@ -909,23 +857,17 @@ void SystemSetting(void) {
         Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
     }
 
-#ifdef SENSOR_PH_EC
-	// PH
+	/* PH/EC 설정 검증 (통합 펌웨어) */
 	if (configData.calibrationConfig.PH4_Cal<=0 || configData.calibrationConfig.PH4_Cal>1400)
 		configData.calibrationConfig.PH4_Cal=400;
 	if (configData.calibrationConfig.PH4_Value<=0 || configData.calibrationConfig.PH4_Value>1400)
 		configData.calibrationConfig.PH4_Value=400;
-
 	if (configData.calibrationConfig.PH7_Cal<=0 || configData.calibrationConfig.PH7_Cal>1400)
 		configData.calibrationConfig.PH7_Cal=700;
 	if (configData.calibrationConfig.PH7_Value<=0 || configData.calibrationConfig.PH7_Value>1400)
 		configData.calibrationConfig.PH7_Value=700;
-
-	// ??????????
 	if (configData.calibrationConfig.EC_Value<=0 || configData.calibrationConfig.EC_Value>20000)
 		configData.calibrationConfig.EC_Value=0;
-
-#endif
 
 
     if (configData.outputConfig.output4mA == 0xFFFFFFFF)
@@ -1041,45 +983,34 @@ void StateHandler(void) {
         case STATE_CONFIG_ADJUST:
             State_ConfigAdjust();
             break;
-#ifndef SENSOR_PH_EC
         case STATE_CALIB_ZERO:
-            State_CalibZero();
+		    if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
+				if (sensor_manager_get_display_field(0) == WATER_FIELD_PH)
+					State_CalibBuff();
+				else
+					State_CalibZero();
+			} else {
+				if (sensor_manager_get_display_field(1) == WATER_FIELD_EC)
+					State_CalibBuff_EC();
+				else
+					State_CalibZero();
+			}
             break;
-		// ???????
         case STATE_CALIB_MANUAL:
             State_CalibManual();
             break;
-        case STATE_CALIB_TEMP:
-            State_CalibTemp();
-            break;
-#else
-        case STATE_CALIB_ZERO:
-		    if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
-				// ???????
-	            State_CalibBuff();
-			}
-			else 
-				State_CalibBuff_EC();
-            break;
-
-
-		// 
         case STATE_CALIB_BUFF_PH4:
-            State_CalibBuffPH4();	 
+            State_CalibBuffPH4();
             break;
-		// 
         case STATE_CALIB_BUFF_PH7:
             State_CalibBuffPH7();
             break;
-
-		// ???????
         case STATE_CALIB_SPAN:
             State_CalibSpan();
             break;
         case STATE_CALIB_TEMP:
             State_CalibTemp();
             break;
-#endif
         case STATE_CALIB_S2_CYCLE:
             State_CalibS2Cycle();
             break;
@@ -1369,42 +1300,28 @@ void State_Config(void) {
 }
 
 
-//==========================================
-#ifndef   SENSOR_PH_EC
-
 void display_calib_icon(void) {
-    display_set3_zero(0);
-    display_set3_span(0);
-    display_set3_temp(0);
-    display_set3_log(0);
+	water_field_t f0 = sensor_manager_get_display_field(0);
+	water_field_t f1 = sensor_manager_get_display_field(1);
 
-    if (cursor == 0) display_set3_zero(1);	  
-    else if (cursor == 1) display_set3_span(1);
-    else if (cursor == 2) display_set3_temp(1);
-    else if (cursor == 3) display_set3_log(1);
+	if (currentData.Device_Selector_Mode == SENSOR_1_MODE)
+		(f0 == WATER_FIELD_PH) ? display_set3_buff(0) : display_set3_zero(0);
+	else
+		display_set3_zero(0);
+
+	display_set3_span(0);
+	display_set3_temp(0);
+	display_set3_log(0);
+
+	if (cursor == 0) {
+		if (currentData.Device_Selector_Mode == SENSOR_1_MODE)
+			(f0 == WATER_FIELD_PH) ? display_set3_buff(1) : display_set3_zero(1);
+		else
+			display_set3_zero(1);
+	} else if (cursor == 1) display_set3_span(1);
+	else if (cursor == 2) display_set3_temp(1);
+	else if (cursor == 3) display_set3_log(1);
 }
-
-#else
-
-void display_calib_icon(void) {						  
-
-	if (currentData.Device_Selector_Mode == SENSOR_1_MODE)    display_set3_buff(0);
-	else     display_set3_zero(0);
-
-    display_set3_span(0);
-    display_set3_temp(0);
-    display_set3_log(0);
-
-    if (cursor == 0) {
-		if (currentData.Device_Selector_Mode == SENSOR_1_MODE)    display_set3_buff(1);
-		else     display_set3_zero(1);
-	}
-    else if (cursor == 1) display_set3_span(1);
-    else if (cursor == 2) display_set3_temp(1);
-    else if (cursor == 3) display_set3_log(1);
-}
-
-#endif
 
 
 void State_Calib(void) {
@@ -1441,9 +1358,7 @@ void State_Calib(void) {
                         else
                             --cursor;
 
-#ifndef    SENSOR_PH_EC
-						if (currentData.Device_Selector_Mode == SENSOR_2_MODE && cursor == 2) cursor=1;
-#endif
+						if (currentData.Device_Selector_Mode == SENSOR_2_MODE && sensor_manager_get_display_field(1) == WATER_FIELD_NTU && cursor == 2) cursor = 1;
                         //DrawLineRectangle(0+(cursor*cursorWidth), 238, cursorWidth+(cursor*cursorWidth), 272, YELLOW);
 
                         display_calib_icon();
@@ -1451,9 +1366,7 @@ void State_Calib(void) {
                     case BUTTON_RIGHT:
                         //DrawLineRectangle(0+(cursor*cursorWidth), 238, cursorWidth+(cursor*cursorWidth), 272, BLACK);
                         ++cursor;
-#ifndef    SENSOR_PH_EC
-						if (currentData.Device_Selector_Mode == SENSOR_2_MODE && cursor == 2) cursor=3;
-#endif
+						if (currentData.Device_Selector_Mode == SENSOR_2_MODE && sensor_manager_get_display_field(1) == WATER_FIELD_NTU && cursor == 2) cursor = 3;
                         cursor = cursor % cursorMax;
 
                         //DrawLineRectangle(0+(cursor*cursorWidth), 238, cursorWidth+(cursor*cursorWidth), 272, YELLOW);
@@ -1487,12 +1400,11 @@ void Trend_Data_calc(void) {
 
 void State_Trend(void) {
 
-#ifndef    SENSOR_PH_EC
-	if (currentData.Device_Selector_Mode == SENSOR_1_MODE) trand_select_Y_NO=3;
-#else 
-	if (currentData.Device_Selector_Mode == SENSOR_2_MODE) trand_select_Y_NO=3;
-#endif
-	else trand_select_Y_NO=4;
+	if ((sensor_manager_get_display_field(0) == WATER_FIELD_CL && currentData.Device_Selector_Mode == SENSOR_1_MODE) ||
+	    (sensor_manager_get_display_field(1) == WATER_FIELD_EC && currentData.Device_Selector_Mode == SENSOR_2_MODE))
+		trand_select_Y_NO = 3;
+	else
+		trand_select_Y_NO = 4;
 
 
     switch (subState) {
@@ -3329,10 +3241,7 @@ void State_CalibSpan(void) {
 }
 
 
-#ifndef  SENSOR_PH_EC
-
-// ???? ???????
-void State_CalibTemp(void) {
+static void State_CalibTemp_RS232(void) {
     switch (subState) {
         case 0:
             tempConfigData = configData;
@@ -3468,10 +3377,7 @@ void State_CalibTemp(void) {
     }
 }
 
-#else
-
-// PH, EC ???????
-void State_CalibTemp(void) {
+static void State_CalibTemp_RS485(void) {
     switch (subState) {
         case 0:
             tempConfigData = configData;
@@ -3589,7 +3495,17 @@ void State_CalibTemp(void) {
     }
 }
 
-#endif
+void State_CalibTemp(void) {
+	water_field_t f0 = sensor_manager_get_display_field(0);
+	water_field_t f1 = sensor_manager_get_display_field(1);
+	if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
+		if (f0 == WATER_FIELD_PH) State_CalibTemp_RS485();
+		else State_CalibTemp_RS232();
+	} else {
+		if (f1 == WATER_FIELD_EC) State_CalibTemp_RS485();
+		else State_CalibTemp_RS232();
+	}
+}
 
 void State_CalibS2Cycle(void) {
     switch (subState) {

@@ -116,16 +116,17 @@ void RedrawTitle(void) {
 //    else DrawTextsize96(TITLE_X, TITLE_Y, TEXT96_CI3, DRAW_IMAGE_ENABLE);
 
 
-#ifndef  SENSOR_PH_EC
-    if (currentData.Device_Selector_Mode == SENSOR_1_MODE)
-		 display_CL1();
-    else display_CL2();
-#else
-    if (currentData.Device_Selector_Mode == SENSOR_1_MODE)
-		 display_O2();
-    else display_elec();
-
-#endif
+	{
+		water_field_t f0 = sensor_manager_get_display_field(0);
+		water_field_t f1 = sensor_manager_get_display_field(1);
+		if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
+			if (f0 == WATER_FIELD_PH) display_O2();
+			else display_CL1();
+		} else {
+			if (f1 == WATER_FIELD_EC) display_elec();
+			else display_CL2();
+		}
+	}
 
 
 }
@@ -169,105 +170,69 @@ void RedrawViewArea(void) {
 			display_zero_alarm();
 
 
-#ifndef SENSOR_PH_EC
             if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
-
-	            Draw_Back_Oval3_mgl(35, 169);
-	            Draw_Back_Oval3_mgl(177, 169);
-	            Draw_Back_Oval3_min(319, 169);
-
-                sprintf(strBuffer, " %d.%d", tempConfigData.alarmConfig.highLimit / 100, (tempConfigData.alarmConfig.highLimit % 100) / 10);
-                //DrawMediumNumber(L_NUMBER1_X, L_NUMBER1_Y, strBuffer, YELLOW);
-				if (tempConfigData.alarmConfig.highLimit>=1000) 	DrawSmallNumber(53-12,180, strBuffer, YELLOW);
-                else 												DrawSmallNumber(53,   180, strBuffer, YELLOW);
-
-                //DrawLineRectangle(180, 83, 330, 123, BROWN);
-
-                sprintf(strBuffer, "%01d", tempConfigData.alarmConfig.highLimit % 10);
-                //DrawMediumNumber(L_NUMBER1_X + (22 * 3), L_NUMBER1_Y, strBuffer, BROWN);
-                DrawSmallNumber(66+(12*3),180, strBuffer, BROWN);
-
-                sprintf(strBuffer, " %d.%02d", tempConfigData.alarmConfig.lowLimit / 100, tempConfigData.alarmConfig.lowLimit % 100);
-                //DrawMediumNumber(L_NUMBER1_X, L_NUMBER4_Y, strBuffer, BROWN);
-				if (tempConfigData.alarmConfig.lowLimit>=1000) 		DrawSmallNumber(195-12,180, strBuffer, BROWN);
-                else 												DrawSmallNumber(195,   180, strBuffer, BROWN);
-
-	            sprintf(strBuffer, "%3d", tempConfigData.alarmConfig.zeroAlarm);
-	            //DrawMediumNumber(L_NUMBER1_X + 22, MGL_Y3, strBuffer, BROWN);
-	            DrawSmallNumber(350, 180, strBuffer, BROWN);
-
+	            water_field_t f0 = sensor_manager_get_display_field(0);
+	            if (f0 == WATER_FIELD_PH) {
+	                Draw_Back_Oval3(35, 169);
+	                Draw_Back_Oval3(177, 169);
+	                Draw_Back_Oval3_min(319, 169);
+	                sprintf(strBuffer, " %d.%d", tempConfigData.alarmConfig.highLimit / 100, (tempConfigData.alarmConfig.highLimit % 100) / 10);
+	                if (tempConfigData.alarmConfig.highLimit>=1000) DrawSmallNumber(63-12,180, strBuffer, YELLOW);
+	                else DrawSmallNumber(63, 180, strBuffer, YELLOW);
+	                sprintf(strBuffer, "%01d", tempConfigData.alarmConfig.highLimit % 10);
+	                DrawSmallNumber(76+(12*3),180, strBuffer, BROWN);
+	                sprintf(strBuffer, " %d.%02d", tempConfigData.alarmConfig.lowLimit / 100, tempConfigData.alarmConfig.lowLimit % 100);
+	                if (tempConfigData.alarmConfig.lowLimit>=1000) DrawSmallNumber(205-12,180, strBuffer, BROWN);
+	                else DrawSmallNumber(205, 180, strBuffer, BROWN);
+	                sprintf(strBuffer, "%3d", tempConfigData.alarmConfig.zeroAlarm);
+	                DrawSmallNumber(350, 180, strBuffer, BROWN);
+	            } else {
+	                Draw_Back_Oval3_mgl(35, 169);
+	                Draw_Back_Oval3_mgl(177, 169);
+	                Draw_Back_Oval3_min(319, 169);
+	                sprintf(strBuffer, " %d.%d", tempConfigData.alarmConfig.highLimit / 100, (tempConfigData.alarmConfig.highLimit % 100) / 10);
+	                if (tempConfigData.alarmConfig.highLimit>=1000) DrawSmallNumber(53-12,180, strBuffer, YELLOW);
+	                else DrawSmallNumber(53, 180, strBuffer, YELLOW);
+	                sprintf(strBuffer, "%01d", tempConfigData.alarmConfig.highLimit % 10);
+	                DrawSmallNumber(66+(12*3),180, strBuffer, BROWN);
+	                sprintf(strBuffer, " %d.%02d", tempConfigData.alarmConfig.lowLimit / 100, tempConfigData.alarmConfig.lowLimit % 100);
+	                if (tempConfigData.alarmConfig.lowLimit>=1000) DrawSmallNumber(195-12,180, strBuffer, BROWN);
+	                else DrawSmallNumber(195, 180, strBuffer, BROWN);
+	                sprintf(strBuffer, "%3d", tempConfigData.alarmConfig.zeroAlarm);
+	                DrawSmallNumber(350, 180, strBuffer, BROWN);
+	            }
             } else if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
-	            Draw_Back_Oval3_ntu(35, 169);
-	            Draw_Back_Oval3_ntu(185, 169);
-	            Draw_Back_Oval3_min(319, 169);
-
-
-                sprintf(strBuffer, "%1d.%1d", tempConfigData.alarmConfig.highLimit2 / 1000, (tempConfigData.alarmConfig.highLimit2 / 100)%10);
-                DrawSmallNumber(61, 180, strBuffer, YELLOW);
-
-                sprintf(strBuffer, "%02d", tempConfigData.alarmConfig.highLimit2 % 100 );
-                DrawSmallNumber(62+ (12*3), 180, strBuffer, BROWN);
-
-                sprintf(strBuffer, "%1d.%1d", tempConfigData.alarmConfig.lowLimit2 / 1000, (tempConfigData.alarmConfig.lowLimit2 / 100)%10);
-                DrawSmallNumber(203, 180, strBuffer, BROWN);
-
-                sprintf(strBuffer, "%02d", tempConfigData.alarmConfig.lowLimit2 % 100 );
-                DrawSmallNumber(204 + (12*3), 180, strBuffer, BROWN);
-
-	            sprintf(strBuffer, "%3d", tempConfigData.alarmConfig.zeroAlarm2);
-	            //DrawMediumNumber(L_NUMBER1_X + 22, MGL_Y3, strBuffer, BROWN);
-	            DrawSmallNumber(350, 180, strBuffer, BROWN);
+	            water_field_t f1 = sensor_manager_get_display_field(1);
+	            if (f1 == WATER_FIELD_EC) {
+	                Draw_Back_Oval3_uscm(35, 169);
+	                Draw_Back_Oval3_uscm(177, 169);
+	                Draw_Back_Oval3_min(319, 169);
+	                sprintf(strBuffer, "%3d", tempConfigData.alarmConfig.highLimit2 / 100);
+	                DrawSmallNumber(41, 180, strBuffer, YELLOW);
+	                sprintf(strBuffer, "%01d.%01d", (tempConfigData.alarmConfig.highLimit2 % 100)/10, tempConfigData.alarmConfig.highLimit2 % 10);
+	                DrawSmallNumber(42+ (12*3), 180, strBuffer, BROWN);
+	                sprintf(strBuffer, "%3d", tempConfigData.alarmConfig.lowLimit2 / 100);
+	                DrawSmallNumber(183, 180, strBuffer, BROWN);
+	                sprintf(strBuffer, "%01d.%01d", (tempConfigData.alarmConfig.lowLimit2 % 100)/10, tempConfigData.alarmConfig.lowLimit2 % 10);
+	                DrawSmallNumber(184 + (12*3), 180, strBuffer, BROWN);
+	                sprintf(strBuffer, "%3d", tempConfigData.alarmConfig.zeroAlarm2);
+	                DrawSmallNumber(350, 180, strBuffer, BROWN);
+	            } else {
+	                Draw_Back_Oval3_ntu(35, 169);
+	                Draw_Back_Oval3_ntu(185, 169);
+	                Draw_Back_Oval3_min(319, 169);
+	                sprintf(strBuffer, "%1d.%1d", tempConfigData.alarmConfig.highLimit2 / 1000, (tempConfigData.alarmConfig.highLimit2 / 100)%10);
+	                DrawSmallNumber(61, 180, strBuffer, YELLOW);
+	                sprintf(strBuffer, "%02d", tempConfigData.alarmConfig.highLimit2 % 100);
+	                DrawSmallNumber(62+ (12*3), 180, strBuffer, BROWN);
+	                sprintf(strBuffer, "%1d.%1d", tempConfigData.alarmConfig.lowLimit2 / 1000, (tempConfigData.alarmConfig.lowLimit2 / 100)%10);
+	                DrawSmallNumber(203, 180, strBuffer, BROWN);
+	                sprintf(strBuffer, "%02d", tempConfigData.alarmConfig.lowLimit2 % 100);
+	                DrawSmallNumber(204 + (12*3), 180, strBuffer, BROWN);
+	                sprintf(strBuffer, "%3d", tempConfigData.alarmConfig.zeroAlarm2);
+	                DrawSmallNumber(350, 180, strBuffer, BROWN);
+	            }
             }
-
-#else
-            if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
-
-	            Draw_Back_Oval3(35, 169);
-	            Draw_Back_Oval3(177, 169);
-	            Draw_Back_Oval3_min(319, 169);
-
-                sprintf(strBuffer, " %d.%d", tempConfigData.alarmConfig.highLimit / 100, (tempConfigData.alarmConfig.highLimit % 100) / 10);
-                //DrawMediumNumber(L_NUMBER1_X, L_NUMBER1_Y, strBuffer, YELLOW);
-				if (tempConfigData.alarmConfig.highLimit>=1000) 	DrawSmallNumber(63-12,180, strBuffer, YELLOW);
-                else 												DrawSmallNumber(63,   180, strBuffer, YELLOW);
-
-                //DrawLineRectangle(180, 83, 330, 123, BROWN);
-
-                sprintf(strBuffer, "%01d", tempConfigData.alarmConfig.highLimit % 10);
-                //DrawMediumNumber(L_NUMBER1_X + (22 * 3), L_NUMBER1_Y, strBuffer, BROWN);
-                DrawSmallNumber(76+(12*3),180, strBuffer, BROWN);
-
-                sprintf(strBuffer, " %d.%02d", tempConfigData.alarmConfig.lowLimit / 100, tempConfigData.alarmConfig.lowLimit % 100);
-                //DrawMediumNumber(L_NUMBER1_X, L_NUMBER4_Y, strBuffer, BROWN);
-				if (tempConfigData.alarmConfig.lowLimit>=1000) 		DrawSmallNumber(205-12,180, strBuffer, BROWN);
-                else 												DrawSmallNumber(205,   180, strBuffer, BROWN);
-
-	            sprintf(strBuffer, "%3d", tempConfigData.alarmConfig.zeroAlarm);
-	            //DrawMediumNumber(L_NUMBER1_X + 22, MGL_Y3, strBuffer, BROWN);
-	            DrawSmallNumber(350, 180, strBuffer, BROWN);
-
-            } else if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
-	            Draw_Back_Oval3_uscm(35, 169);
-	            Draw_Back_Oval3_uscm(177, 169);
-	            Draw_Back_Oval3_min (319, 169);
-
-                sprintf(strBuffer, "%3d", tempConfigData.alarmConfig.highLimit2 / 100);
-                DrawSmallNumber(41, 180, strBuffer, YELLOW);
-
-                sprintf(strBuffer, "%01d.%01d", (tempConfigData.alarmConfig.highLimit2 % 100)/10, tempConfigData.alarmConfig.highLimit2 % 10);
-                DrawSmallNumber(42+ (12*3), 180, strBuffer, BROWN);					 
-
-                sprintf(strBuffer, "%3d", tempConfigData.alarmConfig.lowLimit2 / 100);
-                DrawSmallNumber(183, 180, strBuffer, BROWN);
-
-                sprintf(strBuffer, "%01d.%01d", (tempConfigData.alarmConfig.lowLimit2 % 100)/10, tempConfigData.alarmConfig.lowLimit2 % 10);
-                DrawSmallNumber(184 + (12*3), 180, strBuffer, BROWN);
-
-	            sprintf(strBuffer, "%3d", tempConfigData.alarmConfig.zeroAlarm2);
-	            //DrawMediumNumber(L_NUMBER1_X + 22, MGL_Y3, strBuffer, BROWN);
-	            DrawSmallNumber(350, 180, strBuffer, BROWN);
-            }
-#endif
 
             break;
 
@@ -291,11 +256,8 @@ void RedrawViewArea(void) {
                 DrawMediumNumber(103, 155, strBuffer, BROWN);
 
                 //DrawTextETC(190, 157, TEXT_ETC_MGL, DRAW_IMAGE_ENABLE);
-#ifndef  SENSOR_PH_EC
-				display_mgl_2();
-#else 
-				display_2ch_small_unit_ph();
-#endif
+				if (sensor_manager_get_display_field(0) == WATER_FIELD_PH) display_2ch_small_unit_ph();
+				else display_mgl_2();
                 sprintf(strBuffer, "%1d.%02d ", currentData.S1mV / 100, currentData.S1mV % 100);
                 DrawMediumNumber(250, 155, strBuffer, BROWN);
                 //DrawTextETC(260, 160, TEXT_ETC_MA, DRAW_IMAGE_ENABLE);
@@ -316,29 +278,17 @@ void RedrawViewArea(void) {
                 display_diag();
 
 
-#ifndef  SENSOR_PH_EC
-		        if ((currentData.S2PPM) >= 99999)
-		            sprintf(strBuffer, "99.999");	
-		        else
-		            sprintf(strBuffer, "%2d.%03d ", currentData.S2PPM / 1000, currentData.S2PPM % 1000);
-
-                //DrawMediumNumber(95, 155, strBuffer, BROWN);
-                //DrawTextETC(190, 157, TEXT_ETC_NTU, DRAW_IMAGE_ENABLE);
-                DrawMediumNumber(55, 155, strBuffer, BROWN);
-				display_NTU_2();
-#else 
-
-		        if ((currentData.S2PPM) >= 20000)
-		            sprintf(strBuffer, "2000.0");	
-		        else
-		            sprintf(strBuffer, "%4d.%01d ", currentData.S2PPM / 10, currentData.S2PPM % 10);
-
-                //DrawMediumNumber(95, 155, strBuffer, BROWN);
-                //DrawTextETC(190, 157, TEXT_ETC_NTU, DRAW_IMAGE_ENABLE);
-                DrawMediumNumber(55, 155, strBuffer, BROWN);
-
-				display_2ch_small_unit_ec();
-#endif
+		        if (sensor_manager_get_display_field(1) == WATER_FIELD_EC) {
+		            if ((currentData.S2PPM) >= 20000) sprintf(strBuffer, "2000.0");
+		            else sprintf(strBuffer, "%4d.%01d ", currentData.S2PPM / 10, currentData.S2PPM % 10);
+		            DrawMediumNumber(55, 155, strBuffer, BROWN);
+		            display_2ch_small_unit_ec();
+		        } else {
+		            if ((currentData.S2PPM) >= 99999) sprintf(strBuffer, "99.999");
+		            else sprintf(strBuffer, "%2d.%03d ", currentData.S2PPM / 1000, currentData.S2PPM % 1000);
+		            DrawMediumNumber(55, 155, strBuffer, BROWN);
+		            display_NTU_2();
+		        }
 
                 sprintf(strBuffer, "%3d.%01d ", currentData.S2mV / 10, currentData.S2mV % 10);
                 //DrawMediumNumber(283, 155, strBuffer, BROWN);
@@ -364,29 +314,23 @@ void RedrawViewArea(void) {
             display_4mA();
             display_20mA();
 
-#ifndef  SENSOR_PH_EC
 			if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
-	            Draw_Back_Oval4_mgl(45, 144);
-    	        Draw_Back_Oval4_mgl(45, 208);
+				if (sensor_manager_get_display_field(0) == WATER_FIELD_PH) {
+					Draw_Back_Oval4(45, 144);
+					Draw_Back_Oval4(45, 208);
+				} else {
+					Draw_Back_Oval4_mgl(45, 144);
+					Draw_Back_Oval4_mgl(45, 208);
+				}
+			} else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
+				if (sensor_manager_get_display_field(1) == WATER_FIELD_EC) {
+					Draw_Back_Oval4_uscm(45, 144);
+					Draw_Back_Oval4_uscm(45, 208);
+				} else {
+					Draw_Back_Oval4_ntu(45, 144);
+					Draw_Back_Oval4_ntu(45, 208);
+				}
 			}
-			else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
-	            //Draw_Back_Oval4_mgl(45, 144);
-    	        //Draw_Back_Oval4_mgl(45, 208);
-	            Draw_Back_Oval4_ntu(45, 144);
-    	        Draw_Back_Oval4_ntu(45, 208);
-			}
-#else
-			if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
-	            Draw_Back_Oval4(45, 144);
-    	        Draw_Back_Oval4(45, 208);
-			}
-			else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
-	            //Draw_Back_Oval4_mgl(45, 144);
-    	        //Draw_Back_Oval4_mgl(45, 208);
-	            Draw_Back_Oval4_uscm(45, 144);
-    	        Draw_Back_Oval4_uscm(45, 208);
-			}
-#endif
 
             Draw_Back_Oval4(260, 144);
             Draw_Back_Oval4(260, 208);
@@ -403,24 +347,13 @@ void RedrawViewArea(void) {
 
 
 //                sprintf(strBuffer, "%1d.%02d", configData.outputConfig.output20mA / 100, configData.outputConfig.output20mA % 100);
-#ifndef  SENSOR_PH_EC
-                sprintf(strBuffer, "  2  ");
-#else 
-                sprintf(strBuffer, "  14 ");
-#endif
+				sprintf(strBuffer, (sensor_manager_get_display_field(0) == WATER_FIELD_PH) ? "  14 " : "  2  ");
 	            DrawSmallNumber(100, 217, strBuffer, BROWN);
 			}
 			else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
-
                 sprintf(strBuffer, "  0  ");
 	            DrawSmallNumber(100, 152, strBuffer, BROWN);
-
-
-#ifndef  SENSOR_PH_EC
-                sprintf(strBuffer, "  10  ");
-#else
-                sprintf(strBuffer, " 2000 ");
-#endif
+				sprintf(strBuffer, (sensor_manager_get_display_field(1) == WATER_FIELD_EC) ? " 2000 " : "  10  ");
 	            DrawSmallNumber(90, 217, strBuffer, BROWN);
 			}
 
@@ -1391,12 +1324,10 @@ void RedrawBottomArea(void) {
 			// if (currentData.Device_Selector_Mode & SENSOR_2_MODE) 
             ClearBottomArea();
 
-#ifndef   SENSOR_PH_EC
-            display_set3_zero(1);
-#else
-			if (currentData.Device_Selector_Mode == SENSOR_1_MODE)    display_set3_buff(1);
-			else     display_set3_zero(1);
-#endif
+            if (currentData.Device_Selector_Mode == SENSOR_1_MODE && sensor_manager_get_display_field(0) == WATER_FIELD_PH)
+                display_set3_buff(1);
+            else
+                display_set3_zero(1);
 
             display_set3_span(0);
             display_set3_temp(0);
@@ -1554,25 +1485,21 @@ void RedrawBottomArea_CH2(void) {
             //Draw_Back_Oval_140x42(322, 220);
             //DrawTextETC(400, 225, TEXT_ETC_MA, DRAW_IMAGE_ENABLE);
             //DrawBottomCurrent(currentData.current4_20mA);
-#ifndef SENSOR_PH_EC
-		    if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
-			    display_2ch_set_cl2();
-				display_2ch_set_tu1();
+		    /* Dynamic: use sensor_manager display fields */
+		    {
+			water_field_t f0 = sensor_manager_get_display_field(0);
+			water_field_t f1 = sensor_manager_get_display_field(1);
+			int n = sensor_manager_count();
+			if (n >= 2) {
+			    if ((f0 == WATER_FIELD_PH || f0 == WATER_FIELD_EC) && (f1 == WATER_FIELD_PH || f1 == WATER_FIELD_EC)) {
+				if (currentData.Device_Selector_Mode & SENSOR_1_MODE) { display_2ch_set_ph2(); display_2ch_set_ec1(); }
+				else { display_2ch_set_ph1(); display_2ch_set_ec2(); }
+			    } else {
+				if (currentData.Device_Selector_Mode & SENSOR_1_MODE) { display_2ch_set_cl2(); display_2ch_set_tu1(); }
+				else { display_2ch_set_cl1(); display_2ch_set_tu2(); }
+			    }
 			}
-			else {
-			    display_2ch_set_cl1();
-				display_2ch_set_tu2();
-			}
-#else 
-		    if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
-			    display_2ch_set_ph2();
-				display_2ch_set_ec1();
-			}
-			else {
-			    display_2ch_set_ph1();
-				display_2ch_set_ec2();
-			}
-#endif
+		    }
             break;
 
 		default: 
@@ -1585,71 +1512,78 @@ void RedrawBottomArea_CH2(void) {
 extern uint16_t Timer10msec;
 
 
-void ReDisplay_ch2(void) {
-#ifdef SENSOR_PH_EC
-	/* PH + EC layout */
-        if ((currentData.S1PPM) >= 1400)
-            sprintf(strBuffer, "14.00");	
-        else 
-		    sprintf(strBuffer, "%2d.%02d", (currentData.S1PPM) / 100, (currentData.S1PPM) % 100);
-		display_2ch_ph();
-       	Draw_2CH_HOME_Number(80, L_NUMBER1_Y+20, strBuffer, BROWN);
-		display_2ch_unit_ph();
+static void draw_2ch_slot(water_field_t f, int slot, int16_t temp_val)
+{
+    uint16_t num_x = (slot == 0) ? 80 : 255;
+    uint16_t temp_x = (slot == 0) ? 90 : 320;
 
-		if (Relay1_run_on_flag == 0 && Relay3_run_on_flag == 0){
-	        if ((currentData.temperature) >= 9999) sprintf(strBuffer, " 99.9C ");	
-	        else if ((currentData.temperature) <= -9999) sprintf(strBuffer, "-99.9C ");	
-	        else if ((currentData.temperature) >= 0) 	sprintf(strBuffer, " %02d.%01dC ",      currentData.temperature / 10, currentData.temperature % 10);
-	        else 										sprintf(strBuffer, "-%02d.%01dC ", (abs(currentData.temperature)) / 10, (abs(currentData.temperature)) % 10);
-			TFT_Fill(90, 154, 90+84, 154+5, BACK_COLOR3);
-			TFT_Fill(90, 175, 90+84, 175+5, BACK_COLOR3);
-	        Draw_2CH_TEMP_Number(90, 159, strBuffer, DRAW_NORMAL);
-		}
-
-        if ((currentData.S2PPM) >= 20000)
-            sprintf(strBuffer, "2000.0");	
-        else
-            sprintf(strBuffer, "%4d.%01d", (currentData.S2PPM) / 10, (currentData.S2PPM) % 10);
-		display_2ch_ec();
-        Draw_2CH_HOME_Number(255, L_NUMBER1_Y+20, strBuffer, BROWN);
-		display_2ch_unit_ec();
-
-		if (Relay1_run_on_flag == 0 && Relay3_run_on_flag == 0){
-	        if ((currentData.temperature1) >= 9999) sprintf(strBuffer, " 99.9C ");	
-	        else if ((currentData.temperature1) <= -9999) sprintf(strBuffer, "-99.9C ");	
-	        else if ((currentData.temperature1) >= 0) 	sprintf(strBuffer, " %02d.%01dC ",      currentData.temperature1 / 10, currentData.temperature1 % 10);
-	        else 										sprintf(strBuffer, "-%02d.%01dC ", (abs(currentData.temperature1)) / 10, (abs(currentData.temperature1)) % 10);
-		TFT_Fill(320, 154, 330+74, 154+5, BACK_COLOR3);
-		TFT_Fill(320, 175, 330+74, 175+5, BACK_COLOR3);
-	        Draw_2CH_TEMP_Number(320, 159, strBuffer, DRAW_NORMAL);
-		}
-
-    {
-        uint16_t ext_raw;
-#define EXT_PH_X_PHEC  25
-#define EXT_EC_X_PHEC  330
-#define EXT_Y_PHEC     192
-        if (g_ext_sensor_count >= 1) {
-            TFT_Fill(EXT_PH_X_PHEC, EXT_Y_PHEC, EXT_PH_X_PHEC + 60, EXT_Y_PHEC + 16, BACK_COLOR3);
-            if (g_ext_sensors[0].status == SMGR_STATUS_OK) {
-                ext_raw = g_ext_sensors[0].raw[0];
-                sprintf(strBuffer, "%2d.%02d", ext_raw / 100, ext_raw % 100);
-            } else {
-                sprintf(strBuffer, "--.-  ");
-            }
-            DrawSmallNumber(EXT_PH_X_PHEC, EXT_Y_PHEC, strBuffer, BLUE);
-        }
-        if (g_ext_sensor_count >= 2) {
-            TFT_Fill(EXT_EC_X_PHEC, EXT_Y_PHEC, EXT_EC_X_PHEC + 72, EXT_Y_PHEC + 16, BACK_COLOR3);
-            if (g_ext_sensors[1].status == SMGR_STATUS_OK) {
-                ext_raw = g_ext_sensors[1].raw[0];
-                sprintf(strBuffer, "%4d.%1d ", ext_raw / 10, ext_raw % 10);
-            } else {
-                sprintf(strBuffer, "---.-  ");
-            }
-            DrawSmallNumber(EXT_EC_X_PHEC, EXT_Y_PHEC, strBuffer, BLUE);
-        }
+    switch (f) {
+    case WATER_FIELD_PH: {
+        uint32_t v = (uint32_t)(water_data.ph * 100.0f);
+        if (v >= 1400) sprintf(strBuffer, "14.00");
+        else sprintf(strBuffer, "%2d.%02d", v / 100, v % 100);
+        display_2ch_ph();
+        Draw_2CH_HOME_Number(num_x, L_NUMBER1_Y+20, strBuffer, BROWN);
+        display_2ch_unit_ph();
+        break;
     }
+    case WATER_FIELD_EC: {
+        uint32_t v = (uint32_t)(water_data.ec >= 20.0f ? water_data.ec * 10.0f : water_data.ec * 10.0f);
+        if (v >= 20000) sprintf(strBuffer, "2000.0");
+        else sprintf(strBuffer, "%4d.%01d", v / 10, v % 10);
+        display_2ch_ec();
+        Draw_2CH_HOME_Number(num_x, L_NUMBER1_Y+20, strBuffer, BROWN);
+        display_2ch_unit_ec();
+        break;
+    }
+    case WATER_FIELD_NTU: {
+        uint32_t v = (uint32_t)(water_data.ntu * 1000.0f);
+        if (v >= 99999) sprintf(strBuffer, "99.999 ");
+        else sprintf(strBuffer, "%2d.%03d ", v / 1000, v % 1000);
+        display_2ch_tu();
+        Draw_2CH_HOME_Number(v < 10000 ? num_x : num_x+6, L_NUMBER1_Y+20, strBuffer, BROWN);
+        display_2ch_unit_tu();
+        break;
+    }
+    case WATER_FIELD_CL: {
+        uint32_t v = (uint32_t)(water_data.cl * 100.0f);
+        if (v >= 9999) sprintf(strBuffer, "99.99");
+        else sprintf(strBuffer, "%2d.%02d", v / 100, v % 100);
+        display_2ch_cl();
+        Draw_2CH_HOME_Number(slot == 0 ? 38 : num_x, L_NUMBER1_Y+20, strBuffer, BROWN);
+        display_2ch_unit_cl();
+        break;
+    }
+    default:
+        return;
+    }
+
+    if (Relay1_run_on_flag == 0 && Relay3_run_on_flag == 0 && temp_val < 9999 && temp_val > -9999) {
+        if (temp_val >= 0) sprintf(strBuffer, " %02d.%01dC ", temp_val / 10, temp_val % 10);
+        else sprintf(strBuffer, "-%02d.%01dC ", (abs(temp_val)) / 10, (abs(temp_val)) % 10);
+        TFT_Fill(temp_x, 154, temp_x+84, 154+5, BACK_COLOR3);
+        TFT_Fill(temp_x, 175, temp_x+84, 175+5, BACK_COLOR3);
+        Draw_2CH_TEMP_Number(temp_x, 159, strBuffer, DRAW_NORMAL);
+    }
+}
+
+void ReDisplay_ch2(void)
+{
+    water_field_t f0, f1;
+    int n = sensor_manager_count();
+    if (n < 2) return;
+
+    f0 = sensor_manager_get_display_field(0);
+    f1 = sensor_manager_get_display_field(1);
+
+    draw_2ch_slot(f0, 0, currentData.temperature);
+    draw_2ch_slot(f1, 1, currentData.temperature1);
+}
+
+#if 0 /* legacy SENSOR_PH_EC / CL+TU fixed layout - replaced by dynamic display mapping */
+void ReDisplay_ch2_legacy(void) {
+#ifdef SENSOR_PH_EC
+	/* PH + EC layout - now in draw_2ch_slot */
 #else
 	/* CL + TU layout */
         if ((currentData.S1PPM) >= 9999)
@@ -1750,18 +1684,12 @@ void ReDisplay_ch2(void) {
 #endif
 
 void RedrawMainValue(void) {
-    Display_Update();
+    Display_UpdateIfChanged();  /* 전략 C: 값 변경 시에만 갱신 */
 }
 
 void RedrawMainView(void) {
     ClearViewArea();
-
-//    if (currentData.Device_Selector_Mode & SENSOR_1_MODE)
-//        DrawTextETC(MGL_X1, 105, TEXT_ETC_MGL, DRAW_IMAGE_ENABLE);
-
-//    if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
-//        DrawTextETC(MGL_X1, 125, TEXT_ETC_NTU, DRAW_IMAGE_ENABLE);
-//    }
+    Display_NotifyScreenCleared();  /* 전략 C: 클리어 후 강제 갱신 */
     RedrawMainValue();
 }
 

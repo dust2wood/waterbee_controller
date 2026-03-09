@@ -17,9 +17,9 @@ static void sensor_ph_init(void)
 
 static float sensor_ph_read(void)
 {
-    /* S1PPM: pH * 100 (e.g. 7.25 -> 725) */
-    if (currentData.S1PPM > 1400) return SENSOR_INVALID_FLOAT;
-    return (float)currentData.S1PPM / 100.0f;
+    /* RS485 exclusive: water_data.ph set by Modbus485Handler */
+    if (water_data.ph < 0.0f || water_data.ph > 14.0f) return SENSOR_INVALID_FLOAT;
+    return water_data.ph;
 }
 
 static uint8_t sensor_ph_status(void)

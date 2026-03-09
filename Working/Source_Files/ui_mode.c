@@ -8,6 +8,6 @@ ui_mode_t GetUiMode(void)
 {
     int n = sensor_manager_count();
     if (n <= 1) return UI_MODE_1CH;
-    if (n == 2) return UI_MODE_2CH;
-    return UI_MODE_4CH;
+    /* Max 2 channels in this version; 3+ sensors -> cap at 2CH, no 4CH UI */
+    return UI_MODE_2CH;
 }

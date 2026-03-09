@@ -1,7 +1,9 @@
 /**
- * Sensor_Manager.h - Generic sensor manager for plug-and-play sensors
+ * Sensor_Manager.h - Display candidate aggregator
  *
- * Target: STM32F103 (64KB RAM) - minimal footprint
+ * Collects active sensors for UI display (max 2 channels).
+ * - PH, EC: RS485 autodetect
+ * - CL, NTU: RS232 fixed (no autodetect)
  */
 #ifndef SENSOR_MANAGER_MODULE_H
 #define SENSOR_MANAGER_MODULE_H
@@ -30,6 +32,14 @@ typedef struct {
 
 #define SENSOR_INVALID_FLOAT   (-999.0f)
 
+typedef enum {
+    WATER_FIELD_PH = 0,
+    WATER_FIELD_EC,
+    WATER_FIELD_CL,
+    WATER_FIELD_NTU,
+    WATER_FIELD_TEMPERATURE
+} water_field_t;
+
 /*---------------------------------------------------------------------------
  * Public API
  *---------------------------------------------------------------------------*/
@@ -39,13 +49,8 @@ void sensor_manager_init(void);
 void sensor_manager_update(void);
 int  sensor_manager_count(void);
 
-typedef enum {
-    WATER_FIELD_PH = 0,
-    WATER_FIELD_EC,
-    WATER_FIELD_CL,
-    WATER_FIELD_NTU,
-    WATER_FIELD_TEMPERATURE
-} water_field_t;
+/** Get water_field_t for display slot index (0 or 1). Returns WATER_FIELD_TEMPERATURE if invalid. */
+water_field_t sensor_manager_get_display_field(int slot_index);
 
 int8_t sensor_manager_register(const sensor_driver_t *drv, water_field_t field);
 
