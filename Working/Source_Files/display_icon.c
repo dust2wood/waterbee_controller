@@ -9,7 +9,8 @@ void NAND_Read_SET_ICON(unsigned short no)
 
 //=========================================================
 
-extern uint8_t imageBuffer[40960];
+//extern uint8_t imageBuffer[40960];
+extern uint8_t imageBuffer[14336];
 //extern uint8_t imageBuffer[48000];
 
 
@@ -38,86 +39,93 @@ void NAND_ReadData2(uint8_t* buf, uint32_t BLOCK, uint32_t startPage, uint32_t p
 
 void NEMERIC_8X10_BK_W(unsigned int x, unsigned int y, unsigned char data, uint16_t color)
 {
-// x=190, y=152
-	NAND_ReadData2(	imageBuffer, 30,60,2);
-	TFT_DrawNumeric(x, y,  x+8, y+10,  (uint16_t *)(&imageBuffer[data*8*10*2]), color);
-
+	uint32_t off = (uint32_t)data * 8 * 10 * 2;
+	NAND_ReadData2(imageBuffer, 30, 60 + off/NAND_PAGE_SIZE, 2);
+	TFT_DrawNumeric(x, y, x+8, y+10, (uint16_t *)(&imageBuffer[off%NAND_PAGE_SIZE]), color);
 }
 
 void NEMERIC_8X10_BU_W(unsigned int x, unsigned int y, unsigned char data, uint16_t color)
 {
-// x=190, y=152
-	NAND_ReadData2(	imageBuffer, 30,0,2);
-	TFT_DrawNumeric(x, y,  x+8, y+10,  (uint16_t *)(&imageBuffer[data*8*10*2]), color);
-
+	uint32_t off = (uint32_t)data * 8 * 10 * 2;
+	NAND_ReadData2(imageBuffer, 30, 0 + off/NAND_PAGE_SIZE, 2);
+	TFT_DrawNumeric(x, y, x+8, y+10, (uint16_t *)(&imageBuffer[off%NAND_PAGE_SIZE]), color);
 }
 
 void NEMERIC_8X10_BU_G(unsigned int x, unsigned int y, unsigned char data, uint16_t color)
 {
-// x=190, y=152
-	NAND_ReadData2(	imageBuffer, 30,2,2);
-	TFT_DrawNumeric(x, y,  x+8, y+10,  (uint16_t *)(&imageBuffer[data*8*10*2]), color);
+	uint32_t off = (uint32_t)data * 8 * 10 * 2;
+	NAND_ReadData2(imageBuffer, 30, 2 + off/NAND_PAGE_SIZE, 2);
+	TFT_DrawNumeric(x, y, x+8, y+10, (uint16_t *)(&imageBuffer[off%NAND_PAGE_SIZE]), color);
 }
 
 //========================================
 
 void NEMERIC_12X16_BK_W(unsigned int x, unsigned int y, unsigned char data, uint16_t color)
 {
-	NAND_ReadData2(	imageBuffer, 30,4,3);
-	TFT_DrawNumeric(x, y,  x+12, y+16,  (uint16_t *)(&imageBuffer[data*12*16*2]), color);
+	uint32_t off = (uint32_t)data * 12 * 16 * 2;
+	NAND_ReadData2(imageBuffer, 30, 4 + off/NAND_PAGE_SIZE, 2);
+	TFT_DrawNumeric(x, y, x+12, y+16, (uint16_t *)(&imageBuffer[off%NAND_PAGE_SIZE]), color);
 }
 
 void NEMERIC_12X16_BK_G(unsigned int x, unsigned int y, unsigned char data, uint16_t color)
 {
-	NAND_ReadData2(	imageBuffer, 30,7,3);
-	TFT_DrawNumeric(x, y,  x+12, y+16,  (uint16_t *)(&imageBuffer[data*12*16*2]), color);
+	uint32_t off = (uint32_t)data * 12 * 16 * 2;
+	NAND_ReadData2(imageBuffer, 30, 7 + off/NAND_PAGE_SIZE, 2);
+	TFT_DrawNumeric(x, y, x+12, y+16, (uint16_t *)(&imageBuffer[off%NAND_PAGE_SIZE]), color);
 }
 
 void NEMERIC_12X16_BU_W(unsigned int x, unsigned int y, unsigned char data, uint16_t color)
 {
-	NAND_ReadData2(	imageBuffer, 30,10,3);
-	TFT_DrawNumeric(x, y,  x+12, y+16,  (uint16_t *)(&imageBuffer[data*12*16*2]), color);
+	uint32_t off = (uint32_t)data * 12 * 16 * 2;
+	NAND_ReadData2(imageBuffer, 30, 10 + off/NAND_PAGE_SIZE, 2);
+	TFT_DrawNumeric(x, y, x+12, y+16, (uint16_t *)(&imageBuffer[off%NAND_PAGE_SIZE]), color);
 }
 
 void NEMERIC_12X16_BU_G(unsigned int x, unsigned int y, unsigned char data, uint16_t color)
 {
-	NAND_ReadData2(	imageBuffer, 30,13,3);
-	TFT_DrawNumeric(x, y,  x+12, y+16,  (uint16_t *)(&imageBuffer[data*12*16*2]), color);
+	uint32_t off = (uint32_t)data * 12 * 16 * 2;
+	NAND_ReadData2(imageBuffer, 30, 13 + off/NAND_PAGE_SIZE, 2);
+	TFT_DrawNumeric(x, y, x+12, y+16, (uint16_t *)(&imageBuffer[off%NAND_PAGE_SIZE]), color);
 }
 
 //====================================
 void NEMERIC_18X23_BK_W(unsigned int x, unsigned int y, unsigned char data, uint16_t color)
 {
-	NAND_ReadData2(	imageBuffer, 30,20,6);
-	TFT_DrawNumeric(x, y,  x+18, y+23,  (uint16_t *)(&imageBuffer[data*18*23*2]), color);
+	uint32_t off = (uint32_t)data * 18 * 23 * 2;
+	NAND_ReadData2(imageBuffer, 30, 20 + off/NAND_PAGE_SIZE, 2);
+	TFT_DrawNumeric(x, y, x+18, y+23, (uint16_t *)(&imageBuffer[off%NAND_PAGE_SIZE]), color);
 }
 
 void NEMERIC_18X23_BK_G(unsigned int x, unsigned int y, unsigned char data, uint16_t color)
 {
-	NAND_ReadData2(	imageBuffer, 30,28,6);
-	TFT_DrawNumeric(x, y,  x+18, y+23,  (uint16_t *)(&imageBuffer[data*18*23*2]), color);
+	uint32_t off = (uint32_t)data * 18 * 23 * 2;
+	NAND_ReadData2(imageBuffer, 30, 28 + off/NAND_PAGE_SIZE, 2);
+	TFT_DrawNumeric(x, y, x+18, y+23, (uint16_t *)(&imageBuffer[off%NAND_PAGE_SIZE]), color);
 }
 
 
 //====================================
 void NEMERIC_23X28_BK_W(unsigned int x, unsigned int y, unsigned char data, uint16_t color)
 {
-	NAND_ReadData2(	imageBuffer, 30,36,8);
-	TFT_DrawNumeric(x, y,  x+23, y+28,  (uint16_t *)(&imageBuffer[data*23*28*2]), color);
+	uint32_t off = (uint32_t)data * 23 * 28 * 2;
+	NAND_ReadData2(imageBuffer, 30, 36 + off/NAND_PAGE_SIZE, 2);
+	TFT_DrawNumeric(x, y, x+23, y+28, (uint16_t *)(&imageBuffer[off%NAND_PAGE_SIZE]), color);
 }
 
 void NEMERIC_23X28_BK_G(unsigned int x, unsigned int y, unsigned char data, uint16_t color)
 {
-	NAND_ReadData2(	imageBuffer, 30,48,8);
-	TFT_DrawNumeric(x, y,  x+23, y+28,  (uint16_t *)(&imageBuffer[data*23*28*2]), color);
+	uint32_t off = (uint32_t)data * 23 * 28 * 2;
+	NAND_ReadData2(imageBuffer, 30, 48 + off/NAND_PAGE_SIZE, 2);
+	TFT_DrawNumeric(x, y, x+23, y+28, (uint16_t *)(&imageBuffer[off%NAND_PAGE_SIZE]), color);
 }
 
 
 //====================================
 void NEMERIC_33X46_BK_W(unsigned int x, unsigned int y, unsigned char data, uint16_t color)
 {
-	NAND_ReadData2(	imageBuffer, 31,0,20);
-	TFT_DrawNumeric(x, y,  x+33, y+46,  (uint16_t *)(&imageBuffer[data*33*46*2]), color);
+	uint32_t off = (uint32_t)data * 33 * 46 * 2;
+	NAND_ReadData2(imageBuffer, 31, 0 + off/NAND_PAGE_SIZE, 2);
+	TFT_DrawNumeric(x, y, x+33, y+46, (uint16_t *)(&imageBuffer[off%NAND_PAGE_SIZE]), color);
 }
 
 //=====================================
@@ -153,7 +161,7 @@ void DrawTinyNumber(uint32_t x, uint32_t y, char* str, uint16_t color) {
 		else if (str[i] == 'C')				{
 			if (color==BLACK)	NEMERIC_8X10_BK_W(x,y,14, color);
 			else             	NEMERIC_8X10_BU_W(x,y,14,color);
-            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[14 * 15 * 17 * 2]), color); // ¿Âµµ Ç¥½Ã Ãß°¡ÇÏÀÚ.
+            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[14 * 15 * 17 * 2]), color); // ï¿½Âµï¿½ Ç¥ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½.
 		}
         else
             return;
@@ -185,7 +193,7 @@ void DrawSmallNumber(uint32_t x, uint32_t y, char* str, uint16_t color) {
             //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[12 * 15 * 17 * 2]), color);
         else if (str[i] == 'C')
             NEMERIC_12X16_BK_W(x,y,14,color);
-            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[14 * 15 * 17 * 2]), color); // ¿Âµµ Ç¥½Ã Ãß°¡ÇÏÀÚ.
+            //TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[14 * 15 * 17 * 2]), color); // ï¿½Âµï¿½ Ç¥ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½.
         else
             return;
         x += 12; // 15
@@ -211,7 +219,7 @@ void DrawMediumNumber(uint32_t x, uint32_t y, char* str, uint16_t color) {
 			NEMERIC_18X23_BK_W(x,y,11,color);
             //TFT_DrawImage(x, y, x + 22, y + 26, (uint16_t*)&(imageBuffer[11 * 22 * 26 * 2]), DRAW_REVERSE);
         else if (str[i] == '-')
-			NEMERIC_18X23_BK_W(x,y,12,color);	// ¾øÀ½ ,,,Ãß°¡ÇØ¾ßÇÔ
+			NEMERIC_18X23_BK_W(x,y,12,color);	// ï¿½ï¿½ï¿½ï¿½ ,,,ï¿½ß°ï¿½ï¿½Ø¾ï¿½ï¿½ï¿½
             //TFT_DrawImage(x, y, x + 22, y + 26, (uint16_t*) (buffer), DRAW_REVERSE);
         else
             return;
@@ -516,7 +524,7 @@ void display_set3_zero(unsigned char select)
 	TFT_DrawImage(  20, 225, 20+100, 225+30,  (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 
-// ¹öÆÛ±³Á¤
+// ï¿½ï¿½ï¿½Û±ï¿½ï¿½ï¿½
 void display_set3_buff(unsigned char select)
 {
 	if (select==0) 	NAND_ReadData2(	imageBuffer, 51,48,3);
@@ -640,14 +648,14 @@ void display_set8_noalarm(unsigned char select)
 //=========================================
 // FILE_SET3
 //=========================================
-// IMG_set9_time range  ½Ã°£ ¹üÀ§
+// IMG_set9_time range  ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½
 void display_set9_time_range(unsigned char select)
 {
 	if (select==0) 		NAND_ReadData2(	imageBuffer, 54,0,7);
 	else 				NAND_ReadData2(	imageBuffer, 54,7,7);
 	TFT_DrawImage( 20, 225, 20+212, 225+30,  (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
-// IMG_set9_nongdo_range ³óµµ ¹üÀ§
+// IMG_set9_nongdo_range ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 void display_set9_nongdo_range(unsigned char select)
 {
 	if (select==0) 		NAND_ReadData2(	imageBuffer, 54,14,7);
@@ -655,13 +663,13 @@ void display_set9_nongdo_range(unsigned char select)
 	TFT_DrawImage( 248, 225, 248+212, 225+30,  (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 //=============================================
-// IMG_set10_sensor Áø´Ü ¸Þ´º
+// IMG_set10_sensor ï¿½ï¿½ï¿½ï¿½ ï¿½Þ´ï¿½
 void display_set10_sensor(unsigned char select)
 {
-	if (select==0) 		NAND_ReadData2(	imageBuffer, 54,28,4);	// Á¤»ó
-	else if (select==1)	NAND_ReadData2(	imageBuffer, 54,32,4);	// ÀÌ»ó, ¼¾¼­ Á¡°Ë 
-	else if (select==2)	NAND_ReadData2(	imageBuffer, 54,36,4);	// ÀÌ»ó, ·¥ÇÁ Á¡°Ë
-	else 				NAND_ReadData2(	imageBuffer, 54,40,4);	// ¼¾¼­ ¿¬°á ½ÇÆÐ
+	if (select==0) 		NAND_ReadData2(	imageBuffer, 54,28,4);	// ï¿½ï¿½ï¿½ï¿½
+	else if (select==1)	NAND_ReadData2(	imageBuffer, 54,32,4);	// ï¿½Ì»ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
+	else if (select==2)	NAND_ReadData2(	imageBuffer, 54,36,4);	// ï¿½Ì»ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	else 				NAND_ReadData2(	imageBuffer, 54,40,4);	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	TFT_DrawImage( 173, 219, 173+143, 219+24,  (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 
@@ -963,36 +971,36 @@ void display_tempXY(unsigned int X, unsigned int Y)
 }
 
 //======================================
-// ·Î±× ¸Þ¼¼Áö 
+// ï¿½Î±ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ 
 
-// IMG_zero Á¦·Î±³Á¤
+// IMG_zero ï¿½ï¿½ï¿½Î±ï¿½ï¿½ï¿½
 void display_zero_W_XY(unsigned int X, unsigned int Y)
 {
 	NAND_ReadData2(	imageBuffer, 61, 48, 4);	
 	TFT_DrawImage( X, Y, X+120, Y+30,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 
-// IMG_span ½ºÆÒ±³Á¤
+// IMG_span ï¿½ï¿½ï¿½Ò±ï¿½ï¿½ï¿½
 void display_span_W_XY(unsigned int X, unsigned int Y)
 {
 	NAND_ReadData2(	imageBuffer, 61, 52, 4);	
 	TFT_DrawImage( X, Y, X+120, Y+30,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 
-// IMG_temp ¿Âµµ±³Á¤
+// IMG_temp ï¿½Âµï¿½ï¿½ï¿½ï¿½ï¿½
 void display_temp_W_XY(unsigned int X, unsigned int Y)
 {
 	NAND_ReadData2(	imageBuffer, 61, 56, 4);	
 	TFT_DrawImage( X, Y, X+120, Y+30,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 
-// IMG_clear Áö¿ì±â
+// IMG_clear ï¿½ï¿½ï¿½ï¿½ï¿?
 void display_clear_W_XY(unsigned int X, unsigned int Y)
 {
 	TFT_Fill( X, Y, X+120, Y+30, WHITE);
 }
 
-// IMG_buffer ¹öÆÛ±³Á¤
+// IMG_buffer ï¿½ï¿½ï¿½Û±ï¿½ï¿½ï¿½
 void display_buffer_W_XY(unsigned int X, unsigned int Y)
 {
 	NAND_ReadData2(	imageBuffer, 55, 55, 4);	
@@ -1048,28 +1056,28 @@ void display_buffer(void)
 
 //===============================================
 
-// IMG_CL1,  ÀÜ·ù¿°¼Ò
+// IMG_CL1,  ï¿½Ü·ï¿½ï¿½ï¿½ï¿½ï¿½
 void display_CL1(void)
 {
 	NAND_ReadData2(	imageBuffer, 61, 32, 4);
 	TFT_DrawImage( 180,4, 180+120, 4+30,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 
-// IMG_CL2,  Å¹µµ
+// IMG_CL2,  Å¹ï¿½ï¿½
 void display_CL2(void)
 {
 	NAND_ReadData2(	imageBuffer, 61, 36, 4);
 	TFT_DrawImage( 180,4, 180+120, 4+30,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 
-// IMG_o2,  »ê¼ÒÀÌ¿Â
+// IMG_o2,  ï¿½ï¿½ï¿½ï¿½Ì¿ï¿?
 void display_O2(void)
 {
 	NAND_ReadData2(	imageBuffer, 61, 40, 4);
 	TFT_DrawImage( 180,4, 180+120, 4+30,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 
-// IMG_elec,  Àü±âÀüµµµµ
+// IMG_elec,  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void display_elec(void)
 {
 	NAND_ReadData2(	imageBuffer, 61, 44, 4);
@@ -1152,7 +1160,7 @@ void display_uscm3(void)
 	TFT_DrawImage( 358,163, 358+44, 163+19,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 
-// IMG_4mA 2°³ ±×¸°´Ù.
+// IMG_4mA 2ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½.
 void display_4mA(void)
 {
 	NAND_ReadData2(	imageBuffer, 62, 13, 1);
@@ -1160,7 +1168,7 @@ void display_4mA(void)
 	TFT_DrawImage( 258,125, 258+40, 125+16,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 
-// IMG_20mA  2°³ ±×¸°´Ù.
+// IMG_20mA  2ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½.
 void display_20mA(void)
 {
 	NAND_ReadData2(	imageBuffer, 62, 14, 1);
@@ -1344,7 +1352,7 @@ void display_RS_485(void)
 
 
 //===================================================
-// IMG_message1	, ¼¼Á¤È­¸é Å¬¸®¾î  
+// IMG_message1	, ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½  
 void display_message_clear(void)
 {
 	TFT_Fill(122,140, 122+250,140+64,  WHITE);
@@ -1353,28 +1361,28 @@ void display_message_clear(void)
 //	TFT_DrawImage( 122,140, 122+250,140+64,   (uint16_t *)imageBuffer, DRAW_WHITE);
 }
 
-// IMG_message1	, ¼öµ¿¼¼Á¤Áß
+// IMG_message1	, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void display_message1(void)
 {
 	NAND_ReadData2(	imageBuffer, 63, 0, 16);
 	TFT_DrawImage( 122,140, 122+250,140+64,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 
-// IMG_message2, ÀÚµ¿¼¼Á¤Áß
+// IMG_message2, ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void display_message2(void)
 {
 	NAND_ReadData2(	imageBuffer, 63, 16, 16);
 	TFT_DrawImage( 122,140, 122+250,140+64,    (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 
-// IMG_message3, ÀÚµ¿°æº¸
+// IMG_message3, ï¿½Úµï¿½ï¿½æº¸
 void display_message3(void)
 {
 	NAND_ReadData2(	imageBuffer, 63, 32, 16);
 	TFT_DrawImage( 128,140, 128+250,140+60,    (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 
-// IMG_message4, °æº¸ ÇØÁ¦
+// IMG_message4, ï¿½æº¸ ï¿½ï¿½ï¿½ï¿½
 void display_message4(void)
 {
 	NAND_ReadData2(	imageBuffer, 63, 48, 16);
@@ -1382,7 +1390,7 @@ void display_message4(void)
 }
 
 
-// IMG_message6, ÃÊ±âÈ­
+// IMG_message6, ï¿½Ê±ï¿½È­
 void display_message6(void)
 {
 	NAND_ReadData2(	imageBuffer, 64, 0, 19);
@@ -1393,7 +1401,7 @@ void display_message6(void)
 }
 
 
-// IMG_message6, ÃÊ±âÈ­
+// IMG_message6, ï¿½Ê±ï¿½È­
 void display_trend_hour(unsigned char n)
 {
 	if (n==0) 		NAND_ReadData2(imageBuffer, 76, 0, 3);
@@ -1407,7 +1415,7 @@ void display_trend_hour(unsigned char n)
 }
 
 
-// IMG_back_gtaph, ±×·¡ÇÁ¹è°æ
+// IMG_back_gtaph, ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?
 
 
 extern uint16_t  trand_select_Y;
@@ -1546,24 +1554,26 @@ void display_back_graph(void)
 
 void display_logo(void)
 {
-	// back 
+	/* White background, logo with color key (BACK_COLOR3/WHITE -> transparent) */
+	TFT_Fill(0, 0, 480, 272, WHITE);
+
 	NAND_ReadData2(	imageBuffer, 41, 0, 24);
-	TFT_DrawImage( 0,0, 480, 50,   (uint16_t *)imageBuffer, DRAW_NORMAL);
+	TFT_DrawImage( 0, 0, 480, 50,   (uint16_t *)imageBuffer, DRAW_WHITE_BG);
 
 	NAND_ReadData2(	imageBuffer, 41, 24, 24);
-	TFT_DrawImage( 0,50, 480, 100,   (uint16_t *)imageBuffer, DRAW_NORMAL);
+	TFT_DrawImage( 0, 50, 480, 100,  (uint16_t *)imageBuffer, DRAW_WHITE_BG);
 
 	NAND_ReadData2(	imageBuffer, 42, 0, 24);
-	TFT_DrawImage( 0,100, 480, 150,   (uint16_t *)imageBuffer, DRAW_NORMAL);
+	TFT_DrawImage( 0, 100, 480, 150, (uint16_t *)imageBuffer, DRAW_WHITE_BG);
 
 	NAND_ReadData2(	imageBuffer, 42, 24, 24);
-	TFT_DrawImage( 0,150, 480, 200,   (uint16_t *)imageBuffer, DRAW_NORMAL);
+	TFT_DrawImage( 0, 150, 480, 200, (uint16_t *)imageBuffer, DRAW_WHITE_BG);
 
 	NAND_ReadData2(	imageBuffer, 43, 0, 24);
-	TFT_DrawImage( 0,200, 480, 250,   (uint16_t *)imageBuffer, DRAW_NORMAL);
+	TFT_DrawImage( 0, 200, 480, 250, (uint16_t *)imageBuffer, DRAW_WHITE_BG);
 
 	NAND_ReadData2(	imageBuffer, 43, 24, 24);
-	TFT_DrawImage( 0,250, 480, 272,   (uint16_t *)imageBuffer, DRAW_NORMAL);
+	TFT_DrawImage( 0, 250, 480, 272, (uint16_t *)imageBuffer, DRAW_WHITE_BG);
 }
 
 

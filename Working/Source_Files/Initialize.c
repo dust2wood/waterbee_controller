@@ -17,7 +17,7 @@ void Initialize(void)
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
 	RTC_Config();
 	FSMC_LCD_Init();
-	Delay(2000000UL);   /* ~28ms: FSMC 안정화 후 LCD 전원 래치 대기 (NEW_BOARD) */
+	Delay(200000UL);    /* FSMC stabilize before TFT init */
 	TFT_Init();
 	Serial_Open(SERIAL_PORT1,115200);
 	Serial_Open(SERIAL_PORT2,115200);
@@ -43,9 +43,9 @@ void Initialize(void)
 //	I2C_configuration();
 
 
-	TFT_clear(BLACK);
-//	Set_IWDG_ResetTime(5);
-//	IWDG_Start();
+	TFT_clear(0x07E0);  /* GREEN: LCD init diagnostic */
+	Set_IWDG_ResetTime(5);   /* ~5초 (리셋 원인 조사용, 충분히 여유) */
+	// IWDG_Start();   /* 일시 중지: 리셋 루프 원인 파악 시까지 */
 
 	TIM_Cmd(TIM3, ENABLE);
 	TIM_Cmd(TIM2, ENABLE);

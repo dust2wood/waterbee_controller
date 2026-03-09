@@ -174,7 +174,16 @@ void TFT_DrawNumeric(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t y
 	TFT_WR_REG(WRITE_MEM_START);
 
 
-	if(Flag == BACK_COLOR3)
+	if(Flag == DRAW_WHITE_BG)
+	{
+		for(i = 0 ; i < n ; ++i)
+		{
+			data = Image[i];
+			if (data==BACK_COLOR3 || data==WHITE)	TFT_WR_Data(WHITE);
+			else 					TFT_WR_Data(data);
+		}
+	}
+	else if(Flag == BACK_COLOR3)
 	{
 		for(i = 0 ; i < n ; ++i)
 		{
@@ -722,7 +731,7 @@ __attribute__((noinline, optimize("O0")))
 void TFT_DelayTime(uint16_t i)
 {
     volatile uint32_t cnt;
-    for (cnt = (uint32_t)i * 72000UL; cnt != 0U; cnt--)
+    for (cnt = (uint32_t)i * 7200UL; cnt != 0U; cnt--)
         ;
 }
 
@@ -749,8 +758,10 @@ void TFT_Point(uint16_t x,uint16_t y,uint16_t fontcolor)
  * 72MHz, ~3 cycles/iter -> 1,000,000 counts ~= 42ms.               */
 void Delay(__IO uint32_t nCount)
 {
-    for (; nCount != 0; nCount--)
-        ;
+    uint32_t wdg_cnt = 0;
+    for (; nCount != 0; nCount--) {
+        if (++wdg_cnt >= 10000u) { IWDG_ReloadCounter(); wdg_cnt = 0; }
+    }
 }
 
 /* lcd_rst: SSD1963 datasheet requires
@@ -770,9 +781,9 @@ void lcd_rst(void)
 #else
     /* SUB B/D Ver1.161224: LCD RST = PD3 */
     GPIO_ResetBits(GPIOD, GPIO_Pin_3);
-    Delay(1000000UL);                   /* ~14ms  RST LOW  */
+    Delay(100000UL);                    /* RST LOW ~14ms  */
     GPIO_SetBits(GPIOD, GPIO_Pin_3);
-    Delay(10000000UL);                  /* ~140ms RST stabilize */
+    Delay(1000000UL);                   /* RST HIGH stabilize ~140ms */
 #endif
 }
 
