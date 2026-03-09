@@ -13,7 +13,7 @@ return;
 
 
 //========================================================
-#ifdef 0
+#if 0
 
 #include <stm32f10x_i2c.h>
 
@@ -148,7 +148,7 @@ uint16_t EEpromToMpu(uint16_t ReadStart_Address, uint16_t Byte_Counter) {
 //        EEpromdata.ReadEEpromData_Buffer[i] = 0x00;
 //    }
 
-// �ӽ÷�....
+// �ӽ÷�....
 //    for (i = 0; i < 110; i++) {
 //        EEpromdata.ReadEEpromData_Buffer[i] = EEpromdata.WriteEEpromData_Buffer[i];
 //    }

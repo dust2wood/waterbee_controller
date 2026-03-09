@@ -9,6 +9,7 @@
 #define SENSOR_MANAGER_MODULE_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 /*---------------------------------------------------------------------------
  * Generic sensor driver interface
@@ -53,5 +54,19 @@ int  sensor_manager_count(void);
 water_field_t sensor_manager_get_display_field(int slot_index);
 
 int8_t sensor_manager_register(const sensor_driver_t *drv, water_field_t field);
+
+/*---------------------------------------------------------------------------
+ * External sensor display (ReDisplay_ch2 raw display slots)
+ *---------------------------------------------------------------------------*/
+#define SMGR_STATUS_OK   0
+#define SMGR_STATUS_ERR  1
+
+typedef struct {
+    uint8_t  status;
+    uint16_t raw[2];
+} smgr_ext_sensor_t;
+
+extern uint8_t           g_ext_sensor_count;
+extern smgr_ext_sensor_t g_ext_sensors[4];
 
 #endif /* SENSOR_MANAGER_MODULE_H */

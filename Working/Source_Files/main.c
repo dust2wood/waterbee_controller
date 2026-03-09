@@ -1,6 +1,7 @@
 #include "Main.h"
 #include "Sensor_Manager.h"
 #include "sensor_autodetect.h"
+#include "ui_mode.h"
 
 
 unsigned int buz_time;	// max=65535*10msec=655.35sec
@@ -220,26 +221,29 @@ void State_ConfigEthernet(void);
 
 int main(void) 
 {
-	char led;
+	char led = 0;
 	unsigned int data=0;
 
+	/* 백라이트 최우선: 모든 초기화보다 앞서 PD3 High (리셋 루프 시에도 화면부터 켜짐) */
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+	{ GPIO_InitTypeDef g = {0}; g.GPIO_Pin = GPIO_Pin_3; g.GPIO_Mode = GPIO_Mode_Out_PP; g.GPIO_Speed = GPIO_Speed_50MHz; GPIO_Init(GPIOD, &g); }
+	GPIO_SetBits(GPIOD, GPIO_Pin_3);
 
-//Update_CurrentTrans();
-
-
-    Initialize();
-    SysIND_LED();
+	Initialize();
+	SysIND_LED();
     SystemSetting();
+
+	/* PnP 안전: 로고 먼저 표시 후 3초 대기, 그 다음 센서 스캔 */
+	display_logo();
+	Delay_10msec(300);
     sensor_autodetect_run();
     sensor_manager_init();
     bufferData_reset_function();
     Update_Cal_Logdata();
     configData.adjustConfig.filter_update_flag = 1;
 
-
 BUZ_ON;
-	buz_time=500; // 50*10msec=500msec
-	display_logo();
+	buz_time=500;
 	Delay_10msec(3000);
 	Delay_10msec(3000);
 
@@ -250,7 +254,8 @@ BUZ_ON;
 
 	init_tx3Buffer();  /* RS485 poll start (unified firmware) */
 
-	Sensor_Manager_Init();   /* ???? ??? ???? ????? ???? */
+	sensor_manager_init();   /* ???? ??? ???? ????? ???? */
+    GetUiMode();
 
     // test
     //	DrawBack2();
@@ -361,6 +366,7 @@ BUZ_OFF;
 
 
     while (1) {
+		IWDG_ReloadCounter();  /* 매 루프 워치독 리셋 방지 */
 
 		if (led==0) { INDLED_ON; led=1; }
 		else 		{ INDLED_OFF; led=0; }
@@ -375,7 +381,7 @@ BUZ_OFF;
         SensorComHandler();
 
         /* ???? ??? ???? ???? (Modbus485Handler ???? ???? ?????? ??) */
-        Update_All_External_Sensors();
+        sensor_manager_update();
 
         // 4-20mA ???
         Update_CurrentTrans();
@@ -419,9 +425,6 @@ BUZ_OFF;
 
 //            if ((currentData.Device_Selector_Mode & SENSOR_1_MODE) && (req_ppm_com_flag == 1)) {
             if ((currentData.Device_Selector_Mode & SENSOR_1_MODE) ) {
-                if (req_ppm_com_flag == 1 && req_current_com_flag == 0) {
-                    //SendCalDataCurrent(SendParmeter_Current);
-                }
                 Delay_10msec(300);
                 //if (req_current_com_flag == 1 && req_ppm_com_flag == 1) {
                 //if (req_ppm_com_flag == 1) {
@@ -430,9 +433,6 @@ BUZ_OFF;
                     req_current_com_flag = 0;
                 //}
             } else if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
-                if (req_ppm_com_flag == 1 && req_current_com_flag == 0) {
-                  //  SendCalDataCurrent(SendParmeter_Current);
-                }
                 Delay_10msec(300);
                 //if (req_current_com_flag == 1 && req_ppm_com_flag == 1) {
 //                if (req_ppm_com_flag == 1) {
@@ -486,12 +486,6 @@ BUZ_OFF;
 				//display_set3_zero(1);
             }
             Delay_10msec(300);
-
-
-            if (req_zero_ppm_com_flag == 1 && req_zero_current_com_flag == 0) {
-                //SendCalZeroDataCurrent(SendParmeter_Zero_Current);
-            }
-            Delay_10msec(300);
             if (req_zero_ppm_com_flag == 1) {// && req_zero_current_com_flag == 1) {
                 zero_cal_update_flag = 0;
                 req_zero_current_com_flag = 0;
@@ -519,14 +513,24 @@ BUZ_OFF;
 
 //=======================================================
 
-uint16_t delay_temp;
+volatile uint16_t delay_temp;
 
 void Delay_10msec(uint16_t Time) {
     int i = 0,j;
     for (i = 0; i < Time; i++) {
+		IWDG_ReloadCounter();
 		for (j=0;j<1000;j++) {
         delay_temp = 1;
 		}
+    }
+}
+
+/* 1ms 단위 딜레이 - while 루프 내 1ms 간격 IWDG 킥용 */
+void Delay_1msec(uint16_t Time) {
+    int i, j;
+    for (i = 0; i < Time; i++) {
+		IWDG_ReloadCounter();
+		for (j = 0; j < 100; j++) delay_temp = 1;
     }
 }
 
@@ -538,10 +542,6 @@ void SysIND_LED(void) {
         INDLED_OFF;
         currentData.Device_Selector_Mode = SENSOR_2_MODE;
     }
-}
-
-void ReadSenosr2ADC(void) {
-//    adcBuffer[0] = ADC_GetConversionValue(ADC1);
 }
 
 void Update_Cal_Logdata(void) {
@@ -845,6 +845,16 @@ void Set_Relay_OP_Run_Handler(void) {
 
 void SystemSetting(void) {
     configData = *((ConfigSet*) (SAVEADDR_CONFIG_BASE));
+
+#ifdef SENSOR_PH_EC
+    /* RS485 센서 Slave ID 검증 - 중복 시 보정, 무효 시 기본값 */
+    if (configData.modbusConfig.modbusSensor1Addr < 1 || configData.modbusConfig.modbusSensor1Addr > 247)
+        configData.modbusConfig.modbusSensor1Addr = 2;
+    if (configData.modbusConfig.modbusSensor2Addr < 1 || configData.modbusConfig.modbusSensor2Addr > 247)
+        configData.modbusConfig.modbusSensor2Addr = 4;
+    if (configData.modbusConfig.modbusSensor1Addr == configData.modbusConfig.modbusSensor2Addr)
+        configData.modbusConfig.modbusSensor2Addr = (configData.modbusConfig.modbusSensor1Addr % 247) + 1;
+#endif
 
 	configData.outputConfig.output4mA = 0;
 	configData.outputConfig.output4mA2 = 0;
@@ -2221,7 +2231,12 @@ void State_ConfigComm(void) {
                         break;
                     case BUTTON_ENTER:
                         if (configData.modbusConfig.mode != tempConfigData.modbusConfig.mode || configData.modbusConfig.baudrate != tempConfigData.modbusConfig.baudrate
-                                || configData.modbusConfig.modbusSlaveAddr != tempConfigData.modbusConfig.modbusSlaveAddr || configData.modbusConfig.databit != tempConfigData.modbusConfig.databit) {
+                                || configData.modbusConfig.modbusSlaveAddr != tempConfigData.modbusConfig.modbusSlaveAddr || configData.modbusConfig.databit != tempConfigData.modbusConfig.databit
+#ifdef SENSOR_PH_EC
+                                || configData.modbusConfig.modbusSensor1Addr != tempConfigData.modbusConfig.modbusSensor1Addr
+                                || configData.modbusConfig.modbusSensor2Addr != tempConfigData.modbusConfig.modbusSensor2Addr
+#endif
+                                ) {
                             configData.modbusConfig = tempConfigData.modbusConfig;
                             Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
 
@@ -2848,22 +2863,28 @@ void State_CalibZero(void) {
 
                         if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
                             if (cursor == 0) {
-                                if (tempConfigData.calibrationConfig.S1zeroCal >= 10) {
+                                if (tempConfigData.calibrationConfig.S1zeroCal >= 10)
                                     tempConfigData.calibrationConfig.S1zeroCal -= 10;
-                                } 
+                                else if (tempConfigData.calibrationConfig.S1zeroCal < 0)
+                                    tempConfigData.calibrationConfig.S1zeroCal += 10;  /* 음수일 때 0으로 수렴 */
                             } else {
                                 if (tempConfigData.calibrationConfig.S1zeroCal > 0)
                                     --tempConfigData.calibrationConfig.S1zeroCal;
+                                else if (tempConfigData.calibrationConfig.S1zeroCal < 0)
+                                    ++tempConfigData.calibrationConfig.S1zeroCal;  /* 음수->0 */
                             }
                         }
                         else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
                             if (cursor == 0) {
-                                if (tempConfigData.calibrationConfig.S2zeroCal >= 100) {
+                                if (tempConfigData.calibrationConfig.S2zeroCal >= 100)
                                     tempConfigData.calibrationConfig.S2zeroCal -= 100;
-                                }
+                                else if (tempConfigData.calibrationConfig.S2zeroCal < 0)
+                                    tempConfigData.calibrationConfig.S2zeroCal += 100;  /* 음수->0 */
                             } else {
                                 if (tempConfigData.calibrationConfig.S2zeroCal > 0)
                                     --tempConfigData.calibrationConfig.S2zeroCal;
+                                else if (tempConfigData.calibrationConfig.S2zeroCal < 0)
+                                    ++tempConfigData.calibrationConfig.S2zeroCal;  /* 음수->0 */
                             }
                         }
 
@@ -3133,7 +3154,11 @@ void State_CalibSpan(void) {
                         if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
                             switch (cursor) {
                                 case 0:
-                                    if (tempConfigData.calibrationConfig.PH_Span_Cal + 10 <= 9999)
+                                    /* 자릿수 가중치: 0.0X 구간에서는 +1만 적용 (0.001->0.002 방지) */
+                                    if (tempConfigData.calibrationConfig.PH_Span_Cal < 10) {
+                                        if (tempConfigData.calibrationConfig.PH_Span_Cal < 9999)
+                                            ++tempConfigData.calibrationConfig.PH_Span_Cal;
+                                    } else if (tempConfigData.calibrationConfig.PH_Span_Cal + 10 <= 9999)
                                         tempConfigData.calibrationConfig.PH_Span_Cal += 10;
                                     break;
                                 case 1:
@@ -3147,7 +3172,11 @@ void State_CalibSpan(void) {
                         } else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
                             switch (cursor) {
                                 case 0:
-                                    if (tempConfigData.calibrationConfig.EC_Span_Cal + 100 <= 99999)
+                                    /* 자릿수 가중치: 0.0X 구간에서는 +1만 적용 (0.001->0.011 튐 방지) */
+                                    if (tempConfigData.calibrationConfig.EC_Span_Cal < 100) {
+                                        if (tempConfigData.calibrationConfig.EC_Span_Cal < 99999)
+                                            ++tempConfigData.calibrationConfig.EC_Span_Cal;
+                                    } else if (tempConfigData.calibrationConfig.EC_Span_Cal + 100 <= 99999)
                                         tempConfigData.calibrationConfig.EC_Span_Cal += 100;
                                     break;
                                 case 1:
@@ -3165,11 +3194,13 @@ void State_CalibSpan(void) {
                         if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
                             switch (cursor) {
                                 case 0:
-                                    if (tempConfigData.calibrationConfig.PH_Span_Cal >= 10)
+                                    if (tempConfigData.calibrationConfig.PH_Span_Cal < 10 && tempConfigData.calibrationConfig.PH_Span_Cal > 0)
+                                        --tempConfigData.calibrationConfig.PH_Span_Cal;
+                                    else if (tempConfigData.calibrationConfig.PH_Span_Cal >= 10)
                                         tempConfigData.calibrationConfig.PH_Span_Cal -= 10;
                                     break;
                                 case 1:
-                                    if (tempConfigData.calibrationConfig.PH_Span_Cal > 0)
+                                    if (tempConfigData.calibrationConfig.PH_Span_Cal > 1)
                                         --tempConfigData.calibrationConfig.PH_Span_Cal;
                                     break;
                                 case 2:
@@ -3179,7 +3210,9 @@ void State_CalibSpan(void) {
                         } else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
                             switch (cursor) {
                                 case 0:
-                                    if (tempConfigData.calibrationConfig.EC_Span_Cal >= 100)
+                                    if (tempConfigData.calibrationConfig.EC_Span_Cal < 100 && tempConfigData.calibrationConfig.EC_Span_Cal > 0)
+                                        --tempConfigData.calibrationConfig.EC_Span_Cal;
+                                    else if (tempConfigData.calibrationConfig.EC_Span_Cal >= 100)
                                         tempConfigData.calibrationConfig.EC_Span_Cal -= 100;
                                     break;
                                 case 1:
@@ -4021,12 +4054,15 @@ void State_CalibBuffPH4(void) {
                         }
                         else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
                             if (cursor == 0) {
-                                if (tempConfigData.calibrationConfig.EC_Cal >= 100) {
+                                if (tempConfigData.calibrationConfig.EC_Cal >= 100)
                                     tempConfigData.calibrationConfig.EC_Cal -= 100;
-                                }
+                                else if (tempConfigData.calibrationConfig.EC_Cal < 0)
+                                    tempConfigData.calibrationConfig.EC_Cal += 100;  /* 음수->0 */
                             } else {
                                 if (tempConfigData.calibrationConfig.EC_Cal > 0)
                                     --tempConfigData.calibrationConfig.EC_Cal;
+                                else if (tempConfigData.calibrationConfig.EC_Cal < 0)
+                                    ++tempConfigData.calibrationConfig.EC_Cal;  /* 음수->0 */
                             }
                         }
 
@@ -4171,12 +4207,15 @@ void State_CalibBuffPH7(void) {
                         }
                         else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
                             if (cursor == 0) {
-                                if (tempConfigData.calibrationConfig.EC_Cal >= 100) {
+                                if (tempConfigData.calibrationConfig.EC_Cal >= 100)
                                     tempConfigData.calibrationConfig.EC_Cal -= 100;
-                                }
+                                else if (tempConfigData.calibrationConfig.EC_Cal < 0)
+                                    tempConfigData.calibrationConfig.EC_Cal += 100;  /* 음수->0 */
                             } else {
                                 if (tempConfigData.calibrationConfig.EC_Cal > 0)
                                     --tempConfigData.calibrationConfig.EC_Cal;
+                                else if (tempConfigData.calibrationConfig.EC_Cal < 0)
+                                    ++tempConfigData.calibrationConfig.EC_Cal;  /* 음수->0 */
                             }
                         }
 
@@ -4298,12 +4337,15 @@ void State_CalibBuff_EC(void) {
 
                         if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
                             if (cursor == 0) {
-                                if (tempConfigData.calibrationConfig.EC_Cal >= 100) {
+                                if (tempConfigData.calibrationConfig.EC_Cal >= 100)
                                     tempConfigData.calibrationConfig.EC_Cal -= 100;
-                                }
+                                else if (tempConfigData.calibrationConfig.EC_Cal < 0)
+                                    tempConfigData.calibrationConfig.EC_Cal += 100;  /* 음수->0 */
                             } else {
                                 if (tempConfigData.calibrationConfig.EC_Cal > 0)
                                     --tempConfigData.calibrationConfig.EC_Cal;
+                                else if (tempConfigData.calibrationConfig.EC_Cal < 0)
+                                    ++tempConfigData.calibrationConfig.EC_Cal;  /* 음수->0 */
                             }
                         }
 
@@ -5361,6 +5403,8 @@ void FactoryReset(void) {
     configData.modbusConfig.baudrate = 0;
     configData.modbusConfig.modbusSlaveAddr = 0;
     configData.modbusConfig.databit = 0;
+    configData.modbusConfig.modbusSensor1Addr = 2;   /* pH 센서 기본 Slave ID */
+    configData.modbusConfig.modbusSensor2Addr = 4;   /* EC 센서 기본 Slave ID */
 
     configData.relayConfig.relay1WashCycle = 0;
     configData.relayConfig.relay1WashTime = 0;

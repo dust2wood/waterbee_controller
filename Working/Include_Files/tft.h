@@ -15,6 +15,7 @@ extern uint16_t  BACK_COLOR;//背景颜色.默认为白色
 #define DRAW_RIGHT_TOP					2
 #define DRAW_LEFT_BOTTOM				3
 #define DRAW_RIGHT_BOTTOM				4
+#define DRAW_WHITE_BG					10	/* Color key: BACK_COLOR3/WHITE -> WHITE for logo on white */
 
 #define NOP				0x0000
 #define SOFT_RESET		0x0001

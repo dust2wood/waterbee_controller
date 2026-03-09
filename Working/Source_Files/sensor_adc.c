@@ -8,8 +8,6 @@
 #include "Main.h"
 #include "Adc_Read.h"
 
-#define SENSOR_OK    0
-#define SENSOR_ERROR 3
 #define ADC_MAX      4095
 #define ADC_4MA      400
 #define ADC_20MA     2000

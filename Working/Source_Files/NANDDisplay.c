@@ -13,7 +13,8 @@
 
 //uint8_t imageBuffer[43200] = { 0 , };
 //uint8_t imageBuffer[48000] = {0,};
-uint8_t imageBuffer[40960] = {0,};
+//uint8_t imageBuffer[40960] = {0,};  /* original: entire glyph set loaded at once */
+uint8_t imageBuffer[14336] = {0,};  /* 7 NAND pages: max for icon image draws */
 
 uint16_t* GlobalMemory;
 
@@ -87,49 +88,49 @@ void DrawIcon(uint32_t icon, uint32_t draw) {
 
 void DrawSmallNumber0(uint32_t x, uint32_t y, char* str, uint16_t color) {
     uint32_t i = 0;
-    NAND_ReadSNumber();
+    const uint32_t G = 15 * 17 * 2; /* 510 bytes per glyph */
     while (str[i] != 0) {
-        if (str[i] > 0x2F && str[i] < 0x3A)
-            TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[(str[i] - 0x30) * 15 * 17 * 2]), color);
-        else if (str[i] == ' ')
-            TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[13 * 15 * 17 * 2]), color);
-        else if (str[i] == '-')
-            TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[10 * 15 * 17 * 2]), color);
-        else if (str[i] == ':')
-            TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[11 * 15 * 17 * 2]), color);
-        else if (str[i] == '.')
-            TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[12 * 15 * 17 * 2]), color);
-        else if (str[i] == 'C')
-            TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&(imageBuffer[14 * 15 * 17 * 2]), color); // ¿Âµµ Ç¥½Ã Ãß°¡ÇÏÀÚ.
-        else
-            return;
-        x += 14; // 15
+        uint8_t glyph;
+        if      (str[i] > 0x2F && str[i] < 0x3A) glyph = str[i] - 0x30;
+        else if (str[i] == '-')  glyph = 10;
+        else if (str[i] == ':')  glyph = 11;
+        else if (str[i] == '.')  glyph = 12;
+        else if (str[i] == ' ')  glyph = 13;
+        else if (str[i] == 'C')  glyph = 14;
+        else return;
+        uint32_t off = (uint32_t)glyph * G;
+        NAND_ReadData(imageBuffer, 960 + off / NAND_PAGE_SIZE, 1);
+        TFT_DrawImageSmall(x, y, x + 15, y + 17, (uint16_t*)&imageBuffer[off % NAND_PAGE_SIZE], color);
+        x += 14;
         ++i;
     }
 }
 
 void DrawMediumNumber0(uint32_t x, uint32_t y, char* str, uint16_t color) {
     uint32_t i = 0;
-    uint16_t* buffer;
+    uint16_t* minusBuf;
+    uint32_t baseNandPage;
+    const uint32_t G = 22 * 26 * 2; /* 1144 bytes per glyph */
 
     if (color == YELLOW) {
-        NAND_ReadMNumberY();
-        buffer = (uint16_t*) YellowMinus;
+        baseNandPage = 1088;
+        minusBuf = (uint16_t*) YellowMinus;
     } else {
-        NAND_ReadMNumberW();
-        buffer = (uint16_t*) WhiteMinus;
+        baseNandPage = 1024;
+        minusBuf = (uint16_t*) WhiteMinus;
     }
     while (str[i] != 0) {
-        if (str[i] > 0x2F && str[i] < 0x3A)
-            TFT_DrawImage(x, y, x + 22, y + 26, (uint16_t*)&(imageBuffer[(str[i] - 0x30) * 22 * 26 * 2]), DRAW_REVERSE);
-        else if (str[i] == '.')
-            TFT_DrawImage(x, y, x + 22, y + 26, (uint16_t*)&(imageBuffer[10 * 22 * 26 * 2]), DRAW_REVERSE);
-        else if (str[i] == ' ')
-            TFT_DrawImage(x, y, x + 22, y + 26, (uint16_t*)&(imageBuffer[11 * 22 * 26 * 2]), DRAW_REVERSE);
-        else if (str[i] == '-')
-            TFT_DrawImage(x, y, x + 22, y + 26, (uint16_t*) (buffer), DRAW_REVERSE);
-        else
-            return;
+        uint8_t glyph;
+        if      (str[i] > 0x2F && str[i] < 0x3A) glyph = str[i] - 0x30;
+        else if (str[i] == '.')  glyph = 10;
+        else if (str[i] == ' ')  glyph = 11;
+        else if (str[i] == '-') {
+            TFT_DrawImage(x, y, x + 22, y + 26, minusBuf, DRAW_REVERSE);
+            x += 22; ++i; continue;
+        } else return;
+        uint32_t off = (uint32_t)glyph * G;
+        NAND_ReadData(imageBuffer, baseNandPage + off / NAND_PAGE_SIZE, 2);
+        TFT_DrawImage(x, y, x + 22, y + 26, (uint16_t*)&imageBuffer[off % NAND_PAGE_SIZE], DRAW_REVERSE);
         x += 22;
         ++i;
     }
@@ -137,16 +138,16 @@ void DrawMediumNumber0(uint32_t x, uint32_t y, char* str, uint16_t color) {
 
 void DrawLargeNumber0(uint32_t x, uint32_t y, char* str) {
     uint32_t i = 0;
-    NAND_ReadLNumber();
+    const uint32_t G = 36 * 47 * 2; /* 3384 bytes per glyph */
     while (str[i] != 0) {
-        if (str[i] > 0x2F && str[i] < 0x3A)
-            TFT_DrawImage(x, y, x + 36, y + 47, (uint16_t*)&(imageBuffer[(str[i] - 0x30) * 36 * 47 * 2]), DRAW_REVERSE);
-        else if (str[i] == '.')
-            TFT_DrawImage(x, y, x + 36, y + 47, (uint16_t*)&(imageBuffer[10 * 36 * 47 * 2]), DRAW_REVERSE);
-        else if (str[i] == ' ')
-            TFT_DrawImage(x, y, x + 36, y + 47, (uint16_t*)&(imageBuffer[11 * 36 * 47 * 2]), DRAW_REVERSE);
-        else
-            return;
+        uint8_t glyph;
+        if      (str[i] > 0x2F && str[i] < 0x3A) glyph = str[i] - 0x30;
+        else if (str[i] == '.')  glyph = 10;
+        else if (str[i] == ' ')  glyph = 11;
+        else return;
+        uint32_t off = (uint32_t)glyph * G;
+        NAND_ReadData(imageBuffer, 1152 + off / NAND_PAGE_SIZE, 2);
+        TFT_DrawImage(x, y, x + 36, y + 47, (uint16_t*)&imageBuffer[off % NAND_PAGE_SIZE], DRAW_REVERSE);
         x += 36;
         ++i;
     }
@@ -165,7 +166,7 @@ void DrawLineRectangle(uint32_t x, uint32_t y, uint32_t xEnd, uint32_t yEnd, uin
     TFT_Fill(x, yEnd - 1, xEnd, yEnd, color);
 }
 
-// ¾Æ·¡ÂÊ ¼¼·Î ÀÛÀº µÎÁÙ 
+// ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
 
 void DrawBottomLine(void) {
     TFT_Fill(169, 235, 171, 272, BROWN);
@@ -178,13 +179,13 @@ void DrawBottomLine(void) {
 #include "back_corner2.h"
 
 
-// TITLE À§ ÀüÃ¼ 
+// TITLE ï¿½ï¿½ ï¿½ï¿½Ã¼ 
 
 void ClearTitleArea(void) {
     TFT_Fill(0, 0, 480, TITLE_Y_END, WHITE);
 }
 
-// TITLE Áß °¡¿îµ¥ 
+// TITLE ï¿½ï¿½ ï¿½ï¿½ï¿½îµ¥ 
 
 void ClearTitle(void) {
     //	TFT_Fill(110, 0, 290, TITLE_Y_END, WHITE);
@@ -192,12 +193,12 @@ void ClearTitle(void) {
 }
 
 
-// VIEW  °¡¿îµ¥
+// VIEW  ï¿½ï¿½ï¿½îµ¥
 
 
-// ±âº» ¸ğ¾ç
-// À§ºÎºĞ¿¡ Èò»ö
-// ¾Æ·¡ ºÎºĞ¿¡ ¸Ş´ºÀÖÀ½ 
+// ï¿½âº» ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ÎºĞ¿ï¿½ ï¿½ï¿½ï¿½
+// ï¿½Æ·ï¿½ ï¿½ÎºĞ¿ï¿½ ï¿½Ş´ï¿½ï¿½ï¿½ï¿½ï¿½ 
 #ifdef CH2
 
 void ClearViewArea(void) {
@@ -242,7 +243,7 @@ void ClearViewArea(void) {
 #endif
 
 
-// BOTTOM  ¾Æ·¡ÂÊ
+// BOTTOM  ï¿½Æ·ï¿½ï¿½ï¿½
 
 void ClearBottomArea(void) {
     TFT_Fill(0, BOTTOM_Y_START, 480, 272, BACK_COLOR);
@@ -258,8 +259,8 @@ void DrawBack1(void) {
 
 //=======================================
 
-// À§ºÎºĞ¿¡ ¹è°æÀÖÀ½ - Á¦¸ñ
-// ¾Æ·¡ ºÎºĞ ÀüÃ¼ Æ÷ÇÔ
+// ï¿½ï¿½ï¿½ÎºĞ¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½
+// ï¿½Æ·ï¿½ ï¿½Îºï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½
 void ClearViewArea2(void) {
     TFT_Fill(0, VIEW_Y_START, 480, 272, WHITE);
     TFT_Fill(0, VIEW_Y_START, 480, 117, BACK_COLOR2);
@@ -276,8 +277,8 @@ void ClearViewArea2(void) {
 }
 
 
-// À§ºÎºĞ¿¡ ¹è°æÀÖÀ½ - Á¦¸ñ
-// ¾Æ·¡ºÎºĞ¿¡ ¸Ş´ºÀÖÀ½
+// ï¿½ï¿½ï¿½ÎºĞ¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½
+// ï¿½Æ·ï¿½ï¿½ÎºĞ¿ï¿½ ï¿½Ş´ï¿½ï¿½ï¿½ï¿½ï¿½
 void ClearViewArea3(void) {
     TFT_Fill(0, VIEW_Y_START, 480, 272, WHITE);
     TFT_Fill(0, VIEW_Y_START, 480, 117, BACK_COLOR2);
@@ -294,9 +295,9 @@ void ClearViewArea3(void) {
 }
 
 
-// ±³Á¤ÀÌ·Â¿¡ »ç¿ëÇÔ
-// À§ºÎºĞ ¹è°æ¾øÀ½
-// ¾Æ·¡ºÎºĞ ÀüÃ¼ Æ÷ÇÔ
+// ï¿½ï¿½ï¿½ï¿½ï¿½Ì·Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½Æ·ï¿½ï¿½Îºï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½
 void ClearViewArea4(void) {
     TFT_Fill(0, VIEW_Y_START, 480, 272, WHITE);
     TFT_Fill(0, VIEW_Y_START, 480, 117, WHITE);
@@ -313,7 +314,7 @@ void ClearViewArea4(void) {
 }
 
 
-// ÁøÂ¥ Áß°£ºÎºĞ Å¬¸®¾î...
+// ï¿½ï¿½Â¥ ï¿½ß°ï¿½ï¿½Îºï¿½ Å¬ï¿½ï¿½ï¿½ï¿½...
 void ClearViewArea5(void) {
     TFT_Fill(0, VIEW_Y_START, 480, VIEW_Y_END-2, WHITE);
 

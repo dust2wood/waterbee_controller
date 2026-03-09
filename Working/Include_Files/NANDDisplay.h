@@ -35,9 +35,9 @@
 #define TEXT55_CYCLE								10
 
 
-#define TEXT96_NORAMAL				0    // Á¤»ó
+#define TEXT96_NORAMAL				0    // ï¿½ï¿½ï¿½ï¿½
 #define TEXT96_AUTO_CALIBRATION				1
-#define TEXT96_ABNORAMAL			2  //  ºñÁ¤»ó
+#define TEXT96_ABNORAMAL			2  //  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #define TEXT96_SENSOR2_YELLOW			3
 #define TEXT96_4MA									4
 #define TEXT96_20MA									5
@@ -128,7 +128,8 @@
 
 //extern uint8_t imageBuffer[43200];
 //extern uint8_t imageBuffer[48000];
-extern uint8_t imageBuffer[40960];
+//extern uint8_t imageBuffer[40960];
+extern uint8_t imageBuffer[14336]; /* 7 NAND pages: max for icon image draws */
 
 extern uint16_t* GlobalMemory;
 

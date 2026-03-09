@@ -1,4 +1,4 @@
-//Project Option에서 Link Path를 맞추어 주거나 Project에 추가해 줄것.
+//Project Option???? Link Path?? ????? ???? Project?? ????? ???.
 #include "Watchdog.h"
 
 /******************** (C) COPYRIGHT 2014 OEUN CNI ********************
@@ -11,14 +11,15 @@
 */
 
 
+/* IWDG timeout: 4*256*(RLR+1)/40000 sec. RLR=195->~2.5s, RLR=390->~5s. */
 void Set_IWDG_ResetTime(uint16_t Time)
 {	
 	IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
 	IWDG_SetPrescaler(IWDG_Prescaler_256);
-	if(Time!=0 && Time<21)
-		IWDG_SetReload(Time * 156);
+	if (Time != 0 && Time < 21)
+		IWDG_SetReload(Time * 39);   /* 39*5=195 -> ~5초 */
 	else
-		IWDG_SetReload(156); 
+		IWDG_SetReload(195);  /* ~5초 */
 	IWDG_ReloadCounter();
 }
 void IWDG_Start(void)

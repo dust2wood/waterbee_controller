@@ -7,8 +7,6 @@
 #include "sensor_manager.h"
 #include "Main.h"
 
-#define SENSOR_OK    0
-#define SENSOR_ERROR 3
 
 static void sensor_ph_init(void)
 {
