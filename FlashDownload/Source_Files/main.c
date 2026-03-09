@@ -37,7 +37,7 @@ uint8_t imageBuffer[50000];
 
 
 
-uint16_t delay_temp;
+volatile uint16_t delay_temp;
 void Deley_10msec (uint16_t Time)
 {
 	int i = 0;

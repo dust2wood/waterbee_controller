@@ -17,6 +17,7 @@ void Initialize(void)
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
 	RTC_Config();
 	FSMC_LCD_Init();
+	Delay(2000000UL);   /* ~28ms: FSMC 안정화 후 LCD 전원 래치 대기 (NEW_BOARD) */
 	TFT_Init();
 	Serial_Open(SERIAL_PORT1,115200);
 	Serial_Open(SERIAL_PORT2,115200);

@@ -1746,8 +1746,8 @@ void ReDisplay_ch2(void) {
             DrawSmallNumber(EXT_EC_X, EXT_Y, strBuffer, BLUE);
         }
     }
-}
 #endif
+}
 
 void RedrawMainValue(void) {
     Display_Update();

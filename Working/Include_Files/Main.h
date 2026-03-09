@@ -81,8 +81,10 @@ typedef struct{                   //Menu->Config->Analog Value        아날로그 �
 typedef struct{                   //Menu->Config->Communication Value  통신 관련 입력 변수들
 	uint16_t mode;//Range 1
 	uint16_t baudrate;//Range 4
-	uint16_t modbusSlaveAddr;//Range 246
+	uint16_t modbusSlaveAddr;//Range 246  (컨트롤러 자신의 슬레이브 주소)
 	uint16_t databit;//Range 1
+	uint16_t modbusSensor1Addr;//RS485 pH센서(1번) Slave ID, 1~247, 기본 2
+	uint16_t modbusSensor2Addr;//RS485 EC센서(2번) Slave ID, 1~247, 기본 4
 }ComSetupValue;
 
 

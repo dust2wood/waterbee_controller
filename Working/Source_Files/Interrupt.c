@@ -795,11 +795,8 @@ void USART3_IRQHandler(void)
 		{
 			USART3->CR1 &= ~0x40;		
 			com485State = 3;
-
-//#ifdef SENSOR_PH_EC		// 빨이 응답이 오기때문에 빨리 DE485를 receive 로 해야함
-            RS485_DRIVE_LOW;
-//#endif
-
+			/* RE/DE: TC(Transmission Complete) 직후 수신 모드 전환 - 단일 트랜시버에서 타이밍 충돌 방지 */
+			RS485_DRIVE_LOW;
 		}
 	}
 	else

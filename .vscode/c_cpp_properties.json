@@ -1,0 +1,67 @@
+{
+  "configurations": [
+    {
+      "name": "Win32",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "C:/Keil/ARM/PACK/Keil/STM32F1xx_DFP/*/Device/Include",
+        "C:/Program Files (x86)/GNU Arm Embedded Toolchain/*/arm-none-eabi/include"
+      ],
+      "defines": [
+        "USE_STDPERIPH_DRIVER",
+        "STM32F10X_HD",
+        "USE_STM3210B_EVAL",
+        "NEW_BOARD",
+        "SENSOR_PH_EC",
+        "CH2",
+        "STM32F103xE",
+        "USE_HAL_DRIVER"
+      ],
+      "compilerPath": "arm-none-eabi-gcc",
+      "cStandard": "c11",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "gcc-arm"
+    },
+    {
+      "name": "STM32",
+      "includePath": [
+        "${workspaceFolder}/Working/Include_Files",
+        "${workspaceFolder}/Working/StdPeriph_Driver/inc",
+        "${workspaceFolder}/Working/CMSIS",
+        "${workspaceFolder}/Working/CMSIS/Device/ST/STM32F10x/Include",
+        "${workspaceFolder}/Working/FATFS_V0.08A/src",
+        "${workspaceFolder}/Working/Image",
+        "${workspaceFolder}/Working/LwIP/system",
+        "${workspaceFolder}/Working/LwIP/system/arch",
+        "${workspaceFolder}/Working/LwIP/src/include",
+        "${workspaceFolder}/Working/LwIP/src/include/ipv4",
+        "${workspaceFolder}/Working/LwIP/src/include/lwip",
+        "${workspaceFolder}/Working/LwIP/src/include/netif",
+        "${workspaceFolder}/Working/LwIP/src/include/posix",
+        "${workspaceFolder}/Working/LwIP/src/include/posix/sys",
+        "${workspaceFolder}/Working/LwIP/src/core",
+        "${workspaceFolder}/Working/Inc_ethernet",
+        "${workspaceFolder}/Working/Drivers/STM32F1xx_HAL_Driver/Inc",
+        "${workspaceFolder}/Working/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+        "${workspaceFolder}/Working/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+        "${workspaceFolder}/Working/Drivers/CMSIS/Include",
+        "${workspaceFolder}/Working"
+      ],
+      "defines": [
+        "USE_STDPERIPH_DRIVER",
+        "STM32F10X_HD",
+        "USE_STM3210B_EVAL",
+        "NEW_BOARD",
+        "SENSOR_PH_EC",
+        "CH2",
+        "STM32F103xE",
+        "USE_HAL_DRIVER"
+      ],
+      "compilerPath": "arm-none-eabi-gcc",
+      "cStandard": "c11",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "gcc-arm"
+    }
+  ],
+  "version": 4
+}

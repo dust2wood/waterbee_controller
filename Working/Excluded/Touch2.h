@@ -37,12 +37,3 @@ TouchPoint read_once(void);
 #endif
 
 
-
-
-
-
-
-
-
-
-

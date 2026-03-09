@@ -423,9 +423,6 @@ BUZ_OFF;
 
 //            if ((currentData.Device_Selector_Mode & SENSOR_1_MODE) && (req_ppm_com_flag == 1)) {
             if ((currentData.Device_Selector_Mode & SENSOR_1_MODE) ) {
-                if (req_ppm_com_flag == 1 && req_current_com_flag == 0) {
-                    //SendCalDataCurrent(SendParmeter_Current);
-                }
                 Delay_10msec(300);
                 //if (req_current_com_flag == 1 && req_ppm_com_flag == 1) {
                 //if (req_ppm_com_flag == 1) {
@@ -434,9 +431,6 @@ BUZ_OFF;
                     req_current_com_flag = 0;
                 //}
             } else if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
-                if (req_ppm_com_flag == 1 && req_current_com_flag == 0) {
-                  //  SendCalDataCurrent(SendParmeter_Current);
-                }
                 Delay_10msec(300);
                 //if (req_current_com_flag == 1 && req_ppm_com_flag == 1) {
 //                if (req_ppm_com_flag == 1) {
@@ -492,12 +486,6 @@ BUZ_OFF;
 				//display_set3_zero(1);
             }
             Delay_10msec(300);
-
-
-            if (req_zero_ppm_com_flag == 1 && req_zero_current_com_flag == 0) {
-                //SendCalZeroDataCurrent(SendParmeter_Zero_Current);
-            }
-            Delay_10msec(300);
             if (req_zero_ppm_com_flag == 1) {// && req_zero_current_com_flag == 1) {
                 zero_cal_update_flag = 0;
                 req_zero_current_com_flag = 0;
@@ -544,10 +532,6 @@ void SysIND_LED(void) {
         INDLED_OFF;
         currentData.Device_Selector_Mode = SENSOR_2_MODE;
     }
-}
-
-void ReadSenosr2ADC(void) {
-//    adcBuffer[0] = ADC_GetConversionValue(ADC1);
 }
 
 void Update_Cal_Logdata(void) {
@@ -899,6 +883,16 @@ void Set_Relay_OP_Run_Handler(void) {
 
 void SystemSetting(void) {
     configData = *((ConfigSet*) (SAVEADDR_CONFIG_BASE));
+
+#ifdef SENSOR_PH_EC
+    /* RS485 센서 Slave ID 검증 - 중복 시 보정, 무효 시 기본값 */
+    if (configData.modbusConfig.modbusSensor1Addr < 1 || configData.modbusConfig.modbusSensor1Addr > 247)
+        configData.modbusConfig.modbusSensor1Addr = 2;
+    if (configData.modbusConfig.modbusSensor2Addr < 1 || configData.modbusConfig.modbusSensor2Addr > 247)
+        configData.modbusConfig.modbusSensor2Addr = 4;
+    if (configData.modbusConfig.modbusSensor1Addr == configData.modbusConfig.modbusSensor2Addr)
+        configData.modbusConfig.modbusSensor2Addr = (configData.modbusConfig.modbusSensor1Addr % 247) + 1;
+#endif
 
 	configData.outputConfig.output4mA = 0;
 	configData.outputConfig.output4mA2 = 0;
@@ -2311,7 +2305,12 @@ void State_ConfigComm(void) {
                         break;
                     case BUTTON_ENTER:
                         if (configData.modbusConfig.mode != tempConfigData.modbusConfig.mode || configData.modbusConfig.baudrate != tempConfigData.modbusConfig.baudrate
-                                || configData.modbusConfig.modbusSlaveAddr != tempConfigData.modbusConfig.modbusSlaveAddr || configData.modbusConfig.databit != tempConfigData.modbusConfig.databit) {
+                                || configData.modbusConfig.modbusSlaveAddr != tempConfigData.modbusConfig.modbusSlaveAddr || configData.modbusConfig.databit != tempConfigData.modbusConfig.databit
+#ifdef SENSOR_PH_EC
+                                || configData.modbusConfig.modbusSensor1Addr != tempConfigData.modbusConfig.modbusSensor1Addr
+                                || configData.modbusConfig.modbusSensor2Addr != tempConfigData.modbusConfig.modbusSensor2Addr
+#endif
+                                ) {
                             configData.modbusConfig = tempConfigData.modbusConfig;
                             Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
 
@@ -5447,6 +5446,8 @@ void FactoryReset(void) {
     configData.modbusConfig.baudrate = 0;
     configData.modbusConfig.modbusSlaveAddr = 0;
     configData.modbusConfig.databit = 0;
+    configData.modbusConfig.modbusSensor1Addr = 2;   /* pH 센서 기본 Slave ID */
+    configData.modbusConfig.modbusSensor2Addr = 4;   /* EC 센서 기본 Slave ID */
 
     configData.relayConfig.relay1WashCycle = 0;
     configData.relayConfig.relay1WashTime = 0;

@@ -22,6 +22,10 @@ typedef struct {
 
 water_data_t water_data;
 
+/* External sensor display slots used by ReDisplay_ch2 */
+uint8_t           g_ext_sensor_count = 0;
+smgr_ext_sensor_t g_ext_sensors[4];
+
 static sensor_entry_t s_sensors[SENSOR_MAX];
 static uint8_t s_count;
 static uint8_t s_poll_idx;
