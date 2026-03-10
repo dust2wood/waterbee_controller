@@ -1,9 +1,62 @@
 #include "Initialize.h"
+#include <stdio.h>
+
+static int month_from_str(const char *m)
+{
+	if (m[0] == 'J' && m[1] == 'a' && m[2] == 'n') return 0;
+	if (m[0] == 'F' && m[1] == 'e' && m[2] == 'b') return 1;
+	if (m[0] == 'M' && m[1] == 'a' && m[2] == 'r') return 2;
+	if (m[0] == 'A' && m[1] == 'p' && m[2] == 'r') return 3;
+	if (m[0] == 'M' && m[1] == 'a' && m[2] == 'y') return 4;
+	if (m[0] == 'J' && m[1] == 'u' && m[2] == 'n') return 5;
+	if (m[0] == 'J' && m[1] == 'u' && m[2] == 'l') return 6;
+	if (m[0] == 'A' && m[1] == 'u' && m[2] == 'g') return 7;
+	if (m[0] == 'S' && m[1] == 'e' && m[2] == 'p') return 8;
+	if (m[0] == 'O' && m[1] == 'c' && m[2] == 't') return 9;
+	if (m[0] == 'N' && m[1] == 'o' && m[2] == 'v') return 10;
+	if (m[0] == 'D' && m[1] == 'e' && m[2] == 'c') return 11;
+	return 0;
+}
+
+static void set_rtc_to_build_time(void)
+{
+	struct tm t;
+	char mon_str[4] = {0};
+	int day = 1;
+	int year = 2000;
+	int hour = 0;
+	int min = 0;
+	int sec = 0;
+
+	if (sscanf(__DATE__, "%3s %d %d", mon_str, &day, &year) == 3) {
+		t.tm_year = year;
+		t.tm_mon = month_from_str(mon_str);
+		t.tm_mday = day;
+	} else {
+		t.tm_year = 2000;
+		t.tm_mon = 0;
+		t.tm_mday = 1;
+	}
+
+	if (sscanf(__TIME__, "%d:%d:%d", &hour, &min, &sec) == 3) {
+		t.tm_hour = hour;
+		t.tm_min = min;
+		t.tm_sec = sec;
+	} else {
+		t.tm_hour = 0;
+		t.tm_min = 0;
+		t.tm_sec = 0;
+	}
+
+	Time_SetCalendarTime(t);
+}
 
 void DAC_Conf(void);
 
 void Initialize(void)
 {
+	uint8_t rtc_fresh = 0;
+
 	RCC_Configuration();
 	RCC_ADCCLKConfig(RCC_PCLK2_Div6);
   	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
@@ -15,7 +68,11 @@ void Initialize(void)
 	GPIO_Configuration();
 
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
+	rtc_fresh = (BKP_ReadBackupRegister(BKP_DR1) != 0xA5A5);
 	RTC_Config();
+	if (rtc_fresh) {
+		set_rtc_to_build_time();
+	}
 	FSMC_LCD_Init();
 	Delay(200000UL);    /* FSMC stabilize before TFT init */
 	TFT_Init();

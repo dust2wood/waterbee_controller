@@ -717,7 +717,7 @@ void RedrawViewArea(void) {
 	                	//DrawSmallNumber(210, 175, strBuffer, YELLOW);
 	                	DrawMediumNumber(182, 175, strBuffer, YELLOW);
 
-						sprintf(strBuffer, "%01d", (compareSignValue % 100)/10);
+						sprintf(strBuffer, "%01d", (tempIntVal % 100)/10);
 	                    //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, BROWN);
 	                	//DrawSmallNumber(210+ 12*3, 175, strBuffer, BROWN);
 	                	DrawMediumNumber(182+18*4, 175, strBuffer, BROWN);
@@ -734,7 +734,7 @@ void RedrawViewArea(void) {
 	                	//DrawSmallNumber(210, 175, strBuffer, YELLOW);
 	                	DrawMediumNumber(200, 175, strBuffer, YELLOW);
 
-						sprintf(strBuffer, "%01d", (compareSignValue % 100)/10);
+						sprintf(strBuffer, "%01d", (tempIntVal % 100)/10);
 	                    //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, BROWN);
 	                	//DrawSmallNumber(210+ 12*3, 175, strBuffer, BROWN);
 	                	DrawMediumNumber(200+18*3, 175, strBuffer, BROWN);
@@ -762,7 +762,7 @@ void RedrawViewArea(void) {
 
 #else
          // ???? ????
-        case STATE_CALIB_BUFF_PH4:
+		case STATE_CALIB_BUFF_PH4:
         case STATE_CALIB_BUFF_PH7:
             ClearViewArea2();
 
@@ -772,43 +772,12 @@ void RedrawViewArea(void) {
 				if (state==STATE_CALIB_BUFF_PH4)	{
 					display_ph4();
 		            Draw_Back_Oval2(115, 163);
-	                zerointVal = tempConfigData.calibrationConfig.PH4_Cal;
-	                //DrawTextsize180(50, 120, TEXT180_S1_ZERO_CAL, DRAW_IMAGE_ENABLE);
-	                //DrawTextETC(402, 120, TEXT_ETC_MGL, DRAW_IMAGE_ENABLE);
-
-	                if (zerointVal < 0) {
-	                    zerointVal = zerointVal * (-1);
-	                }
-
-			        if (tempConfigData.calibrationConfig.PH4_Cal < 0) {
-			            sprintf(strBuffer, "-%d.%02d", zerointVal / 100, zerointVal%100);
-			            DrawMediumNumber(192, 175, strBuffer, YELLOW);
-			        }
-			        else {
-			            sprintf(strBuffer, " %d.%02d", zerointVal / 100, zerointVal%100);
-			            DrawMediumNumber(192, 175, strBuffer, YELLOW);
-			        }
+	                DrawCalibPH4(1, YELLOW);
 				}
 				else  {
 					display_ph7();
-
 		            Draw_Back_Oval2(115, 163);
-	                zerointVal = tempConfigData.calibrationConfig.PH7_Cal;
-	                //DrawTextsize180(50, 120, TEXT180_S1_ZERO_CAL, DRAW_IMAGE_ENABLE);
-	                //DrawTextETC(402, 120, TEXT_ETC_MGL, DRAW_IMAGE_ENABLE);
-
-	                if (zerointVal < 0) {
-	                    zerointVal = zerointVal * (-1);
-	                }
-
-			        if (tempConfigData.calibrationConfig.PH7_Cal < 0) {
-			            sprintf(strBuffer, "-%d.%02d", zerointVal / 100, zerointVal%100);
-			            DrawMediumNumber(192, 175, strBuffer, YELLOW);
-			        }
-			        else {
-			            sprintf(strBuffer, " %d.%02d", zerointVal / 100, zerointVal%100);
-			            DrawMediumNumber(192, 175, strBuffer, YELLOW);
-			        }
+	                DrawCalibPH7(1, YELLOW);
 				}
 
             }
@@ -821,22 +790,7 @@ void RedrawViewArea(void) {
 
             if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
                 Draw_Back_Oval2(115, 163);
-	            zerointVal = tempConfigData.calibrationConfig.EC_Cal;
-                //DrawTextsize180(50, 120, TEXT180_S1_ZERO_CAL, DRAW_IMAGE_ENABLE);
-                //DrawTextETC(402, 120, TEXT_ETC_NTU, DRAW_IMAGE_ENABLE);
-
-                if (zerointVal < 0) {
-                    zerointVal = zerointVal * (-1);
-                }
-
-		        if (tempConfigData.calibrationConfig.EC_Cal < 0) {
-		            sprintf(strBuffer, "-%d.%01d", zerointVal/10, zerointVal%10);
-		            DrawMediumNumber(200, 175, strBuffer, YELLOW);
-		        }
-		        else {
-		            sprintf(strBuffer, " %d.%01d", zerointVal/10, zerointVal%10);
-		            DrawMediumNumber(200, 175, strBuffer, YELLOW);
-		        }
+                DrawCalib_EC(1, YELLOW);
             }
             break;
 
@@ -848,61 +802,12 @@ void RedrawViewArea(void) {
 
             if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
 	            Draw_Back_Oval2(115, 163);
-                //DrawTextsize180(50, 120, TEXT180_S1_MANUAL_CAL, DRAW_IMAGE_ENABLE);
-                //DrawTextETC(400, 120, TEXT_ETC_MGL, DRAW_IMAGE_ENABLE);
-				if ((tempConfigData.calibrationConfig.PH_Span_Cal/100)>=10) {
-	                sprintf(strBuffer, " %d.%d", tempConfigData.calibrationConfig.PH_Span_Cal / 100, (tempConfigData.calibrationConfig.PH_Span_Cal / 10) % 10);
-	                //DrawMediumNumber(270, 120, strBuffer, YELLOW);
-	                //DrawSmallNumber(210, 175, strBuffer, YELLOW);
-	                DrawMediumNumber(174, 175, strBuffer, YELLOW);
-	                sprintf(strBuffer, "%d", tempConfigData.calibrationConfig.PH_Span_Cal % 10);
-	                //DrawMediumNumber(270 + (22 * 3), 120, strBuffer, BROWN);
-	                //DrawSmallNumber(210+ 12*3, 175, strBuffer, BROWN);
-	                DrawMediumNumber(174+18*5, 175, strBuffer, BROWN);
-				}
-				else {
-	                sprintf(strBuffer, " %d.%d", tempConfigData.calibrationConfig.PH_Span_Cal / 100, (tempConfigData.calibrationConfig.PH_Span_Cal / 10) % 10);
-	                //DrawMediumNumber(270, 120, strBuffer, YELLOW);
-	                //DrawSmallNumber(210, 175, strBuffer, YELLOW);
-	                DrawMediumNumber(192, 175, strBuffer, YELLOW);
-	                sprintf(strBuffer, "%d", tempConfigData.calibrationConfig.PH_Span_Cal % 10);
-	                //DrawMediumNumber(270 + (22 * 3), 120, strBuffer, BROWN);
-	                //DrawSmallNumber(210+ 12*3, 175, strBuffer, BROWN);
-	                DrawMediumNumber(192+18*4, 175, strBuffer, BROWN);
-				}
+                DrawCalibSpan(0, YELLOW);
 
             }
             else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
 	            Draw_Back_Oval2(115, 163);
-
-				if ((tempConfigData.calibrationConfig.EC_Span_Cal)>=10000) {
-	                sprintf(strBuffer, " %d", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
-	                DrawMediumNumber(174, 175, strBuffer, YELLOW);
-
-	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
-	                DrawMediumNumber(174+18*4, 175, strBuffer, BROWN);
-				}
-				else if ((tempConfigData.calibrationConfig.EC_Span_Cal)>=1000) {
-	                sprintf(strBuffer, "  %d", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
-	                DrawMediumNumber(174, 175, strBuffer, YELLOW);
-
-	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
-	                DrawMediumNumber(174+18*4, 175, strBuffer, BROWN);
-				}
-				else if ((tempConfigData.calibrationConfig.EC_Span_Cal)>=100) {
-	                sprintf(strBuffer, "   %d", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
-	                DrawMediumNumber(174, 175, strBuffer, YELLOW);
-
-	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
-	                DrawMediumNumber(174+18*4, 175, strBuffer, BROWN);
-				}
-				else {
-	                sprintf(strBuffer, "     %d", tempConfigData.calibrationConfig.EC_Span_Cal / 100);
-	                DrawMediumNumber(174, 175, strBuffer, YELLOW);
-
-	                sprintf(strBuffer, "%d.%d ", (tempConfigData.calibrationConfig.EC_Span_Cal%100)/10,   tempConfigData.calibrationConfig.EC_Span_Cal % 10);
-	                DrawMediumNumber(174+18*4, 175, strBuffer, BROWN);
-				}
+                DrawCalibSpan(0, YELLOW);
             }
 
             break;
@@ -913,53 +818,7 @@ void RedrawViewArea(void) {
             ClearViewArea2();
 			display_temp();
             Draw_Back_Oval2_c(115, 163);
-
-
-		   	if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
-				TEMP_Span_Cal = tempConfigData.calibrationConfig.TEMP_Span_Cal1;
-			}
-			else {
-				TEMP_Span_Cal = tempConfigData.calibrationConfig.TEMP_Span_Cal2;
-			}
-
-
-            //DrawTextsize180(50, 120, TEXT180_S1_TEMP_CAL, DRAW_IMAGE_ENABLE);
-            //DrawTextETC(400, 120, TEXT_ETC_TEMPUNIT, DRAW_IMAGE_ENABLE);
-			if ((TEMP_Span_Cal)>=100) {
-
-                tempIntVal = TEMP_Span_Cal;
-                if (tempIntVal < 0)
-                    tempIntVal = tempIntVal * (-1);
-                if (compareSignValue < 0)
-                    sprintf(strBuffer, "-%d.%01d", tempIntVal / 10, (tempIntVal % 10));
-                else
-                    sprintf(strBuffer, " %d.%01d", TEMP_Span_Cal / 10, (TEMP_Span_Cal % 10));
-                //DrawMediumNumber(260, 120, strBuffer, YELLOW);
-            	//DrawSmallNumber(210, 175, strBuffer, YELLOW);
-            	DrawMediumNumber(182, 175, strBuffer, YELLOW);
-
-				sprintf(strBuffer, "%01d", (TEMP_Span_Cal % 10));
-                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, BROWN);
-            	//DrawSmallNumber(210+ 12*3, 175, strBuffer, BROWN);
-            	DrawMediumNumber(182+18*4, 175, strBuffer, BROWN);
-			}
-			else {
-                tempIntVal = TEMP_Span_Cal;
-                if (tempIntVal < 0)
-                    tempIntVal = tempIntVal * (-1);
-                if (compareSignValue < 0)
-                    sprintf(strBuffer, " -%d.%01d", tempIntVal / 10, (tempIntVal % 10));
-                else
-                    sprintf(strBuffer, "  %d.%01d", TEMP_Span_Cal / 10, (TEMP_Span_Cal % 10));
-                //DrawMediumNumber(260, 120, strBuffer, YELLOW);
-            	//DrawSmallNumber(210, 175, strBuffer, YELLOW);
-            	DrawMediumNumber(182, 175, strBuffer, YELLOW);
-
-				sprintf(strBuffer, "%01d", (TEMP_Span_Cal % 10));
-                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, BROWN);
-            	//DrawSmallNumber(210+ 12*3, 175, strBuffer, BROWN);
-            	DrawMediumNumber(182+18*4, 175, strBuffer, BROWN);
-			}
+            DrawCalibTemp(0, YELLOW);
             break;
 #endif
 
@@ -1516,6 +1375,12 @@ static void draw_2ch_slot(water_field_t f, int slot, int16_t temp_val)
 {
     uint16_t num_x = (slot == 0) ? 80 : 255;
     uint16_t temp_x = (slot == 0) ? 90 : 320;
+    uint16_t left = (slot == 0) ? 20 : 253;
+    uint16_t right = (slot == 0) ? 223 : 460;
+
+    /* Clear the slot before drawing text-based labels/numbers to prevent glyph residue. */
+    TFT_Fill(left, 68, right, 145, WHITE);
+    TFT_Fill(left, 150, right, 183, WHITE);
 
     switch (f) {
     case WATER_FIELD_PH: {
@@ -1681,6 +1546,7 @@ void ReDisplay_ch2_legacy(void) {
         }
     }
 }
+#endif
 #endif
 
 void RedrawMainValue(void) {

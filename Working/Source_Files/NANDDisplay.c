@@ -14,7 +14,7 @@
 //uint8_t imageBuffer[43200] = { 0 , };
 //uint8_t imageBuffer[48000] = {0,};
 //uint8_t imageBuffer[40960] = {0,};  /* original: entire glyph set loaded at once */
-uint8_t imageBuffer[14336] = {0,};  /* 7 NAND pages: max for icon image draws */
+uint8_t imageBuffer[NAND_PAGE_SIZE * 23] = {0,};  /* 50-row title slices are drawn as 49 rows + 1 row to stay within RAM */
 
 uint16_t* GlobalMemory;
 

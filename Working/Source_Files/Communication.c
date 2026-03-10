@@ -82,6 +82,43 @@ char  ph_temp=0;	// ph �?� temp �����?��, ?���?� �?�
 
 /* Expected slave addr for current request - only accept matching response (multi-drop safe) */
 static uint8_t s_expected_rs485_addr = 0;
+static uint8_t s_rs485_sensor_index = 0;
+static uint8_t s_rs485_started = 0;
+
+static uint8_t rs485_sensor_addr(uint8_t sensor_index)
+{
+    if (sensor_index == 0) return configData.modbusConfig.modbusSensor1Addr;
+    return configData.modbusConfig.modbusSensor2Addr;
+}
+
+static void rs485_queue_request(uint8_t sensor_addr)
+{
+    uint16_t crc = 0;
+
+    tx3Buffer[0] = sensor_addr;
+    tx3Buffer[1] = 3;
+    tx3Buffer[2] = 0;
+    tx3Buffer[3] = 0;
+    tx3Buffer[4] = 0;
+    tx3Buffer[5] = 4;
+
+    crc = CRC16Modbus(tx3Buffer, 6);
+    tx3Buffer[6] = crc & 0xFF;
+    tx3Buffer[7] = ((crc & 0xFF00) >> 8);
+
+    tx3Size = 8;
+    tx3Count = 1;
+    s_expected_rs485_addr = sensor_addr;
+    com485State = 1;
+    rs485DriveCount = 0;
+    comm_type = COMM_RS485;
+    rx3_time_count = 0;
+}
+
+static void rs485_advance_request(void)
+{
+    s_rs485_sensor_index ^= 1;
+}
 
 unsigned char	Sensor1_OK_TIME=20;
 unsigned char	Sensor2_OK_TIME=20;
@@ -451,40 +488,18 @@ void Modbus232Handler(void) {
 
 void init_tx3Buffer(void)
 {
-    uint16_t crc = 0;
-
     rx3Size = 0;
     rx3HandlerCount = 0;
 
     RS485_DRIVE_HIGH;
     Delay_10msec(10);
 
-    /* 고정 매핑: pH=addr2, EC=addr4. autodetect 없이 항상 폴링. */
-    tx3Buffer[0] = 2;  /* pH 슬롯1부터 시작 (Modbus485Handler에서 2↔4 교대) */
+    if (!s_rs485_started) {
+        s_rs485_sensor_index = 0;
+        s_rs485_started = 1;
+    }
 
-    tx3Buffer[1] = 3;
-
-    tx3Buffer[2] = 0;
-	//if (ph_temp==0)   { ph_temp=1; tx3Buffer[3] = 1; }	// 0=temp, 1=ph
-	//else			  
-	{ ph_temp=0; tx3Buffer[3] = 0; }	// 0=temp, 1=ph
-
-    tx3Buffer[4] = 0;
-    tx3Buffer[5] = 1;
-
-
-    crc = CRC16Modbus(tx3Buffer, 6);
-    tx3Buffer[6] = crc & 0xFF;
-    tx3Buffer[7] = ((crc & 0xFF00) >> 8);
-
-    tx3Size = 8;
-    tx3Count = 1;
-    s_expected_rs485_addr = tx3Buffer[0];
-    com485State = 1;
-    rs485DriveCount = 0;
-
-	comm_type=COMM_RS485;
-	rx3_time_count=0;
+    rs485_queue_request(rs485_sensor_addr(s_rs485_sensor_index));
 
 }
 
@@ -502,6 +517,7 @@ void Modbus485Handler(void) {
         case 0:
 	init_count++;
 	if (init_count > 10) {
+		rs485_advance_request();
 		init_tx3Buffer();
 		init_count = 0;
 	}
@@ -518,7 +534,128 @@ void Modbus485Handler(void) {
 							if (rx3Buffer[0] != s_expected_rs485_addr) {
 								rx3Size = 0;
 								rx3HandlerCount = 0;
-							} else if (rx3Buffer[0] == 2) {
+							} else if (rx3Size == 13) {
+								crc = CRC16Modbus(rx3Buffer, 11);
+								if (crc == ((rx3Buffer[12] << 8) | rx3Buffer[11])) {
+									uint16_t r0 = (rx3Buffer[3] << 8) | rx3Buffer[4];
+									uint16_t r1 = (rx3Buffer[5] << 8) | rx3Buffer[6];
+									uint16_t r2 = (rx3Buffer[7] << 8) | rx3Buffer[8];
+									uint16_t r3 = (rx3Buffer[9] << 8) | rx3Buffer[10];
+
+									if (r0 <= 14 && r1 < 100) {
+										data_pH = r0 * 100 + r1;
+										if (data_pH > 1400) data_pH = 1400;
+										a = configData.calibrationConfig.PH4_Value;
+										b = configData.calibrationConfig.PH4_Cal;
+										c = configData.calibrationConfig.PH7_Value;
+										d = configData.calibrationConfig.PH7_Cal;
+										data_pH_imsi = (c != a) ? ((d - b) * (data_pH - a) / (c - a) + b) : b;
+										f = configData.calibrationConfig.PH_Span_Cal;
+										e = configData.calibrationConfig.PH_Span_Value;
+										currentData.S1PPM = (e != 0) ? (data_pH_imsi * f / e) : data_pH_imsi;
+										water_data.ph = (float)currentData.S1PPM / 100.0f;
+
+										data_TEMP = (int16_t)(r2 * 10 + r3);
+										f = configData.calibrationConfig.TEMP_Span_Cal1;
+										e = configData.calibrationConfig.TEMP_Span_Value1;
+										currentData.temperature = (e != 0) ? (data_TEMP * f / e) : data_TEMP;
+										if (currentData.Device_Selector_Mode & SENSOR_1_MODE)
+											SET_data_TEMP = data_TEMP;
+
+										Sensor_State1 = SENSOR_OK;
+										Sensor_State3 = SENSOR_OK;
+										Sensor1_OK_TIME = 10;
+									} else {
+										union { uint8_t b[4]; float f; } u;
+										u.b[0] = rx3Buffer[6];
+										u.b[1] = rx3Buffer[5];
+										u.b[2] = rx3Buffer[4];
+										u.b[3] = rx3Buffer[3];
+										data_EC = (uint32_t)(u.f * 1000.0f);
+										if (data_EC > 200000) data_EC = 200000;
+
+										u.b[0] = rx3Buffer[10];
+										u.b[1] = rx3Buffer[9];
+										u.b[2] = rx3Buffer[8];
+										u.b[3] = rx3Buffer[7];
+										data_TEMP = (int16_t)(u.f * 10.0f);
+
+										a = configData.calibrationConfig.EC_Value;
+										b = configData.calibrationConfig.EC_Cal;
+										c = configData.calibrationConfig.EC_Span_Value;
+										d = configData.calibrationConfig.EC_Span_Cal;
+										currentData.S2PPM = (c != a) ? ((d - b) * (data_EC - a) / (c - a) + b) : b;
+										if ((int32_t)currentData.S2PPM < 0) currentData.S2PPM = 0;
+										if (currentData.S2PPM > 200000) currentData.S2PPM = 200000;
+										water_data.ec = (currentData.S2PPM >= 20000) ?
+											(float)currentData.S2PPM / 10.0f : (float)currentData.S2PPM / 1000.0f;
+
+										f = configData.calibrationConfig.TEMP_Span_Cal2;
+										e = configData.calibrationConfig.TEMP_Span_Value2;
+										currentData.temperature1 = (e != 0) ? (data_TEMP * f / e) : data_TEMP;
+										if (!(currentData.Device_Selector_Mode & SENSOR_1_MODE))
+											SET_data_TEMP = data_TEMP;
+
+										Sensor_State2 = SENSOR_OK;
+										Sensor_State4 = SENSOR_OK;
+										Sensor2_OK_TIME = 10;
+									}
+
+									RS485_DRIVE_HIGH;
+									rs485_advance_request();
+									rs485_queue_request(rs485_sensor_addr(s_rs485_sensor_index));
+								}
+								rx3Size = 0;
+								rx3HandlerCount = 0;
+							} else if (rx3Size == 9) {
+								crc = CRC16Modbus(rx3Buffer, 7);
+								if (crc == ((rx3Buffer[8] << 8) | rx3Buffer[7])) {
+									uint16_t r0 = (rx3Buffer[3] << 8) | rx3Buffer[4];
+									uint16_t r1 = (rx3Buffer[5] << 8) | rx3Buffer[6];
+
+									if (r0 <= 14 && r1 < 100) {
+										data_pH = r0 * 100 + r1;
+										if (data_pH > 1400) data_pH = 1400;
+										a = configData.calibrationConfig.PH4_Value;
+										b = configData.calibrationConfig.PH4_Cal;
+										c = configData.calibrationConfig.PH7_Value;
+										d = configData.calibrationConfig.PH7_Cal;
+										data_pH_imsi = (c != a) ? ((d - b) * (data_pH - a) / (c - a) + b) : b;
+										f = configData.calibrationConfig.PH_Span_Cal;
+										e = configData.calibrationConfig.PH_Span_Value;
+										currentData.S1PPM = (e != 0) ? (data_pH_imsi * f / e) : data_pH_imsi;
+										water_data.ph = (float)currentData.S1PPM / 100.0f;
+										Sensor_State1 = SENSOR_OK;
+										Sensor_State3 = SENSOR_OK;
+										Sensor1_OK_TIME = 10;
+									} else {
+										union { uint8_t b[4]; float f; } u;
+										u.b[0] = rx3Buffer[6];
+										u.b[1] = rx3Buffer[5];
+										u.b[2] = rx3Buffer[4];
+										u.b[3] = rx3Buffer[3];
+										data_EC = (uint32_t)(u.f * 1000.0f);
+										if (data_EC > 200000) data_EC = 200000;
+										a = configData.calibrationConfig.EC_Value;
+										b = configData.calibrationConfig.EC_Cal;
+										c = configData.calibrationConfig.EC_Span_Value;
+										d = configData.calibrationConfig.EC_Span_Cal;
+										currentData.S2PPM = (c != a) ? ((d - b) * (data_EC - a) / (c - a) + b) : b;
+										if ((int32_t)currentData.S2PPM < 0) currentData.S2PPM = 0;
+										water_data.ec = (currentData.S2PPM >= 20000) ?
+											(float)currentData.S2PPM / 10.0f : (float)currentData.S2PPM / 1000.0f;
+										Sensor_State2 = SENSOR_OK;
+										Sensor_State4 = SENSOR_OK;
+										Sensor2_OK_TIME = 10;
+									}
+
+									RS485_DRIVE_HIGH;
+									rs485_advance_request();
+									rs485_queue_request(rs485_sensor_addr(s_rs485_sensor_index));
+								}
+								rx3Size = 0;
+								rx3HandlerCount = 0;
+							} else if (rx3Buffer[0] == configData.modbusConfig.modbusSensor1Addr) {
                                 if (rx3Size == 7) {
 									rx3Size = 0;
                                     crc = CRC16Modbus(rx3Buffer, 5);
@@ -581,21 +718,8 @@ void Modbus485Handler(void) {
 
 
                                         RS485_DRIVE_HIGH;
-                                        tx3Buffer[0] = 4;	/* pH 처리 후 EC(addr4)로 교대 */
-                                        tx3Buffer[1] = 3;
-                                        tx3Buffer[2] = 0;
-										ph_temp = 0;
-										tx3Buffer[3] = 0;
-                                        tx3Buffer[4] = 0;
-                                        tx3Buffer[5] = 1;
-									    crc = CRC16Modbus(tx3Buffer, 6);
-									    tx3Buffer[6] = crc & 0xFF;
-									    tx3Buffer[7] = ((crc & 0xFF00) >> 8);
-                                        tx3Size = 8;
-                                        tx3Count = 1;
-                                        s_expected_rs485_addr = 4;
-	                                    com485State = 1;
-	                                    rs485DriveCount = 0;
+										rs485_advance_request();
+										rs485_queue_request(rs485_sensor_addr(s_rs485_sensor_index));
                                         rx3Size = 0;
 	                                    rx3HandlerCount = 0;
 										comm_type=COMM_RS485;
@@ -605,7 +729,7 @@ void Modbus485Handler(void) {
                             }
 
 							/* EC (addr=4) - reject concatenated/garbled */
-                            else if (rx3Buffer[0] == 4) {
+                            else if (rx3Buffer[0] == configData.modbusConfig.modbusSensor2Addr) {
                                 if (rx3Size == 7) {
 	                                crc = CRC16Modbus(rx3Buffer, 5);
 									if (crc==((rx3Buffer[6]<<8) | rx3Buffer[5]))
@@ -659,21 +783,8 @@ void Modbus485Handler(void) {
 
 
                                         RS485_DRIVE_HIGH;
-                                        tx3Buffer[0] = 2;	/* EC 처리 후 pH(addr2)로 교대 */
-                                        tx3Buffer[1] = 3;
-                                        tx3Buffer[2] = 0;
-										ph_temp = 0;
-										tx3Buffer[3] = 0;
-                                        tx3Buffer[4] = 0;
-                                        tx3Buffer[5] = 1;
-										crc = CRC16Modbus(tx3Buffer, 6);
-										tx3Buffer[6] = crc & 0xFF;
-										tx3Buffer[7] = ((crc & 0xFF00) >> 8);
-                                        tx3Size = 8;
-                                        tx3Count = 1;
-                                        s_expected_rs485_addr = 2;
-	                                    com485State = 1;
-	                                    rs485DriveCount = 0;
+										rs485_advance_request();
+										rs485_queue_request(rs485_sensor_addr(s_rs485_sensor_index));
 	                                    rx3Size = 0;
 	                                    rx3HandlerCount = 0;
 										comm_type=COMM_RS485;

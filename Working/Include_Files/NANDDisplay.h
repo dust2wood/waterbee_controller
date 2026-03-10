@@ -129,7 +129,7 @@
 //extern uint8_t imageBuffer[43200];
 //extern uint8_t imageBuffer[48000];
 //extern uint8_t imageBuffer[40960];
-extern uint8_t imageBuffer[14336]; /* 7 NAND pages: max for icon image draws */
+extern uint8_t imageBuffer[47104]; /* 50-row title slices are drawn as 49 rows + 1 row to stay within RAM */
 
 extern uint16_t* GlobalMemory;
 

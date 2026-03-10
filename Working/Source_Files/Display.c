@@ -1,5 +1,14 @@
 #include "Display.h"
 #include "Sensor_Manager.h"
+#include <string.h>
+
+extern void display_ph4(void);
+extern void display_ph7(void);
+extern void display_2ch_unit_ec_xy(unsigned int x, unsigned int y);
+
+static uint16_t calib_center_x(const char *text, uint16_t center_x);
+static void draw_medium_highlight_string(uint16_t center_x, uint16_t y, const char *text, int highlight_index, uint32_t highlight_color);
+static void clear_calib_value_area(void);
 
 extern uint16_t trand_select_Y, trand_select_Y_NO;		// Y ?? ?????? ?????????
 
@@ -479,7 +488,7 @@ void DrawCalibAuto(uint32_t cur, uint32_t color) {
 	                //DrawSmallNumber(210, 175, strBuffer, color);
 	                DrawMediumNumber(182, 175, strBuffer, color);
 
-					sprintf(strBuffer, "%01d", (compareSignValue % 100)/10);
+					sprintf(strBuffer, "%01d", (tempIntVal % 100)/10);
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, WHITE);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, WHITE);
 	                DrawMediumNumber(182+18*4, 175, strBuffer, WHITE);
@@ -493,7 +502,7 @@ void DrawCalibAuto(uint32_t cur, uint32_t color) {
 	                //DrawSmallNumber(210, 175, strBuffer, color);
 	                DrawMediumNumber(200, 175, strBuffer, color);
 
-					sprintf(strBuffer, "%01d", (compareSignValue % 100)/10);
+					sprintf(strBuffer, "%01d", (tempIntVal % 100)/10);
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, WHITE);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, WHITE);
 	                DrawMediumNumber(200+18*3, 175, strBuffer, WHITE);
@@ -511,7 +520,7 @@ void DrawCalibAuto(uint32_t cur, uint32_t color) {
 	                //DrawSmallNumber(210, 175, strBuffer, WHITE);
 	                DrawMediumNumber(182, 175, strBuffer, WHITE);
 
-					sprintf(strBuffer, "%01d", (compareSignValue % 100)/10);
+					sprintf(strBuffer, "%01d", (tempIntVal % 100)/10);
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, color);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, color);
 	                DrawMediumNumber(182+18*4, 175, strBuffer, color);
@@ -526,7 +535,7 @@ void DrawCalibAuto(uint32_t cur, uint32_t color) {
 	                //DrawSmallNumber(210, 175, strBuffer, WHITE);
 	                DrawMediumNumber(200, 175, strBuffer, WHITE);
 
-					sprintf(strBuffer, "%01d", (compareSignValue % 100)/10);
+					sprintf(strBuffer, "%01d", (tempIntVal % 100)/10);
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, color);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, color);
 	                DrawMediumNumber(200+18*3, 175, strBuffer, color);
@@ -827,69 +836,66 @@ void DrawCalibZero(uint32_t cur, uint32_t color) {
 
 // ???????
 void DrawCalibPH4(uint32_t cur, uint32_t color) {
+    uint32_t ph_value;
+    int decimal_index = 0;
+    int highlight_index;
 
-    if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
-        zerointVal = tempConfigData.calibrationConfig.PH4_Cal;
+    if (currentData.Device_Selector_Mode != SENSOR_1_MODE)
+        return;
 
-        if (zerointVal < 0) {
-            zerointVal = zerointVal * (-1);
-        }
-
-
-        if (tempConfigData.calibrationConfig.PH4_Cal < 0) {
-            sprintf(strBuffer, "-%d.%02d", zerointVal / 100, zerointVal%100);
-            DrawMediumNumber(192, 175, strBuffer, color);
-        }
-        else {
-            sprintf(strBuffer, " %d.%02d", zerointVal / 100, zerointVal%100);
-            DrawMediumNumber(192, 175, strBuffer, color);
-        }
-    }        
-
+    clear_calib_value_area();
+    display_ph4();
+    ph_value = (tempConfigData.calibrationConfig.PH4_Cal < 0) ? 0 : (uint32_t)tempConfigData.calibrationConfig.PH4_Cal;
+    sprintf(strBuffer, "%lu.%02lu",
+        (unsigned long)(ph_value / 100),
+        (unsigned long)(ph_value % 100));
+    while (strBuffer[decimal_index] != '\0' && strBuffer[decimal_index] != '.')
+        ++decimal_index;
+    highlight_index = (cur == 0) ? decimal_index + 1 : (int)strlen(strBuffer) - 1;
+    draw_medium_highlight_string(244, 175, strBuffer, highlight_index, color);
 }
 
 
 void DrawCalibPH7(uint32_t cur, uint32_t color) {
+    uint32_t ph_value;
+    int decimal_index = 0;
+    int highlight_index;
 
-    if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
-        zerointVal = tempConfigData.calibrationConfig.PH7_Cal;
+    if (currentData.Device_Selector_Mode != SENSOR_1_MODE)
+        return;
 
-        if (zerointVal < 0) {
-            zerointVal = zerointVal * (-1);
-        }
-
-
-        if (tempConfigData.calibrationConfig.PH7_Cal < 0) {
-            sprintf(strBuffer, "-%d.%02d", zerointVal / 100, zerointVal%100);
-            DrawMediumNumber(192, 175, strBuffer, color);
-        }
-        else {
-            sprintf(strBuffer, " %d.%02d", zerointVal / 100, zerointVal%100);
-            DrawMediumNumber(192, 175, strBuffer, color);
-        }
-    }        
-
+    clear_calib_value_area();
+    display_ph7();
+    ph_value = (tempConfigData.calibrationConfig.PH7_Cal < 0) ? 0 : (uint32_t)tempConfigData.calibrationConfig.PH7_Cal;
+    sprintf(strBuffer, "%lu.%02lu",
+        (unsigned long)(ph_value / 100),
+        (unsigned long)(ph_value % 100));
+    while (strBuffer[decimal_index] != '\0' && strBuffer[decimal_index] != '.')
+        ++decimal_index;
+    highlight_index = (cur == 0) ? decimal_index + 1 : (int)strlen(strBuffer) - 1;
+    draw_medium_highlight_string(244, 175, strBuffer, highlight_index, color);
 }
 
 
 void DrawCalib_EC(uint32_t cur, uint32_t color) {
+    uint32_t ec_cal;
+    int decimal_index = 0;
+    int highlight_index;
 
-	// ?????????? -----------------------------------------------------------------------//
-    if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
-        zerointVal = tempConfigData.calibrationConfig.EC_Cal;
+    if (currentData.Device_Selector_Mode != SENSOR_2_MODE)
+        return;
 
-        if (zerointVal < 0) {
-            zerointVal = zerointVal * (-1);
-        }
-        if (tempConfigData.calibrationConfig.EC_Cal < 0) {
-            sprintf(strBuffer, "-%d.%01d", zerointVal/10, zerointVal%10);
-            DrawMediumNumber(200, 175, strBuffer, color);
-        }
-        else {
-            sprintf(strBuffer, " %d.%01d", zerointVal/10, zerointVal%10);
-            DrawMediumNumber(200, 175, strBuffer, color);
-        }
-    }
+    clear_calib_value_area();
+    ec_cal = (tempConfigData.calibrationConfig.EC_Cal < 0) ? 0 : (uint32_t)tempConfigData.calibrationConfig.EC_Cal;
+    sprintf(strBuffer, "%lu.%01lu",
+        (unsigned long)(ec_cal / 10),
+        (unsigned long)(ec_cal % 10));
+    while (strBuffer[decimal_index] != '\0' && strBuffer[decimal_index] != '.')
+        ++decimal_index;
+    highlight_index = (cur == 0) ? decimal_index - 1 : (int)strlen(strBuffer) - 1;
+    if (highlight_index < 0)
+        highlight_index = 0;
+    draw_medium_highlight_string(244, 175, strBuffer, highlight_index, color);
 }
 
 
@@ -1039,7 +1045,60 @@ void DrawCalibBuff(uint32_t cur, uint32_t color) {
 
 //=====================
 
+static uint16_t calib_center_x(const char *text, uint16_t center_x)
+{
+    return (uint16_t)(center_x - ((uint16_t)strlen(text) * 9));
+}
+
+static void draw_medium_highlight_string(uint16_t center_x, uint16_t y, const char *text, int highlight_index, uint32_t highlight_color)
+{
+    uint16_t base_x = calib_center_x(text, center_x);
+
+    DrawMediumNumber(base_x, y, (char *)text, WHITE);
+    if (highlight_index >= 0 && text[highlight_index] != '\0' && text[highlight_index] != ' ') {
+        char digit[2];
+        digit[0] = text[highlight_index];
+        digit[1] = '\0';
+        DrawMediumNumber(base_x + (highlight_index * 18), y, digit, highlight_color);
+    }
+}
+
+static void clear_calib_value_area(void)
+{
+    TFT_Fill(60, 160, 430, 205, WHITE);
+}
+
 void DrawCalibSpan(uint32_t cur, uint32_t color) {
+    clear_calib_value_area();
+
+    if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
+        uint32_t ph_value = (tempConfigData.calibrationConfig.PH_Span_Cal < 0) ? 0 : (uint32_t)tempConfigData.calibrationConfig.PH_Span_Cal;
+        int decimal_index = 0;
+        int highlight_index = 0;
+
+        display_ph7();
+        sprintf(strBuffer, "%lu.%02lu",
+            (unsigned long)(ph_value / 100),
+            (unsigned long)(ph_value % 100));
+        while (strBuffer[decimal_index] != '\0' && strBuffer[decimal_index] != '.')
+            ++decimal_index;
+        highlight_index = (cur == 0) ? (int)strlen(strBuffer) - 1 : decimal_index + 1;
+        draw_medium_highlight_string(244, 175, strBuffer, highlight_index, color);
+        return;
+    } else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
+        uint32_t ec_value = (tempConfigData.calibrationConfig.EC_Span_Cal < 0) ? 0 : (uint32_t)tempConfigData.calibrationConfig.EC_Span_Cal;
+        uint32_t ec_display = (ec_value + 5) / 10;
+        int highlight_index = 0;
+
+        sprintf(strBuffer, "%lu", (unsigned long)ec_display);
+        highlight_index = (cur == 0) ? (int)strlen(strBuffer) - 1 : (int)strlen(strBuffer) - 2;
+        if (highlight_index < 0)
+            highlight_index = 0;
+        draw_medium_highlight_string(220, 175, strBuffer, highlight_index, color);
+        display_2ch_unit_ec_xy(292, 169);
+        return;
+    }
+
     if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
         switch (cur) {
             case 0:
@@ -1166,6 +1225,31 @@ void DrawCalibSpan(uint32_t cur, uint32_t color) {
 }
 
 void DrawCalibTemp(uint32_t cur, uint32_t color) {
+    int32_t display_temp_span;
+    uint32_t abs_temp_span;
+    char temp_buffer[16];
+    int decimal_index = 0;
+    int highlight_index = 0;
+
+    if (currentData.Device_Selector_Mode == SENSOR_1_MODE)
+        display_temp_span = tempConfigData.calibrationConfig.TEMP_Span_Cal1;
+    else
+        display_temp_span = tempConfigData.calibrationConfig.TEMP_Span_Cal2;
+
+    clear_calib_value_area();
+    abs_temp_span = (display_temp_span < 0) ? (uint32_t)(-display_temp_span) : (uint32_t)display_temp_span;
+    if (display_temp_span < 0)
+        sprintf(temp_buffer, "-%1lu.%01lu", (unsigned long)(abs_temp_span / 10), (unsigned long)(abs_temp_span % 10));
+    else
+        sprintf(temp_buffer, "%1lu.%01lu", (unsigned long)(abs_temp_span / 10), (unsigned long)(abs_temp_span % 10));
+
+    while (temp_buffer[decimal_index] != '\0' && temp_buffer[decimal_index] != '.')
+        ++decimal_index;
+
+    highlight_index = (cur == 0) ? (int)strlen(temp_buffer) - 1 : decimal_index - 1;
+    draw_medium_highlight_string(220, 175, temp_buffer, highlight_index, color);
+    DrawSmallNumber(314, 178, "C", BROWN);
+    return;
 
 	int32_t TEMP_Span_Cal=0;
 
@@ -1191,7 +1275,7 @@ void DrawCalibTemp(uint32_t cur, uint32_t color) {
 	                //DrawSmallNumber(210, 175, strBuffer, color);
 	                DrawMediumNumber(182, 175, strBuffer, color);
 
-					sprintf(strBuffer, "%01d", (TEMP_Span_Cal % 10));
+					sprintf(strBuffer, "%01d", (tempIntVal % 10));
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, WHITE);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, WHITE);
 	                DrawMediumNumber(182+18*4, 175, strBuffer, WHITE);
@@ -1205,7 +1289,7 @@ void DrawCalibTemp(uint32_t cur, uint32_t color) {
 	                //DrawSmallNumber(210, 175, strBuffer, color);
 	                DrawMediumNumber(200, 175, strBuffer, color);
 
-					sprintf(strBuffer, "%01d", (TEMP_Span_Cal % 10));
+					sprintf(strBuffer, "%01d", (tempIntVal % 10));
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, WHITE);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, WHITE);
 	                DrawMediumNumber(200+18*3, 175, strBuffer, WHITE);
@@ -1223,7 +1307,7 @@ void DrawCalibTemp(uint32_t cur, uint32_t color) {
 	                //DrawSmallNumber(210, 175, strBuffer, WHITE);
 	                DrawMediumNumber(182, 175, strBuffer, WHITE);
 
-					sprintf(strBuffer, "%01d", (TEMP_Span_Cal % 10));
+					sprintf(strBuffer, "%01d", (tempIntVal % 10));
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, color);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, color);
 	                DrawMediumNumber(182+18*4, 175, strBuffer, color);
@@ -1238,7 +1322,7 @@ void DrawCalibTemp(uint32_t cur, uint32_t color) {
 	                //DrawSmallNumber(210, 175, strBuffer, WHITE);
 	                DrawMediumNumber(200, 175, strBuffer, WHITE);
 
-					sprintf(strBuffer, "%01d", (TEMP_Span_Cal % 10));
+					sprintf(strBuffer, "%01d", (tempIntVal % 10));
 	                //DrawMediumNumber(260 + (22 * 3), 120, strBuffer, color);
 	                //DrawSmallNumber(210+12*3, 175, strBuffer, color);
 	                DrawMediumNumber(200+18*3, 175, strBuffer, color);

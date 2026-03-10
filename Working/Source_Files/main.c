@@ -235,6 +235,12 @@ int main(void)
 
 	/* PnP 안전: 로고 먼저 표시 후 3초 대기, 그 다음 센서 스캔 */
 	display_logo();
+	/* Clear any seam dots on logo slices (49px boundary) */
+	TFT_Fill(0, 49, 480, 50, WHITE);
+	TFT_Fill(0, 99, 480, 100, WHITE);
+	TFT_Fill(0, 149, 480, 150, WHITE);
+	TFT_Fill(0, 199, 480, 200, WHITE);
+	TFT_Fill(0, 249, 480, 250, WHITE);
 	Delay_10msec(300);
     sensor_autodetect_run();
     sensor_manager_init();
@@ -254,7 +260,6 @@ BUZ_ON;
 
 	init_tx3Buffer();  /* RS485 poll start (unified firmware) */
 
-	sensor_manager_init();   /* ???? ??? ???? ????? ???? */
     GetUiMode();
 
     // test
@@ -876,8 +881,30 @@ void SystemSetting(void) {
 		configData.calibrationConfig.PH7_Cal=700;
 	if (configData.calibrationConfig.PH7_Value<=0 || configData.calibrationConfig.PH7_Value>1400)
 		configData.calibrationConfig.PH7_Value=700;
+	if ((configData.calibrationConfig.PH_Span_Cal == 1) && (configData.calibrationConfig.PH_Span_Value == 1)) {
+		configData.calibrationConfig.PH_Span_Cal = 700;
+		configData.calibrationConfig.PH_Span_Value = 700;
+	}
+	if (configData.calibrationConfig.PH_Span_Cal<=0 || configData.calibrationConfig.PH_Span_Cal>1400)
+		configData.calibrationConfig.PH_Span_Cal=700;
+	if (configData.calibrationConfig.PH_Span_Value<=0 || configData.calibrationConfig.PH_Span_Value>1400)
+		configData.calibrationConfig.PH_Span_Value=700;
+	if (configData.calibrationConfig.EC_Cal < 0 || configData.calibrationConfig.EC_Cal > 9999)
+		configData.calibrationConfig.EC_Cal=0;
 	if (configData.calibrationConfig.EC_Value<=0 || configData.calibrationConfig.EC_Value>20000)
 		configData.calibrationConfig.EC_Value=0;
+	if (configData.calibrationConfig.EC_Span_Cal<=0 || configData.calibrationConfig.EC_Span_Cal>99999)
+		configData.calibrationConfig.EC_Span_Cal=14130;
+	if (configData.calibrationConfig.EC_Span_Value<=0 || configData.calibrationConfig.EC_Span_Value>99999)
+		configData.calibrationConfig.EC_Span_Value=14130;
+	if ((configData.calibrationConfig.TEMP_Span_Cal1 == 1) && (configData.calibrationConfig.TEMP_Span_Value1 == 1)) {
+		configData.calibrationConfig.TEMP_Span_Cal1 = 0;
+		configData.calibrationConfig.TEMP_Span_Value1 = 0;
+	}
+	if ((configData.calibrationConfig.TEMP_Span_Cal2 == 1) && (configData.calibrationConfig.TEMP_Span_Value2 == 1)) {
+		configData.calibrationConfig.TEMP_Span_Cal2 = 0;
+		configData.calibrationConfig.TEMP_Span_Value2 = 0;
+	}
 
 
     if (configData.outputConfig.output4mA == 0xFFFFFFFF)
@@ -1006,9 +1033,11 @@ void StateHandler(void) {
 					State_CalibZero();
 			}
             break;
+#ifndef SENSOR_PH_EC
         case STATE_CALIB_MANUAL:
             State_CalibManual();
             break;
+#endif
         case STATE_CALIB_BUFF_PH4:
             State_CalibBuffPH4();
             break;
@@ -2152,6 +2181,12 @@ void State_ConfigComm(void) {
     switch (subState) {
         case 0:
             tempConfigData = configData;
+            if ((tempConfigData.calibrationConfig.PH_Span_Cal == 1) && (tempConfigData.calibrationConfig.PH_Span_Value == 1)) {
+                tempConfigData.calibrationConfig.PH_Span_Cal = 700;
+                tempConfigData.calibrationConfig.PH_Span_Value = 700;
+            }
+            if (tempConfigData.calibrationConfig.EC_Span_Cal <= 0)
+                tempConfigData.calibrationConfig.EC_Span_Cal = 14130;
             RedrawTitle();
             RedrawBottomArea();
             RedrawViewArea();
@@ -2783,6 +2818,12 @@ void State_CalibZero(void) {
     switch (subState) {
         case 0:
             tempConfigData = configData;
+            if ((tempConfigData.calibrationConfig.PH_Span_Cal == 1) && (tempConfigData.calibrationConfig.PH_Span_Value == 1)) {
+                tempConfigData.calibrationConfig.PH_Span_Cal = 700;
+                tempConfigData.calibrationConfig.PH_Span_Value = 700;
+            }
+            if (tempConfigData.calibrationConfig.EC_Span_Cal <= 0)
+                tempConfigData.calibrationConfig.EC_Span_Cal = 14130;
             RedrawTitle();
             RedrawBottomArea();
             RedrawViewArea();
@@ -3155,15 +3196,12 @@ void State_CalibSpan(void) {
                             switch (cursor) {
                                 case 0:
                                     /* 자릿수 가중치: 0.0X 구간에서는 +1만 적용 (0.001->0.002 방지) */
-                                    if (tempConfigData.calibrationConfig.PH_Span_Cal < 10) {
-                                        if (tempConfigData.calibrationConfig.PH_Span_Cal < 9999)
-                                            ++tempConfigData.calibrationConfig.PH_Span_Cal;
-                                    } else if (tempConfigData.calibrationConfig.PH_Span_Cal + 10 <= 9999)
-                                        tempConfigData.calibrationConfig.PH_Span_Cal += 10;
+                                    if (tempConfigData.calibrationConfig.PH_Span_Cal < 1400)
+                                        ++tempConfigData.calibrationConfig.PH_Span_Cal;
                                     break;
                                 case 1:
-                                    if (tempConfigData.calibrationConfig.PH_Span_Cal < 9999)
-                                        ++tempConfigData.calibrationConfig.PH_Span_Cal;
+                                    if (tempConfigData.calibrationConfig.PH_Span_Cal + 10 <= 1400)
+                                        tempConfigData.calibrationConfig.PH_Span_Cal += 10;
                                     break;
                                 case 2:
 
@@ -3173,15 +3211,12 @@ void State_CalibSpan(void) {
                             switch (cursor) {
                                 case 0:
                                     /* 자릿수 가중치: 0.0X 구간에서는 +1만 적용 (0.001->0.011 튐 방지) */
-                                    if (tempConfigData.calibrationConfig.EC_Span_Cal < 100) {
-                                        if (tempConfigData.calibrationConfig.EC_Span_Cal < 99999)
-                                            ++tempConfigData.calibrationConfig.EC_Span_Cal;
-                                    } else if (tempConfigData.calibrationConfig.EC_Span_Cal + 100 <= 99999)
-                                        tempConfigData.calibrationConfig.EC_Span_Cal += 100;
+                                    if (tempConfigData.calibrationConfig.EC_Span_Cal + 10 <= 99999)
+                                        tempConfigData.calibrationConfig.EC_Span_Cal += 10;
                                     break;
                                 case 1:
-                                    if (tempConfigData.calibrationConfig.EC_Span_Cal < 99999)
-                                        ++tempConfigData.calibrationConfig.EC_Span_Cal;
+                                    if (tempConfigData.calibrationConfig.EC_Span_Cal + 100 <= 99999)
+                                        tempConfigData.calibrationConfig.EC_Span_Cal += 100;
                                     break;
                                 case 2:
 
@@ -3194,14 +3229,12 @@ void State_CalibSpan(void) {
                         if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
                             switch (cursor) {
                                 case 0:
-                                    if (tempConfigData.calibrationConfig.PH_Span_Cal < 10 && tempConfigData.calibrationConfig.PH_Span_Cal > 0)
+                                    if (tempConfigData.calibrationConfig.PH_Span_Cal > 0)
                                         --tempConfigData.calibrationConfig.PH_Span_Cal;
-                                    else if (tempConfigData.calibrationConfig.PH_Span_Cal >= 10)
-                                        tempConfigData.calibrationConfig.PH_Span_Cal -= 10;
                                     break;
                                 case 1:
-                                    if (tempConfigData.calibrationConfig.PH_Span_Cal > 1)
-                                        --tempConfigData.calibrationConfig.PH_Span_Cal;
+                                    if (tempConfigData.calibrationConfig.PH_Span_Cal >= 10)
+                                        tempConfigData.calibrationConfig.PH_Span_Cal -= 10;
                                     break;
                                 case 2:
 
@@ -3210,14 +3243,12 @@ void State_CalibSpan(void) {
                         } else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
                             switch (cursor) {
                                 case 0:
-                                    if (tempConfigData.calibrationConfig.EC_Span_Cal < 100 && tempConfigData.calibrationConfig.EC_Span_Cal > 0)
-                                        --tempConfigData.calibrationConfig.EC_Span_Cal;
-                                    else if (tempConfigData.calibrationConfig.EC_Span_Cal >= 100)
-                                        tempConfigData.calibrationConfig.EC_Span_Cal -= 100;
+                                    if (tempConfigData.calibrationConfig.EC_Span_Cal >= 10)
+                                        tempConfigData.calibrationConfig.EC_Span_Cal -= 10;
                                     break;
                                 case 1:
-                                    if (tempConfigData.calibrationConfig.EC_Span_Cal > 0)
-                                        --tempConfigData.calibrationConfig.EC_Span_Cal;
+                                    if (tempConfigData.calibrationConfig.EC_Span_Cal >= 100)
+                                        tempConfigData.calibrationConfig.EC_Span_Cal -= 100;
                                     break;
                                 case 2:
                                     if (compareSignValue > -99999)
@@ -3278,6 +3309,14 @@ static void State_CalibTemp_RS232(void) {
     switch (subState) {
         case 0:
             tempConfigData = configData;
+            if ((tempConfigData.calibrationConfig.TEMP_Span_Cal1 == 1) && (tempConfigData.calibrationConfig.TEMP_Span_Value1 == 1)) {
+                tempConfigData.calibrationConfig.TEMP_Span_Cal1 = 0;
+                tempConfigData.calibrationConfig.TEMP_Span_Value1 = 0;
+            }
+            if ((tempConfigData.calibrationConfig.TEMP_Span_Cal2 == 1) && (tempConfigData.calibrationConfig.TEMP_Span_Value2 == 1)) {
+                tempConfigData.calibrationConfig.TEMP_Span_Cal2 = 0;
+                tempConfigData.calibrationConfig.TEMP_Span_Value2 = 0;
+            }
             compareSignValue = currentData.temperature;
             compareSigntemp = compareSignValue;
             RedrawTitle();
@@ -3378,11 +3417,11 @@ static void State_CalibTemp_RS232(void) {
 
                             switch (cursor) {
                                 case 0:
-                                    if (compareSignValue >= 100)
+                                    if (compareSignValue > -9990)
                                         compareSignValue -= 100;
                                     break;
                                 case 1:
-                                    if (compareSignValue >= 10)
+                                    if (compareSignValue > -9999)
                                         compareSignValue-=10;
                                     break;
                             }
@@ -3414,6 +3453,14 @@ static void State_CalibTemp_RS485(void) {
     switch (subState) {
         case 0:
             tempConfigData = configData;
+            if ((tempConfigData.calibrationConfig.TEMP_Span_Cal1 == 1) && (tempConfigData.calibrationConfig.TEMP_Span_Value1 == 1)) {
+                tempConfigData.calibrationConfig.TEMP_Span_Cal1 = 0;
+                tempConfigData.calibrationConfig.TEMP_Span_Value1 = 0;
+            }
+            if ((tempConfigData.calibrationConfig.TEMP_Span_Cal2 == 1) && (tempConfigData.calibrationConfig.TEMP_Span_Value2 == 1)) {
+                tempConfigData.calibrationConfig.TEMP_Span_Cal2 = 0;
+                tempConfigData.calibrationConfig.TEMP_Span_Value2 = 0;
+            }
             compareSignValue = currentData.temperature;
             compareSigntemp = compareSignValue;
             RedrawTitle();
@@ -3451,24 +3498,24 @@ static void State_CalibTemp_RS485(void) {
 					   	if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
 	                        switch (cursor) {
 	                            case 0:
-	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal1 + 10 <= 9999)
-	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal1 += 10;
+	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal1 < 9999)
+	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal1 += 1;
 	                                break;
 	                            case 1:
-	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal1 < 9990)
-	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal1+=1;
+	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal1 + 10 <= 9999)
+	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal1 += 10;
 	                                break;
 							}
 						}								
 						else {
 	                        switch (cursor) {
 	                            case 0:
-	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal2 + 10 <= 9999)
-	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal2 += 10;
+	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal2 < 9999)
+	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal2 += 1;
 	                                break;
 	                            case 1:
-	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal2 < 9990)
-	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal2+=1;
+	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal2 + 10 <= 9999)
+	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal2 += 10;
 	                                break;
 							}
 	                    }
@@ -3478,24 +3525,24 @@ static void State_CalibTemp_RS485(void) {
 					   	if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
 	                        switch (cursor) {
 	                            case 0:
-	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal1 >= 10)
-	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal1 -= 10;
+	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal1 > -9999)
+	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal1 -= 1;
 	                                break;
 	                            case 1:
-	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal1 >= 1)
-	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal1-=1;
+	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal1 > -9990)
+	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal1 -= 10;
 	                                break;
 	                        }
 						}
 						else {
 	                        switch (cursor) {
 	                            case 0:
-	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal2 >= 10)
-	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal2 -= 10;
+	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal2 > -9999)
+	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal2 -= 1;
 	                                break;
 	                            case 1:
-	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal2 >= 1)
-	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal2-=1;
+	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal2 > -9990)
+	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal2 -= 10;
 	                                break;
 	                        }
 						}
@@ -3984,6 +4031,8 @@ void State_CalibBuffPH4(void) {
     switch (subState) {
         case 0:
             tempConfigData = configData;
+            if (tempConfigData.calibrationConfig.EC_Cal < 0)
+                tempConfigData.calibrationConfig.EC_Cal = 0;
             RedrawTitle();
             RedrawBottomArea();
             RedrawViewArea();
@@ -4005,18 +4054,12 @@ void State_CalibBuffPH4(void) {
                         break;
                     case BUTTON_LEFT:
                         DrawCalibPH4(cursor, WHITE);
-                        //if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
-                        //    if (cursor == 0) cursor = 3;
-                        //    else --cursor;
-                        //} else cursor ^= 1;
+                        cursor ^= 1;
                         DrawCalibPH4(cursor, YELLOW);
                         break;
                     case BUTTON_RIGHT:
                         DrawCalibPH4(cursor, WHITE);
-                        //if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
-                        //    ++cursor;
-                        //    cursor = cursor % 4;
-                        //} else cursor ^= 1;
+                        cursor ^= 1;
                         DrawCalibPH4(cursor, YELLOW);
                         break;
                     case BUTTON_UP:
@@ -4158,18 +4201,12 @@ void State_CalibBuffPH7(void) {
                         break;
                     case BUTTON_LEFT:
                         DrawCalibPH7(cursor, WHITE);
-                        //if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
-                        //    if (cursor == 0) cursor = 3;
-                        //    else --cursor;
-                        //} else cursor ^= 1;
+                        cursor ^= 1;
                         DrawCalibPH7(cursor, YELLOW);
                         break;
                     case BUTTON_RIGHT:
                         DrawCalibPH7(cursor, WHITE);
-                        //if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
-                        //    ++cursor;
-                        //    cursor = cursor % 4;
-                        //} else cursor ^= 1;
+                        cursor ^= 1;
                         DrawCalibPH7(cursor, YELLOW);
                         break;
                     case BUTTON_UP:
@@ -4306,18 +4343,12 @@ void State_CalibBuff_EC(void) {
                         break;
                     case BUTTON_LEFT:
                         DrawCalib_EC(cursor, WHITE);
-                        //if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
-                        //    if (cursor == 0) cursor = 3;
-                        //    else --cursor;
-                        //} else cursor ^= 1;
+                        cursor ^= 1;
                         DrawCalib_EC(cursor, YELLOW);
                         break;
                     case BUTTON_RIGHT:
                         DrawCalib_EC(cursor, WHITE);
-                        //if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
-                        //    ++cursor;
-                        //    cursor = cursor % 4;
-                        //} else cursor ^= 1;
+                        cursor ^= 1;
                         DrawCalib_EC(cursor, YELLOW);
                         break;
                     case BUTTON_UP:
@@ -5435,23 +5466,23 @@ void FactoryReset(void) {
     configData.calibrationConfig.EC_Value = 0;
 
 
-    configData.calibrationConfig.PH_Span_Cal = 1;
-    configData.calibrationConfig.PH_Span_Value = 1;
+    configData.calibrationConfig.PH_Span_Cal = 700;
+    configData.calibrationConfig.PH_Span_Value = 700;
 
     configData.calibrationConfig.EC_Span_Cal = 14130;
     configData.calibrationConfig.EC_Span_Value = 14130;
 
-    configData.calibrationConfig.TEMP_Span_Cal1 = 1;
-    configData.calibrationConfig.TEMP_Span_Value1 = 1;
+    configData.calibrationConfig.TEMP_Span_Cal1 = 0;
+    configData.calibrationConfig.TEMP_Span_Value1 = 0;
 
-    configData.calibrationConfig.TEMP_Span_Cal2 = 1;
-    configData.calibrationConfig.TEMP_Span_Value2 = 1;
+    configData.calibrationConfig.TEMP_Span_Cal2 = 0;
+    configData.calibrationConfig.TEMP_Span_Value2 = 0;
 
-    configData.calibrationConfig.TEMP_Span_Cal3 = 1;
-    configData.calibrationConfig.TEMP_Span_Value3 = 1;
+    configData.calibrationConfig.TEMP_Span_Cal3 = 0;
+    configData.calibrationConfig.TEMP_Span_Value3 = 0;
 
-    configData.calibrationConfig.TEMP_Span_Cal4 = 1;
-    configData.calibrationConfig.TEMP_Span_Value4 = 1;
+    configData.calibrationConfig.TEMP_Span_Cal4 = 0;
+    configData.calibrationConfig.TEMP_Span_Value4 = 0;
 
 
     configData.calibrationConfig.S2zeroCal = 0;
