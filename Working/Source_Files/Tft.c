@@ -7,7 +7,12 @@
 //#define SIZE3_2INCH
 ///////////////////////////////////////////////////
 
+/* Keil: #pragma O0  disables optimization for this file.
+ * GCC: equivalent is __attribute__((optimize("O0"))) per-function.
+ * Applied below to timing-critical functions: TFT_DelayTime, lcd_rst, TFT_Init. */
+#if defined(__CC_ARM)
 #pragma  O0
+#endif
 
 #ifndef NEW_BOARD
 	#define Bank1_LCD_D    ((uint32_t)0x68040000)    //disp Data ADDR
@@ -169,7 +174,16 @@ void TFT_DrawNumeric(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t y
 	TFT_WR_REG(WRITE_MEM_START);
 
 
-	if(Flag == BACK_COLOR3)
+	if(Flag == DRAW_WHITE_BG)
+	{
+		for(i = 0 ; i < n ; ++i)
+		{
+			data = Image[i];
+			if (data==BACK_COLOR3 || data==WHITE)	TFT_WR_Data(WHITE);
+			else 					TFT_WR_Data(data);
+		}
+	}
+	else if(Flag == BACK_COLOR3)
 	{
 		for(i = 0 ; i < n ; ++i)
 		{
@@ -492,9 +506,14 @@ void TFT_DrawImage(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEn
 	}
 }
 
+/* TFT_Init: SSD1963 PLL + timing init.
+ * GCC noinline + O0 ensures register-write sequence and delays are exact. */
+#if defined(__GNUC__) && !defined(__CC_ARM)
+__attribute__((noinline, optimize("O0")))
+#endif
 void TFT_Init(void)
 {
-	lcd_rst();
+    lcd_rst();
 
 #ifndef 		SIZE3_2INCH
 	TFT_WR_REG(0x00E2);	//PLL multiplier, set PLL clock to 120M
@@ -566,7 +585,7 @@ void TFT_Init(void)
 	TFT_WR_REG(0x00F0); //pixel data interface
 	TFT_WR_Data(0x0003);
 
-	TFT_WR_REG(0x0021);	//����ͼ����????תģʽ
+	TFT_WR_REG(0x0021);	//����ͼ����?��?תģʽ
 
     TFT_WR_REG(0x00BC);//��Ҫ
 	TFT_WR_Data(0x0080);//�Աȶ�
@@ -622,7 +641,7 @@ void TFT_Init(void)
 	TFT_WR_REG(0x0024);		TFT_WR_Data(0x0000);
 	TFT_WR_REG(0x0025);		TFT_WR_Data(0x8000);
 
-	TFT_WR_REG(0x004F);	TFT_WR_Data(0x0000);
+	TFT_WR_REG(0x004F);	ZA	TFT_WR_Data(0x0000);
 	TFT_WR_REG(0x004E);		TFT_WR_Data(0x0000);
 
 	TFT_WR_REG(0x0022);
@@ -700,14 +719,20 @@ void TFT_Fill(uint16_t xsta,uint16_t ysta,uint16_t xend,uint16_t yend,uint16_t c
 
 
 /* ===================================================== */
-/* 2-4. TFT_DelayTime	                              		 */
+/* 2-4. TFT_DelayTime                                    */
 /* ===================================================== */
+/* GCC -O1 optimizes plain loop variables away.
+ * Fix: volatile counter + __attribute__((optimize("O0"))) prevent removal.
+ * Scale: 72MHz / ~3 cycles per iteration = 24M iter/sec.
+ * 1 unit => cnt=72000 => ~3ms.  Keil was ~1ms per unit at 0-opt. */
+#if defined(__GNUC__) && !defined(__CC_ARM)
+__attribute__((noinline, optimize("O0")))
+#endif
 void TFT_DelayTime(uint16_t i)
 {
-    uint16_t a;
-    uint16_t b;
-    for(b=0;b<i;b++)
-    for(a=0;a<1000;a++);
+    volatile uint32_t cnt;
+    for (cnt = (uint32_t)i * 7200UL; cnt != 0U; cnt--)
+        ;
 }
 
 void TFT_Point(uint16_t x,uint16_t y,uint16_t fontcolor)
@@ -729,24 +754,36 @@ void TFT_Point(uint16_t x,uint16_t y,uint16_t fontcolor)
 
 }  
 
+/* Delay loop: __IO (volatile) prevents GCC from removing iterations.
+ * 72MHz, ~3 cycles/iter -> 1,000,000 counts ~= 42ms.               */
+void Delay(__IO uint32_t nCount)
+{
+    uint32_t wdg_cnt = 0;
+    for (; nCount != 0; nCount--) {
+        if (++wdg_cnt >= 10000u) { IWDG_ReloadCounter(); wdg_cnt = 0; }
+    }
+}
+
+/* lcd_rst: SSD1963 datasheet requires
+ *   RST LOW  >= 10us  (we use ~14ms: Delay(1000000))
+ *   RST HIGH >= 120ms before first command (we use ~140ms: Delay(10000000))
+ * GCC __attribute__((optimize("O0"))) prevents loop unrolling/removal.   */
+#if defined(__GNUC__) && !defined(__CC_ARM)
+__attribute__((noinline, optimize("O0")))
+#endif
 void lcd_rst(void)
 {
 #ifndef NEW_BOARD
-	GPIO_ResetBits(GPIOG, GPIO_Pin_8);
-    Delay(0xFFFF);					   
-    GPIO_SetBits(GPIOG, GPIO_Pin_8 );		 	 
-	Delay(0xFFFF);	
+    GPIO_ResetBits(GPIOG, GPIO_Pin_8);
+    Delay(1000000UL);                   /* ~14ms  RST LOW  */
+    GPIO_SetBits(GPIOG, GPIO_Pin_8);
+    Delay(10000000UL);                  /* ~140ms RST stabilize */
 #else
-	GPIO_ResetBits(GPIOD, GPIO_Pin_3);
-    Delay(0xFFFF);					   
-    GPIO_SetBits(GPIOD, GPIO_Pin_3 );		 	 
-	Delay(0xFFFF);	
-
+    /* SUB B/D Ver1.161224: LCD RST = PD3 */
+    GPIO_ResetBits(GPIOD, GPIO_Pin_3);
+    Delay(100000UL);                    /* RST LOW ~14ms  */
+    GPIO_SetBits(GPIOD, GPIO_Pin_3);
+    Delay(1000000UL);                   /* RST HIGH stabilize ~140ms */
 #endif
-}
-void Delay(__IO uint32_t nCount)
-{
-  for(; nCount != 0; nCount--);
-
 }
 

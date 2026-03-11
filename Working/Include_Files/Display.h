@@ -16,9 +16,9 @@ void DrawGraph(uint32_t cur);
 void ClearGraphArea(void);
 void DrawCalibLog(uint32_t cur);
 void DrawRelay1Wash(uint32_t cur, uint32_t color);
-// void DrawRelay2Alarm(uint32_t cur, uint32_t color);  /* 전략 A: UNUSED 주석 */
+void DrawRelay2Alarm(uint32_t cur, uint32_t color);
 void DrawRelay3Wash(uint32_t cur, uint32_t color);
-// void DrawRelayAlarm(uint32_t val);  /* 전략 A: UNUSED 주석 */
+void DrawRelayAlarm(uint32_t val);
 void DrawAdjustFilter(uint32_t cur, uint32_t sen, uint32_t color);
 void DrawAdjustOffset(uint32_t cur, uint32_t sen, uint32_t color);
 void DrawAdjustGradient(uint32_t cur, uint32_t sen, uint32_t color);
@@ -30,7 +30,7 @@ void DrawOutputConfig(uint32_t cur, uint32_t color);
 void DrawAlarmConfig(uint32_t cur, uint32_t color);
 void DrawTimeConfig(uint32_t cur, uint32_t color);
 void DrawCommConfig(uint32_t cur, uint32_t color);
-// void DrawBottomCurrent(uint32_t current);  /* 전략 A: UNUSED 주석 */
+void DrawBottomCurrent(uint32_t current);
 
 
 //=========================================================

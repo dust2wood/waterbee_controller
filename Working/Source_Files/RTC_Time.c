@@ -2,9 +2,60 @@
 #include "Main.h"
 
 /*******************************************************************************
+* Function Name  : Time_GetBuildTime(struct tm *out)
+* Description    : __DATE__? __TIME__ ???? ???? struct tm? ??
+*                  __DATE__: "Mar  9 2026" (MMM DD YYYY)
+*                  __TIME__: "11:35:12" (HH:MM:SS)
+* Input          : out - ??? ??? struct tm ???
+* Return         : 0=??, -1=?? ??
+*******************************************************************************/
+static int Time_GetBuildTime(struct tm *out)
+{
+	const char *months[] = {"Jan","Feb","Mar","Apr","May","Jun",
+	                        "Jul","Aug","Sep","Oct","Nov","Dec"};
+	int i;
+	unsigned int month = 0, day = 0, year = 0;
+	unsigned int hour = 0, min = 0, sec = 0;
+
+	if (out == NULL) return -1;
+
+	/* __DATE__ ??: "Mar  9 2026" ?? "Dec 25 2025" */
+	for (i = 0; i < 12; i++) {
+		if (__DATE__[0] == months[i][0] && __DATE__[1] == months[i][1] && __DATE__[2] == months[i][2]) {
+			month = i;
+			break;
+		}
+	}
+	if (i >= 12) return -1;
+
+	if (__DATE__[4] == ' ')
+		day = __DATE__[5] - '0';
+	else
+		day = (__DATE__[4] - '0') * 10 + (__DATE__[5] - '0');
+	year = (__DATE__[7] - '0') * 1000 + (__DATE__[8] - '0') * 100 + (__DATE__[9] - '0') * 10 + (__DATE__[10] - '0');
+
+	/* __TIME__ ??: "11:35:12" */
+	hour = (__TIME__[0] - '0') * 10 + (__TIME__[1] - '0');
+	min  = (__TIME__[3] - '0') * 10 + (__TIME__[4] - '0');
+	sec  = (__TIME__[6] - '0') * 10 + (__TIME__[7] - '0');
+
+	out->tm_sec   = sec;
+	out->tm_min   = min;
+	out->tm_hour  = hour;
+	out->tm_mday  = day;
+	out->tm_mon   = month;
+	out->tm_year  = year;
+	out->tm_wday  = 0;
+	out->tm_yday  = 0;
+	out->tm_isdst = 0;
+
+	return 0;
+}
+
+/*******************************************************************************
 * Function Name  : Time_ConvUnixToCalendar(time_t t)
-* Description    : ת��UNIXʱ���Ϊ����ʱ��
-* Input 		 : u32 t  ��ǰʱ���UNIXʱ���
+* Description    : ???UNIX????????????
+* Input 		 : u32 t  ???????UNIX????
 * Output		 : None
 * Return		 : struct tm
 *******************************************************************************/
@@ -12,28 +63,28 @@ struct tm Time_ConvUnixToCalendar(time_t t)
 {
 	struct tm *t_tm;
 	t_tm = localtime(&t);
-	t_tm->tm_year += 1900;	//localtimeת�������tm_year�����ֵ����Ҫת�ɾ���ֵ
+	t_tm->tm_year += 1900;	//localtime????????tm_year??????????????????
 	return *t_tm;
 }
 
 /*******************************************************************************
 * Function Name  : Time_ConvCalendarToUnix(struct tm t)
-* Description    : д��RTCʱ�ӵ�ǰʱ��
+* Description    : ????RTC????????
 * Input 		 : struct tm t
 * Output		 : None
 * Return		 : time_t
 *******************************************************************************/
 time_t Time_ConvCalendarToUnix(struct tm t)
 {
-	t.tm_year -= 1900;  //�ⲿtm�ṹ��洢�����Ϊ2008��ʽ
-						//��time.h�ж������ݸ�ʽΪ1900�꿪ʼ�����
-						//���ԣ�������ת��ʱҪ���ǵ�������ء�
+	t.tm_year -= 1900;  //??tm????????????2008???
+						//??time.h?????????????1900????????
+						//?????????????????????????????
 	return mktime(&t);
 }
 
 /*******************************************************************************
 * Function Name  : Time_GetUnixTime()
-* Description    : ��RTCȡ��ǰʱ���Unixʱ���ֵ
+* Description    : ??RTC????????Unix?????
 * Input 		 : None
 * Output		 : None
 * Return		 : time_t t
@@ -45,7 +96,7 @@ time_t Time_GetUnixTime(void)
 
 /*******************************************************************************
 * Function Name  : Time_GetCalendarTime()
-* Description    : ��RTCȡ��ǰʱ�������ʱ�䣨struct tm��
+* Description    : ??RTC???????????????struct tm??
 * Input 		 : None
 * Output		 : None
 * Return		 : time_t t
@@ -62,7 +113,7 @@ struct tm Time_GetCalendarTime(void)
 
 /*******************************************************************************
 * Function Name  : Time_SetUnixTime()
-* Description    : ��������Unixʱ���д��RTC
+* Description    : ????????Unix????????RTC
 * Input 		 : time_t t
 * Output		 : None
 * Return		 : None
@@ -77,7 +128,7 @@ void Time_SetUnixTime(time_t t)
 
 /*******************************************************************************
 * Function Name  : Time_SetCalendarTime()
-* Description    : ��������Calendar��ʽʱ��ת����UNIXʱ���д��RTC
+* Description    : ????????Calendar???????????UNIX????????RTC
 * Input 		 : struct tm t
 * Output		 : None
 * Return		 : None
@@ -90,11 +141,11 @@ void Time_SetCalendarTime(struct tm t)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// RTCʱ�ӳ�ʼ����
+// RTC?????????
 ////////////////////////////////////////////////////////////////////////////////
 /*******************************************************************************
 * Function Name  : RTC_Configuration
-* Description    : ����������RTC��BKP�����ڼ�⵽�󱸼Ĵ������ݶ�ʧʱʹ��
+* Description    : ??????????RTC??BKP????????????????????????
 * Input          : None
 * Output         : None
 * Return         : None
@@ -102,48 +153,48 @@ void Time_SetCalendarTime(struct tm t)
 void RTC_Configuration(void)
 {
 	unsigned int i=0;
-	//����PWR��BKP��ʱ�ӣ�from APB1��
+	//????PWR??BKP??????from APB1??
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
 
-	//�������
+	//???????
 	PWR_BackupAccessCmd(ENABLE);
 
-	//���ݼĴ���ģ�鸴λ
+	//???????????`??
 	BKP_DeInit();
 
-	//�ⲿ32.768K��Ӵż�Ǹ�
+	//??32.768K???????
 	RCC_LSEConfig(RCC_LSE_ON);
-	//�ȴ��ȶ�
+	//??????
 	while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET)	{
 		i++;
 		if (i>0x1fffff); break;
 	};
 
-	//RTCʱ��Դ���ó�LSE���ⲿ32.768K��
+	//RTC??????????LSE????32.768K??
 	//RCC_RTCCLKConfig(RCC_RTCCLKSource_HSE_Div128);
 	RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
 
-	//RTC����
+	//RTC????
 	RCC_RTCCLKCmd(ENABLE);
 
-	//��������Ҫ�ȴ�APB1ʱ����RTCʱ��ͬ�������ܶ�д�Ĵ���
+	//????????????APB1?????RTC????????????????????
 	RTC_WaitForSynchro();
 
-	//��д�Ĵ���ǰ��Ҫȷ��?�һ�������Ѿ?����
+	//????????????????????????????????
 	RTC_WaitForLastTask();
 
-	//?���RTC��Ƶ����ʹRTCʱ��Ϊ1Hz
+	//????RTC????????RTC????1Hz
 	//RTC period = RTCCLK/RTC_PR = (32.768 KHz)/(32767+1)
 	RTC_SetPrescaler(32767);
 
 
-	//�ȴ��Ĵ���д�����
+	//???????????????
 	RTC_WaitForLastTask();
 
-	//ʹ�����ж�
+	//?????????
 	RTC_ITConfig(RTC_IT_SEC, ENABLE);    
 
-	//�ȴ�д�����
+	//??????????
 	RTC_WaitForLastTask();
 
 	return;
@@ -151,48 +202,48 @@ void RTC_Configuration(void)
 
 /*******************************************************************************
 * Function Name  : RTC_Config
-* Description    : ?ϵ�ʱ���ñ��?�����Զ�����Ƿ���ҪRTC��ʼ���� 
-* 					����Ҫ���³�ʼ��RTC�������RTC_Configuration()�����Ӧ����
+* Description    : ???????????????????????????RTC??????? 
+* 					?????????????RTC???????RTC_Configuration()??????????
 * Input          : None
 * Output         : None
 * Return         : None
 *******************************************************************************/
 void RTC_Config(void)
 {
-	//������BKP�ĺ󱸼Ĵ���1�У�����һ�������ַ�0xA5A5
-	//��һ��?ϵ��󱸵�Դ�����?�üĴ������ݶ�ʧ??
-	//����RTC���ݶ�ʧ����Ҫ��������
+	//??????BKP???????1??????????????????0xA5A5
+	//?????????????????????????????????
+	//????RTC???????????????????
 	if (BKP_ReadBackupRegister(BKP_DR1) != 0xA5A5)
 	{
-		//��������RTC
+		//????????RTC
 		RTC_Configuration();
-		//������ɺ���󱸼Ĵ�����д�����ַ�0xA5A5
+		//??????????????????????????0xA5A5
 		BKP_WriteBackupRegister(BKP_DR1, 0xA5A5);
 	}
 	else
 	{
-		//���󱸼Ĵ���û�е��磬��������������RTC
-		//�������ǿ�������RCC_GetFlagStatus()�����鿴���θ�λ����
+		//??????????????????????????????RTC
+		//???????????????RCC_GetFlagStatus()??????????????????
 		if (RCC_GetFlagStatus(RCC_FLAG_PORRST) != RESET)
 		{
-			//����?ϵ縴�?
+			//???????y??
 		}
 		else if (RCC_GetFlagStatus(RCC_FLAG_PINRST) != RESET)
 		{
-			//�����ⲿRST�ܽŸ�λ
+			//??????RST??????
 		}
-		//���RCC�и�λ��־
+		//???RCC?????????
 		RCC_ClearFlag();
 
-		//��ȻRTCģ�鲻��Ҫ�������ã��ҵ���������󱸵����Ȼ����
+		//???RTC?????????????????????????????????????
 		RCC_RTCCLKCmd(ENABLE);
-		//�ȴ�RTCʱ����APB1ʱ��ͬ��
+		//???RTC?????APB1??????
 
 		RTC_WaitForSynchro();
 
-		//ʹ�����ж�
+		//?????????
 		RTC_ITConfig(RTC_IT_SEC, ENABLE);
-		//�ȴ��������
+		//??????????
 		RTC_WaitForLastTask();
 	}
     RCC_ClearFlag();
@@ -203,11 +254,18 @@ void RTC_Config(void)
 	/* Allow access to BKP Domain */
 	PWR_BackupAccessCmd(ENABLE);
 
+	/* RTC? 1970 ?? 2026? ???? ?? ???? ?? ???? */
+	{
+		struct tm now;
+		struct tm build_tm;
+
+		now = Time_GetCalendarTime();
+		if (now.tm_year < 2026 || now.tm_year == 1970)
+		{
+			if (Time_GetBuildTime(&build_tm) == 0)
+				Time_SetCalendarTime(build_tm);
+		}
+	}
 
 	return;
 }
-
-/*******************************************************************************
-* ???(LwIP) ?? ? ?? RTC ?? ??? ??
-* ?? ??: Include_Files/RTC_NTP_SYNC_PROPOSAL.md ??
-*******************************************************************************/

@@ -557,11 +557,13 @@ void USART1_IRQHandler(void)
 						sensor = S1PPm_Filter_OUT_function(sensor_no-1, sensor);
 
 #ifdef CH2
-						/* Unified: $RES1=CL, $RES2=NTU, $RES3=pH, $RES4=EC */
-						if 		(sensor_no==1) currentData.comm_S1PPM	= sensor;	/* CL */
-						else if (sensor_no==2) currentData.comm_S2NTU 	= sensor;	/* NTU */
-						else if (sensor_no==3) currentData.comm_S1PPM 	= sensor;	/* pH */
-						else if (sensor_no==4) currentData.comm_S2NTU 	= sensor;	/* EC */
+	#ifndef  SENSOR_PH_EC
+						if 		(sensor_no==1) currentData.comm_S1PPM	= sensor;
+						else if (sensor_no==2) currentData.comm_S2NTU 	= sensor;
+	#else
+						if 		(sensor_no==3) currentData.comm_S1PPM 	= sensor;	// PH
+						else if (sensor_no==4) currentData.comm_S2NTU 	= sensor;	// EC
+	#endif
 #else	// CH4
 						if 		(sensor_no==1) currentData.comm_S1PPM	= sensor;
 						else if (sensor_no==2) currentData.comm_S2NTU 	= sensor;

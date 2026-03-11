@@ -6,7 +6,7 @@
 #define FLAG10MS_RX1						0x00000100
 #define FLAG10MS_RX2						0x00000040
 #define FLAG10MS_RX3						0x00000080
-#define FLAG10MS_RS485					0x00000100
+#define FLAG10MS_RS485					0x00000200  /* was 0x100 = RX1 충돌 버그 수정 */
 
 extern uint32_t flag10ms;
 /*
