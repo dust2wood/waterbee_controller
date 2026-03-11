@@ -73,6 +73,16 @@ int sensor_manager_count(void)
     return (int)s_count;
 }
 
+/* Return the water_field_t for display slot (0=primary, 1=secondary).
+ * In SENSOR_PH_EC+CH2 mode slot0=pH, slot1=EC by registration order. */
+water_field_t sensor_manager_get_display_field(uint8_t slot)
+{
+    if (slot < s_count && s_sensors[slot].enabled)
+        return s_sensors[slot].field;
+    /* defaults */
+    return (slot == 0) ? WATER_FIELD_PH : WATER_FIELD_EC;
+}
+
 void sensor_manager_update(void)
 {
     uint8_t i;

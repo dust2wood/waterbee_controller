@@ -49,6 +49,7 @@ typedef enum {
 } water_field_t;
 
 int8_t sensor_manager_register(const sensor_driver_t *drv, water_field_t field);
+water_field_t sensor_manager_get_display_field(uint8_t slot);
 
 /*---------------------------------------------------------------------------
  * External sensor display (ReDisplay_ch2 raw display slots)

@@ -1,3 +1,9 @@
+/**
+ * Communication.c - Modbus RS232/RS485 handlers (unified firmware)
+ *
+ * RS485: pH (slave 2), EC (slave 4) -> currentData + water_data
+ * RS232: CL ($RES1), NTU ($RES2) -> currentData + water_data
+ */
 #include "Communication.h"
 #include "Sensor_Manager.h"
 
@@ -74,6 +80,46 @@ extern int16_t data_TEMP, SET_data_TEMP;
 
 char  ph_temp=0;	// ph �?� temp �����?��, ?���?� �?��?��? �?? �?� �����...
 
+/* Expected slave addr for current request - only accept matching response (multi-drop safe) */
+static uint8_t s_expected_rs485_addr = 0;
+static uint8_t s_rs485_sensor_index = 0;
+static uint8_t s_rs485_started = 0;
+
+static uint8_t rs485_sensor_addr(uint8_t sensor_index)
+{
+    if (sensor_index == 0) return configData.modbusConfig.modbusSensor1Addr;
+    return configData.modbusConfig.modbusSensor2Addr;
+}
+
+static void rs485_queue_request(uint8_t sensor_addr)
+{
+    uint16_t crc = 0;
+
+    tx3Buffer[0] = sensor_addr;
+    tx3Buffer[1] = 3;
+    tx3Buffer[2] = 0;
+    tx3Buffer[3] = 0;
+    tx3Buffer[4] = 0;
+    tx3Buffer[5] = 4;
+
+    crc = CRC16Modbus(tx3Buffer, 6);
+    tx3Buffer[6] = crc & 0xFF;
+    tx3Buffer[7] = ((crc & 0xFF00) >> 8);
+
+    tx3Size = 8;
+    tx3Count = 1;
+    s_expected_rs485_addr = sensor_addr;
+    com485State = 1;
+    rs485DriveCount = 0;
+    comm_type = COMM_RS485;
+    rx3_time_count = 0;
+}
+
+static void rs485_advance_request(void)
+{
+    s_rs485_sensor_index ^= 1;
+}
+
 unsigned char	Sensor1_OK_TIME=20;
 unsigned char	Sensor2_OK_TIME=20;
 unsigned char	Sensor3_OK_TIME=20;
@@ -93,90 +139,53 @@ void SensorComHandler(void) {
     else if (state==0x15) 	{ ComCouter=0; ComCouter2++; }
 
 
-#ifndef SENSOR_PH_EC
+	/* 통합 펌웨어: 통신 타임아웃 시 에러값 설정 (CL/NTU/PH/EC 공통) */
+	if ((ComCouter > 1600 && state==0) || (ComCouter2 > 500 && state==0x15)) {
+		DrawIcon(ICON_WORKING, DRAW_IMAGE_DISABLE);
+		Sensor_State1=SENSOR_ERROR3;
+		Sensor_State2=SENSOR_ERROR3;
+		Sensor_State3=SENSOR_ERROR3;
+		Sensor_State4=SENSOR_ERROR3;
 
-  // ����� �?����� ���� ???�?�
-	// stste=0 �� ���??��?�, state=15 �� ���?��(diag) �?��� ��� �����?�?�.
-	// ���??������� ������ �����??� 4000���� �?�. �� 4~5��
-	// ���??������� ������ �����??� 70���� �?�. �� 4~5��
-//    if (ComCouter2 > 100 && (state == 0 || state == 0x15)) {
-//    if ((ComCouter > 150 && state==0)  || (ComCouter2 > 70 && state==0x15) ) {
-//    if ((ComCouter > 800 && state==0)  || (ComCouter2 > 200 && state==0x15) ) {
+		currentData.S1PPM = 0;
+		currentData.temperature = 0;
+		currentData.temperature1 = 0;
+		currentData.S1mV = 0;
+		currentData.S2PPM = (sensor_manager_get_display_field(1) == WATER_FIELD_NTU) ? 15 : 0;
+		currentData.S2mV = 0;
+		trans_anlog_pwmVaule = 0;
+		trans_temp_pwmVaule = 0;
+		TIM8_Chage_Duty_Channel(2, trans_anlog_pwmVaule);
+		TIM8_Chage_Duty_Channel(3, trans_temp_pwmVaule);
+		RedrawValue();
 
-//    if ((ComCouter > 1600 && state==0)  || (ComCouter2 > 500 && state==0x15) ) {
-    if ((ComCouter > 1600 && state==0)  || (ComCouter2 > 500 && state==0x15) ) {
-//        if (ComCouter_Prev == ComCouter) {
-//            if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
-                //DrawTextsize120(MEASURE_X2, MEASURE_Y, TEXT120_MEASURING, DRAW_IMAGE_DISABLE);
-//                DrawIcon(ICON_WORKING, DRAW_IMAGE_DISABLE);
-//				Sensor_State=SENSOR_ERROR3;
-
-                currentData.S1PPM = 0;
-                currentData.temperature = 0;
-				currentData.temperature1= 0;
-                currentData.S1mV = 0;
-                trans_anlog_pwmVaule = 0;
-                trans_temp_pwmVaule = 0;
-//                TIM8_Chage_Duty_Channel(2, trans_anlog_pwmVaule);
-//                TIM8_Chage_Duty_Channel(3, trans_temp_pwmVaule);
-//                RedrawValue();
-//            } else if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
-                //DrawTextsize120(MEASURE_X1, MEASURE_Y, TEXT120_MEASURING, DRAW_IMAGE_DISABLE);
-                DrawIcon(ICON_WORKING, DRAW_IMAGE_DISABLE);
-				Sensor_State1=SENSOR_ERROR3;
-				Sensor_State2=SENSOR_ERROR3;
-				Sensor_State3=SENSOR_ERROR3;
-				Sensor_State4=SENSOR_ERROR3;
-
-#ifndef SENSOR_PH_EC
-                currentData.S2PPM = 15;	// �??� 0.015 
-#else
-                currentData.S2PPM = 0;	// �??� 
-#endif
-
-                currentData.temperature = 0;
-				currentData.temperature1= 0;
-                currentData.S2mV = 0;
-                trans_anlog_pwmVaule = 0;
-                trans_temp_pwmVaule = 0;
-                TIM8_Chage_Duty_Channel(2, trans_anlog_pwmVaule);
-                TIM8_Chage_Duty_Channel(3, trans_temp_pwmVaule);
-                RedrawValue();
-//            }
-//        }
-        ComCouter_Prev = ComCouter;
-        ComCouter  = 0;
-        ComCouter2 = 0;
-		WORKING_TIMER=0;	// no display
+		ComCouter_Prev = ComCouter;
+		ComCouter = 0;
+		ComCouter2 = 0;
+		WORKING_TIMER = 0;
 	}
-	//else if (Sensor_State==SENSOR_ERROR3)	Sensor_State=SENSOR_OK;
-//    } else if (ComCouter2 > 4001) {
-//        ComCouter2 = 0;
-//    }
-#else
-    if ((ComCouter > 1600 && state == 0) || (ComCouter2 > 500 && state == 0x15)) {
-        currentData.S1PPM = 0;
-        currentData.S2PPM = 0;
-        currentData.temperature = 0;
-        currentData.temperature1 = 0;
-        DrawIcon(ICON_WORKING, DRAW_IMAGE_DISABLE);
-        Sensor_State1 = SENSOR_ERROR3;
-        Sensor_State2 = SENSOR_ERROR3;
-        Sensor_State3 = SENSOR_ERROR3;
-        Sensor_State4 = SENSOR_ERROR3;
-        RedrawValue();
-        ComCouter_Prev = ComCouter;
-        ComCouter  = 0;
-        ComCouter2 = 0;
-        WORKING_TIMER = 0;
-    }
-#endif
 
 
 }
 
+void rx_bufer_clear(void) {
+    int i = 0;
 
-//�?���� ���?����� ���?� 
+    for (i = 0; i < 50; i++) {
+        rx1Buffer[i] = 0;
+    }
+}
+
+void zero_cal_data_update(void) {
+    if (zero_cal_update_flag_S2 == 1) {
+
+    } else {
+
+    }
+}
+
+
+// �����?���� ���?����� ���?� 
 uint32_t S1PPm_Filter_OUT_function(uint8_t sensor_no, uint32_t sensor) {
 	static int cnt[4]={0,}, cnt2, i;
 	uint32_t data=0;
@@ -226,11 +235,16 @@ void S1PPm_Data_offset_function(void) {
 	c=configData.calibrationConfig.PH7_Value;
 	d=configData.calibrationConfig.PH7_Cal;
 
-	if (c != a) imsi = (d-b)*(data_pH-a)/(c-a) +b; else imsi = b;
+	imsi = (d-b)*(data_pH-a)/(c-a) +b;
 
+	//=====================
+	// ���?��� �����?�
+	//=====================
+	// f:������, e:������ ������, e0:���� ������ 
+	// y=f/e * e0; 	
 	f = configData.calibrationConfig.PH_Span_Cal;
 	e = configData.calibrationConfig.PH_Span_Value;
-	imsi_S1 = (e != 0) ? (imsi*(uint32_t)f/e) : imsi;
+	imsi_S1 = imsi*f/e;
 
 	Sensor1_OK_TIME=10;	// 10=10sec
 
@@ -252,8 +266,8 @@ void S1PPm_Data_offset_function(void) {
 	c=configData.calibrationConfig.EC_Span_Value;
 	d=configData.calibrationConfig.EC_Span_Cal;
 
-	if (c != a) imsi_S2 = (d-b)*(data_EC-a)/(c-a) +b; else imsi_S2 = b;
-	Sensor2_OK_TIME=10;
+	imsi_S2 = (d-b)*(data_EC-a)/(c-a) +b;
+	Sensor2_OK_TIME=10;	// 10=10sec
 
 
 	//===========================
@@ -283,15 +297,13 @@ void S1PPm_Data_offset_function(void) {
 //            currentData.S1PPM = (uint32_t) ((Adj_gradientS2 + Adj_offsetS2)*100);
 //        } else 
 			currentData.S1PPM = (uint32_t) ((Adj_gradientS1 + Adj_offsetS1)*100);
-            currentData.S2PPM = (uint32_t) ((Adj_gradientS2 + Adj_offsetS2)*1000);
-
-
-#ifndef SENSOR_PH_EC
-			if (currentData.S2PPM <15) currentData.S2PPM=15;	// �??� 0.015 ?�� 
-#else 
-            currentData.S2PPM = (uint32_t) ((Adj_gradientS2 + Adj_offsetS2/100)*1000);
-			if ((int32_t)currentData.S2PPM < 0) currentData.S2PPM = 0;	// �??� 0.015
-#endif
+			if (sensor_manager_get_display_field(1) == WATER_FIELD_NTU) {
+				currentData.S2PPM = (uint32_t) ((Adj_gradientS2 + Adj_offsetS2)*1000);
+				if (currentData.S2PPM < 15) currentData.S2PPM = 15;
+			} else {
+				currentData.S2PPM = (uint32_t) ((Adj_gradientS2 + Adj_offsetS2/100)*1000);
+				if (currentData.S2PPM < 0) currentData.S2PPM = 0;
+			}
 
 
         if (couter_vaule_ppm < 60) {
@@ -351,8 +363,16 @@ void SendCalData(char dest, uint32_t value) {
 	SendCalData000(dest, 'D', value);
 }
 
+void SendCalDataCurrent(char dest, uint32_t value) {
+	SendCalData000(dest, 'C', value);
+}
+
 void SendCalZeroData(char dest, uint32_t value) {
 	SendCalData000(dest, 'B', value);
+}
+
+void SendCalZeroDataCurrent(char dest, uint32_t value) {
+	SendCalData000(dest, 'A', value);
 }
 
 void SendCalDataTemp(char dest, uint32_t value) {
@@ -466,79 +486,41 @@ void Modbus232Handler(void) {
 }
 
 
-#ifdef  SENSOR_PH_EC
-/* Expected slave addr for current request - only accept matching response */
-static uint8_t s_expected_rs485_addr = 0;
-static uint8_t s_rs485_sensor_index  = 0;
-static uint8_t s_rs485_started       = 0;
-
-static uint8_t rs485_sensor_addr(uint8_t sensor_index)
-{
-    if (sensor_index == 0) return configData.modbusConfig.modbusSensor1Addr;
-    return configData.modbusConfig.modbusSensor2Addr;
-}
-
-static void rs485_queue_request(uint8_t sensor_addr)
-{
-    uint16_t crc;
-    tx3Buffer[0] = sensor_addr;
-    tx3Buffer[1] = 0x03;
-    tx3Buffer[2] = 0;
-    tx3Buffer[3] = 0;
-    tx3Buffer[4] = 0;
-    tx3Buffer[5] = 4;
-    crc = CRC16Modbus(tx3Buffer, 6);
-    tx3Buffer[6] = crc & 0xFF;
-    tx3Buffer[7] = ((crc & 0xFF00) >> 8);
-    tx3Size = 8;
-    tx3Count = 1;
-    s_expected_rs485_addr = sensor_addr;
-    com485State = 1;
-    rs485DriveCount = 0;
-    comm_type = COMM_RS485;
-    rx3_time_count = 0;
-}
-
-static void rs485_advance_request(void)
-{
-    s_rs485_sensor_index ^= 1;
-}
-
 void init_tx3Buffer(void)
 {
     rx3Size = 0;
     rx3HandlerCount = 0;
+
     RS485_DRIVE_HIGH;
     Delay_10msec(10);
+
     if (!s_rs485_started) {
         s_rs485_sensor_index = 0;
         s_rs485_started = 1;
     }
+
     rs485_queue_request(rs485_sensor_addr(s_rs485_sensor_index));
+
 }
-#endif
 
 
 void Modbus485Handler(void) {
     uint16_t crc = 0;
     uint16_t startAddr = 0, addrCount = 0, i = 0;
     uint32_t tmp = 0;
+	static uint32_t init_count=0;
+
 	int32_t a,b,c,d, e,f;
 	uint32_t imsi, imsi2;
-	static uint32_t init_count = 0;
 
     switch (com485State) {
         case 0:
-
-#ifdef  SENSOR_PH_EC
-    init_count++;
-    if (init_count > 10) {
-        rs485_advance_request();
-        init_tx3Buffer();
-        init_count = 0;
-    }
-#endif
-
+	init_count++;
+	if (init_count > 10) {
+		rs485_advance_request();
+		init_tx3Buffer();
+		init_count = 0;
+	}
 
             if (rx3Size > 0) {
                 if (flag10ms & FLAG10MS_RX3) {
@@ -546,116 +528,273 @@ void Modbus485Handler(void) {
                     ++rx3HandlerCount;
 
 
-#ifdef  SENSOR_PH_EC
-                        /* PH105: 4 int16 (val,dec,temp_val,temp_dec). EC106: 2 float. ?? 13???(8 data) */
                         if (rx3Buffer[1] == 0x03) {
-                            /* multi-drop: 요청한 주소의 응답만 수락 */
-                            if (rx3Buffer[0] != s_expected_rs485_addr) {
-                                rx3Size = 0;
-                                rx3HandlerCount = 0;
-                            } else if (rx3Size == 13) {
-                                crc = CRC16Modbus(rx3Buffer, 11);
-                                if (crc == ((rx3Buffer[12] << 8) | rx3Buffer[11])) {
-                                    uint16_t r0 = (rx3Buffer[3] << 8) | rx3Buffer[4];
-                                    uint16_t r1 = (rx3Buffer[5] << 8) | rx3Buffer[6];
-                                    uint16_t r2 = (rx3Buffer[7] << 8) | rx3Buffer[8];
-                                    uint16_t r3 = (rx3Buffer[9] << 8) | rx3Buffer[10];
-                                    if (r0 <= 14 && r1 < 100) {
-                                        data_pH = r0 * 100 + r1;
-                                        if (data_pH > 1400) data_pH = 1400;
-                                        a = configData.calibrationConfig.PH4_Value;
-                                        b = configData.calibrationConfig.PH4_Cal;
-                                        c = configData.calibrationConfig.PH7_Value;
-                                        d = configData.calibrationConfig.PH7_Cal;
-                                        data_pH_imsi = (c != a) ? ((d-b)*(data_pH-a)/(c-a) + b) : b;
-                                        f = configData.calibrationConfig.PH_Span_Cal;
-                                        e = configData.calibrationConfig.PH_Span_Value;
-                                        currentData.S1PPM = (e != 0) ? (data_pH_imsi * f / e) : data_pH_imsi;
-                                        data_TEMP = (int16_t)(r2 * 10 + r3);
-                                        f = configData.calibrationConfig.TEMP_Span_Cal1;
-                                        e = configData.calibrationConfig.TEMP_Span_Value1;
-                                        currentData.temperature = (e != 0) ? (data_TEMP * f / e) : data_TEMP;
-                                        if (currentData.Device_Selector_Mode & SENSOR_1_MODE)
-                                            SET_data_TEMP = data_TEMP;
-                                        Sensor_State1 = SENSOR_OK;
-                                        Sensor_State3 = SENSOR_OK;
-                                        Sensor1_OK_TIME = 10;
-                                    } else {
-                                        union { uint8_t b[4]; float f; } u;
-                                        u.b[0] = rx3Buffer[6]; u.b[1] = rx3Buffer[5];
-                                        u.b[2] = rx3Buffer[4]; u.b[3] = rx3Buffer[3];
-                                        data_EC = (uint32_t)(u.f * 1000.0f);
-                                        if (data_EC > 200000) data_EC = 200000;
-                                        u.b[0] = rx3Buffer[10]; u.b[1] = rx3Buffer[9];
-                                        u.b[2] = rx3Buffer[8]; u.b[3] = rx3Buffer[7];
-                                        data_TEMP = (int16_t)(u.f * 10.0f);
-                                        a = configData.calibrationConfig.EC_Value;
-                                        b = configData.calibrationConfig.EC_Cal;
-                                        c = configData.calibrationConfig.EC_Span_Value;
-                                        d = configData.calibrationConfig.EC_Span_Cal;
-                                        currentData.S2PPM = (c != a) ? ((d-b)*(data_EC-a)/(c-a) + b) : b;
-                                        if ((int32_t)currentData.S2PPM < 0) currentData.S2PPM = 0;
-                                        if (currentData.S2PPM > 200000) currentData.S2PPM = 200000;
-                                        f = configData.calibrationConfig.TEMP_Span_Cal2;
-                                        e = configData.calibrationConfig.TEMP_Span_Value2;
-                                        currentData.temperature1 = (e != 0) ? (data_TEMP * f / e) : data_TEMP;
-                                        if (!(currentData.Device_Selector_Mode & SENSOR_1_MODE))
-                                            SET_data_TEMP = data_TEMP;
-                                        Sensor_State2 = SENSOR_OK;
-                                        Sensor_State4 = SENSOR_OK;
-                                        Sensor2_OK_TIME = 10;
-                                    }
-                                    RS485_DRIVE_HIGH;
-                                    rs485_advance_request();
-                                    rs485_queue_request(rs485_sensor_addr(s_rs485_sensor_index));
-                                }
-                                rx3Size = 0;
-                                rx3HandlerCount = 0;
-                            } else if (rx3Size == 9) {
-                                crc = CRC16Modbus(rx3Buffer, 7);
-                                if (crc == ((rx3Buffer[8] << 8) | rx3Buffer[7])) {
-                                    uint16_t r0 = (rx3Buffer[3] << 8) | rx3Buffer[4];
-                                    uint16_t r1 = (rx3Buffer[5] << 8) | rx3Buffer[6];
-                                    if (r0 <= 14 && r1 < 100) {
-                                        data_pH = r0 * 100 + r1;
-                                        if (data_pH > 1400) data_pH = 1400;
-                                        a = configData.calibrationConfig.PH4_Value;
-                                        b = configData.calibrationConfig.PH4_Cal;
-                                        c = configData.calibrationConfig.PH7_Value;
-                                        d = configData.calibrationConfig.PH7_Cal;
-                                        data_pH_imsi = (c != a) ? ((d-b)*(data_pH-a)/(c-a) + b) : b;
-                                        f = configData.calibrationConfig.PH_Span_Cal;
-                                        e = configData.calibrationConfig.PH_Span_Value;
-                                        currentData.S1PPM = (e != 0) ? (data_pH_imsi * f / e) : data_pH_imsi;
-                                        Sensor_State1 = SENSOR_OK;
-                                        Sensor_State3 = SENSOR_OK;
-                                        Sensor1_OK_TIME = 10;
-                                    } else {
-                                        union { uint8_t b[4]; float f; } u;
-                                        u.b[0] = rx3Buffer[6]; u.b[1] = rx3Buffer[5];
-                                        u.b[2] = rx3Buffer[4]; u.b[3] = rx3Buffer[3];
-                                        data_EC = (uint32_t)(u.f * 1000.0f);
-                                        if (data_EC > 200000) data_EC = 200000;
-                                        a = configData.calibrationConfig.EC_Value;
-                                        b = configData.calibrationConfig.EC_Cal;
-                                        c = configData.calibrationConfig.EC_Span_Value;
-                                        d = configData.calibrationConfig.EC_Span_Cal;
-                                        currentData.S2PPM = (c != a) ? ((d-b)*(data_EC-a)/(c-a) + b) : b;
-                                        if ((int32_t)currentData.S2PPM < 0) currentData.S2PPM = 0;
-                                        Sensor_State2 = SENSOR_OK;
-                                        Sensor_State4 = SENSOR_OK;
-                                        Sensor2_OK_TIME = 10;
-                                    }
-                                    RS485_DRIVE_HIGH;
-                                    rs485_advance_request();
-                                    rs485_queue_request(rs485_sensor_addr(s_rs485_sensor_index));
-                                }
-                                rx3Size = 0;
-                                rx3HandlerCount = 0;
-                            }
-                        }
-#endif
 
+							/* Only accept response from sensor we requested (multi-drop safe) */
+							if (rx3Buffer[0] != s_expected_rs485_addr) {
+								rx3Size = 0;
+								rx3HandlerCount = 0;
+							} else if (rx3Size == 13) {
+								crc = CRC16Modbus(rx3Buffer, 11);
+								if (crc == ((rx3Buffer[12] << 8) | rx3Buffer[11])) {
+									uint16_t r0 = (rx3Buffer[3] << 8) | rx3Buffer[4];
+									uint16_t r1 = (rx3Buffer[5] << 8) | rx3Buffer[6];
+									uint16_t r2 = (rx3Buffer[7] << 8) | rx3Buffer[8];
+									uint16_t r3 = (rx3Buffer[9] << 8) | rx3Buffer[10];
+
+									if (r0 <= 14 && r1 < 100) {
+										data_pH = r0 * 100 + r1;
+										if (data_pH > 1400) data_pH = 1400;
+										a = configData.calibrationConfig.PH4_Value;
+										b = configData.calibrationConfig.PH4_Cal;
+										c = configData.calibrationConfig.PH7_Value;
+										d = configData.calibrationConfig.PH7_Cal;
+										data_pH_imsi = (c != a) ? ((d - b) * (data_pH - a) / (c - a) + b) : b;
+										f = configData.calibrationConfig.PH_Span_Cal;
+										e = configData.calibrationConfig.PH_Span_Value;
+										currentData.S1PPM = (e != 0) ? (data_pH_imsi * f / e) : data_pH_imsi;
+										water_data.ph = (float)currentData.S1PPM / 100.0f;
+
+										data_TEMP = (int16_t)(r2 * 10 + r3);
+										f = configData.calibrationConfig.TEMP_Span_Cal1;
+										e = configData.calibrationConfig.TEMP_Span_Value1;
+										currentData.temperature = (e != 0) ? (data_TEMP * f / e) : data_TEMP;
+										if (currentData.Device_Selector_Mode & SENSOR_1_MODE)
+											SET_data_TEMP = data_TEMP;
+
+										Sensor_State1 = SENSOR_OK;
+										Sensor_State3 = SENSOR_OK;
+										Sensor1_OK_TIME = 10;
+									} else {
+										union { uint8_t b[4]; float f; } u;
+										u.b[0] = rx3Buffer[6];
+										u.b[1] = rx3Buffer[5];
+										u.b[2] = rx3Buffer[4];
+										u.b[3] = rx3Buffer[3];
+										data_EC = (uint32_t)(u.f * 1000.0f);
+										if (data_EC > 200000) data_EC = 200000;
+
+										u.b[0] = rx3Buffer[10];
+										u.b[1] = rx3Buffer[9];
+										u.b[2] = rx3Buffer[8];
+										u.b[3] = rx3Buffer[7];
+										data_TEMP = (int16_t)(u.f * 10.0f);
+
+										a = configData.calibrationConfig.EC_Value;
+										b = configData.calibrationConfig.EC_Cal;
+										c = configData.calibrationConfig.EC_Span_Value;
+										d = configData.calibrationConfig.EC_Span_Cal;
+										currentData.S2PPM = (c != a) ? ((d - b) * (data_EC - a) / (c - a) + b) : b;
+										if ((int32_t)currentData.S2PPM < 0) currentData.S2PPM = 0;
+										if (currentData.S2PPM > 200000) currentData.S2PPM = 200000;
+										water_data.ec = (currentData.S2PPM >= 20000) ?
+											(float)currentData.S2PPM / 10.0f : (float)currentData.S2PPM / 1000.0f;
+
+										f = configData.calibrationConfig.TEMP_Span_Cal2;
+										e = configData.calibrationConfig.TEMP_Span_Value2;
+										currentData.temperature1 = (e != 0) ? (data_TEMP * f / e) : data_TEMP;
+										if (!(currentData.Device_Selector_Mode & SENSOR_1_MODE))
+											SET_data_TEMP = data_TEMP;
+
+										Sensor_State2 = SENSOR_OK;
+										Sensor_State4 = SENSOR_OK;
+										Sensor2_OK_TIME = 10;
+									}
+
+									RS485_DRIVE_HIGH;
+									rs485_advance_request();
+									rs485_queue_request(rs485_sensor_addr(s_rs485_sensor_index));
+								}
+								rx3Size = 0;
+								rx3HandlerCount = 0;
+							} else if (rx3Size == 9) {
+								crc = CRC16Modbus(rx3Buffer, 7);
+								if (crc == ((rx3Buffer[8] << 8) | rx3Buffer[7])) {
+									uint16_t r0 = (rx3Buffer[3] << 8) | rx3Buffer[4];
+									uint16_t r1 = (rx3Buffer[5] << 8) | rx3Buffer[6];
+
+									if (r0 <= 14 && r1 < 100) {
+										data_pH = r0 * 100 + r1;
+										if (data_pH > 1400) data_pH = 1400;
+										a = configData.calibrationConfig.PH4_Value;
+										b = configData.calibrationConfig.PH4_Cal;
+										c = configData.calibrationConfig.PH7_Value;
+										d = configData.calibrationConfig.PH7_Cal;
+										data_pH_imsi = (c != a) ? ((d - b) * (data_pH - a) / (c - a) + b) : b;
+										f = configData.calibrationConfig.PH_Span_Cal;
+										e = configData.calibrationConfig.PH_Span_Value;
+										currentData.S1PPM = (e != 0) ? (data_pH_imsi * f / e) : data_pH_imsi;
+										water_data.ph = (float)currentData.S1PPM / 100.0f;
+										Sensor_State1 = SENSOR_OK;
+										Sensor_State3 = SENSOR_OK;
+										Sensor1_OK_TIME = 10;
+									} else {
+										union { uint8_t b[4]; float f; } u;
+										u.b[0] = rx3Buffer[6];
+										u.b[1] = rx3Buffer[5];
+										u.b[2] = rx3Buffer[4];
+										u.b[3] = rx3Buffer[3];
+										data_EC = (uint32_t)(u.f * 1000.0f);
+										if (data_EC > 200000) data_EC = 200000;
+										a = configData.calibrationConfig.EC_Value;
+										b = configData.calibrationConfig.EC_Cal;
+										c = configData.calibrationConfig.EC_Span_Value;
+										d = configData.calibrationConfig.EC_Span_Cal;
+										currentData.S2PPM = (c != a) ? ((d - b) * (data_EC - a) / (c - a) + b) : b;
+										if ((int32_t)currentData.S2PPM < 0) currentData.S2PPM = 0;
+										water_data.ec = (currentData.S2PPM >= 20000) ?
+											(float)currentData.S2PPM / 10.0f : (float)currentData.S2PPM / 1000.0f;
+										Sensor_State2 = SENSOR_OK;
+										Sensor_State4 = SENSOR_OK;
+										Sensor2_OK_TIME = 10;
+									}
+
+									RS485_DRIVE_HIGH;
+									rs485_advance_request();
+									rs485_queue_request(rs485_sensor_addr(s_rs485_sensor_index));
+								}
+								rx3Size = 0;
+								rx3HandlerCount = 0;
+							} else if (rx3Buffer[0] == configData.modbusConfig.modbusSensor1Addr) {
+                                if (rx3Size == 7) {
+									rx3Size = 0;
+                                    crc = CRC16Modbus(rx3Buffer, 5);
+									if (crc==((rx3Buffer[6]<<8) | rx3Buffer[5]))
+									{
+										if ( ph_temp==1)	{
+											data_pH   = ((rx3Buffer[3]<<8) | rx3Buffer[4]);
+
+											if (data_pH<0) 		data_pH=0;
+											if (data_pH>1400) 	data_pH=1400;
+
+
+											//=====================
+											// ���?��� �����?�
+											//=====================
+											// a,b=ph4 �� ������, ������
+											// c,d=ph7 �� ������, ������
+											// x ���� ������
+											// y ���� ������
+
+											//data_pH = (d-b)/(c-a) * (x-a) +b;
+											//data_pH = (d-b)*(data_pH-a)/(c-a) +b;
+											a=configData.calibrationConfig.PH4_Value;
+											b=configData.calibrationConfig.PH4_Cal;
+											c=configData.calibrationConfig.PH7_Value;
+											d=configData.calibrationConfig.PH7_Cal;
+
+											data_pH_imsi = (d-b)*(data_pH-a)/(c-a) +b;
+
+											//=====================
+											// ���?��� �����?�
+											//=====================
+											// f:������, e:������ ������, e0:���� ������ 
+											// y=f/e * e0; 	
+											f = configData.calibrationConfig.PH_Span_Cal;
+											e = configData.calibrationConfig.PH_Span_Value;
+											imsi2 = data_pH_imsi*f/e;
+
+											currentData.S1PPM = imsi2;
+											water_data.ph = (float)imsi2 / 100.0f;
+											Sensor1_OK_TIME=10;	// 10=10sec
+
+
+										}
+										else {
+											data_TEMP = ((rx3Buffer[3]<<8) | rx3Buffer[4])*10;
+
+											f = configData.calibrationConfig.TEMP_Span_Cal1;
+											e = configData.calibrationConfig.TEMP_Span_Value1;
+											imsi2 = data_TEMP*f/e;
+
+											currentData.temperature = imsi2;
+										  	if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
+												SET_data_TEMP = data_TEMP;
+											}
+										}
+
+										Sensor_State3=SENSOR_OK;
+										Sensor1_OK_TIME=10;	// 10=10sec
+
+
+                                        RS485_DRIVE_HIGH;
+										rs485_advance_request();
+										rs485_queue_request(rs485_sensor_addr(s_rs485_sensor_index));
+                                        rx3Size = 0;
+	                                    rx3HandlerCount = 0;
+										comm_type=COMM_RS485;
+										rx3_time_count=0;
+									}
+                                }
+                            }
+
+							/* EC (addr=4) - reject concatenated/garbled */
+                            else if (rx3Buffer[0] == configData.modbusConfig.modbusSensor2Addr) {
+                                if (rx3Size == 7) {
+	                                crc = CRC16Modbus(rx3Buffer, 5);
+									if (crc==((rx3Buffer[6]<<8) | rx3Buffer[5]))
+									{
+										if ( ph_temp==1)	{
+											data_EC = ((rx3Buffer[3]<<8) | rx3Buffer[4]);
+											data_EC *=9.999;
+											if (data_EC<0) data_EC=0;
+											if (data_EC>20000) data_EC=20000;
+
+
+											//=====================
+											// ���� �����?�
+											//=====================
+											// a,b=���?����� ������, ������
+											// c,d=���?����� ������, ������
+											// x ���� ������
+											// y ���� ������
+
+											//data_pH = (d-b)/(c-a) * (x-a) +b;
+											//data_pH = (d-b)*(data_pH-a)/(c-a) +b;
+											a=configData.calibrationConfig.EC_Value;
+											b=configData.calibrationConfig.EC_Cal;
+											c=configData.calibrationConfig.EC_Span_Value;
+											d=configData.calibrationConfig.EC_Span_Cal;
+
+											currentData.S2PPM = (d-b)*(data_EC-a)/(c-a) +b;
+											if (currentData.S2PPM<0) 		currentData.S2PPM=0;
+											if (currentData.S2PPM>20000) 	currentData.S2PPM=20000;
+											water_data.ec = (currentData.S2PPM >= 20000) ?
+												(float)currentData.S2PPM / 10.0f : (float)currentData.S2PPM / 1000.0f;
+
+											Sensor2_OK_TIME=10;	// 10=10sec
+
+
+										}
+										else {
+											data_TEMP = ((rx3Buffer[3]<<8) | rx3Buffer[4])*10;
+											f = configData.calibrationConfig.TEMP_Span_Cal2;
+											e = configData.calibrationConfig.TEMP_Span_Value2;
+											imsi2 = data_TEMP*f/e;
+											currentData.temperature1 = imsi2;
+										  	if (currentData.Device_Selector_Mode & SENSOR_1_MODE) { }
+											else {
+												SET_data_TEMP = data_TEMP;
+											}	
+										}
+
+										Sensor_State4=SENSOR_OK;
+										Sensor2_OK_TIME=10;	// 10=10sec
+
+
+                                        RS485_DRIVE_HIGH;
+										rs485_advance_request();
+										rs485_queue_request(rs485_sensor_addr(s_rs485_sensor_index));
+	                                    rx3Size = 0;
+	                                    rx3HandlerCount = 0;
+										comm_type=COMM_RS485;
+										rx3_time_count=0;
+									}
+									rx3Size = 0;
+
+                                }
+                            }
+					}
 
 #ifndef SENSOR_PH_EC
                     if (rx3HandlerCount > 1) {
@@ -774,7 +913,7 @@ void Modbus485Handler(void) {
             break;
         case 2:	// INT ���� ��������?? ��?���., INT ���� ��������?� com485state=3�� �?�.
             break;
-        case 3:	// TX 완료 후 DE LOW, 그 다음 case 0으로 전환
+        case 3:	// TX 완료 후 DE LOW, case 0으로 전환
             if (flag10ms & FLAG10MS_RS485) {
                 RS485_DRIVE_LOW;
 				init_count=0;
@@ -783,7 +922,7 @@ void Modbus485Handler(void) {
                 if (rs485DriveCount > 1) {
                     RS485_DRIVE_LOW;
                     rs485DriveCount = 0;
-                    /* TX echo bytes가 rx3Buffer에 쌓였을 수 있으므로 클리어 */
+                    /* TX echo bytes 클리어 */
                     rx3Size = 0;
                     rx3HandlerCount = 0;
                     com485State = 0;

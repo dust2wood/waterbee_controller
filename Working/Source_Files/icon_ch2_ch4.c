@@ -254,6 +254,12 @@ void display_2ch_unit_ec(void)
 	TFT_DrawImage( ch2_unit_ec_x, ch2_unit_ec_y, ch2_unit_ec_x+52, ch2_unit_ec_y+21,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 
+void display_2ch_unit_ec_xy(unsigned int x, unsigned int y)
+{
+	NAND_ReadData2(	imageBuffer, 80, 33, 2);
+	TFT_DrawImage( x, y, x+52, y+21,   (uint16_t *)imageBuffer, DRAW_NORMAL);
+}
+
 // 2ch unit_ph
 #define ch2_unit_ph_x	50
 #define ch2_unit_ph_y	120
@@ -270,6 +276,12 @@ void display_2ch_unit_tu(void)
 {
 	NAND_ReadData2(	imageBuffer, 80, 38, 1);
 	TFT_DrawImage( ch2_unit_tu_x, ch2_unit_tu_y, ch2_unit_tu_x+48, ch2_unit_tu_y+21,   (uint16_t *)imageBuffer, DRAW_NORMAL);
+}
+
+void display_2ch_unit_tu_xy(unsigned int x, unsigned int y)
+{
+	NAND_ReadData2(	imageBuffer, 80, 38, 1);
+	TFT_DrawImage( x, y, x+48, y+21,   (uint16_t *)imageBuffer, DRAW_NORMAL);
 }
 
 
