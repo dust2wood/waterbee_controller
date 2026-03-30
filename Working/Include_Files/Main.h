@@ -1,17 +1,14 @@
 #ifndef HEADER_H
 #define HEADER_H
 
-
-#define NEW_BOARD
-
-#define SENSOR_PH_EC
+/* NEW_BOARD, SENSOR_PH_EC, CH2: CMakeLists.txt target_compile_definitions ?? */
+/* ?? ?? ?? - redefined ?? ? ?? ?? ?? */
 
 //#define DISABLE_SLOPE_OFFSET
 
 
 //#define IMSI_PPM_MODIFY	// �ӽ÷� ppm ���� �ణ �����ϴ°�.
 
-#define CH2
 //#define CH4
 
 
@@ -56,7 +53,7 @@
 #define SENSOR_OK		0
 #define SENSOR_ERROR1	1	 // ��������, ���� �ʰ���
 #define SENSOR_ERROR2	2	 // �����̻� 
-#define SENSOR_ERROR3	3	 // ��žȵ�?, �����������?
+#define SENSOR_ERROR3	3	 // ��žȵ�?, �����������?
 extern unsigned char Sensor_State1, Sensor_State2, Sensor_State3, Sensor_State4;
 extern unsigned char Sensor1_OK_TIME, Sensor2_OK_TIME, Sensor3_OK_TIME, Sensor4_OK_TIME;
 
@@ -79,7 +76,7 @@ typedef struct{                   //Menu->Config->Analog Value        �Ƴ��
 
 }OutSetupValue;
 
-typedef struct{                   //Menu->Config->Communication Value  ���? ���� �Է� ������
+typedef struct{                   //Menu->Config->Communication Value  ���? ���� �Է� ������
 	uint16_t mode;//Range 1
 	uint16_t baudrate;//Range 4
 	uint16_t modbusSlaveAddr;//Range 246  (��Ʈ�ѷ� �ڽ��� �����̺� �ּ�)
@@ -89,7 +86,7 @@ typedef struct{                   //Menu->Config->Communication Value  ���?
 }ComSetupValue;
 
 
-typedef struct{                   //Menu->Config->Communication Value  ���? ���� �Է� ������
+typedef struct{                   //Menu->Config->Communication Value  ���? ���� �Է� ������
 	/*Static IP ADDRESS: IP_ADDR0.IP_ADDR1.IP_ADDR2.IP_ADDR3 */
 	unsigned char IP_ADDR0;
 	unsigned char IP_ADDR1;
@@ -113,13 +110,13 @@ typedef struct{                   //Menu->Config->Communication Value  ���?
 
 
 typedef struct{                   //Menu->Config->Relay Value          ������ :  �溸 ���� , �����ֱ� , �����Ⱓ , 
-	uint32_t relay1WashCycle;  // �������� ���?
+	uint32_t relay1WashCycle;  // �������� ���?
 	uint32_t relay1WashTime;
 	uint32_t relay1manual;
 	uint32_t relay2AutoAlarm;
 	uint32_t relay2WashTime;
 	uint32_t relay2AlarmOFF;
-	uint32_t relay3WashCycle;  // ������ �������? ���?
+	uint32_t relay3WashCycle;  // ������ �������? ���?
 	uint32_t relay3WashTime;
 	uint32_t relay3manual;
 }RelaySetupValue;
@@ -347,7 +344,7 @@ extern struct EEPROM_DATA  EEpromdata;
 #define GPIO_SPI_NCS_PIN       GPIO_Pin_12
 
 
-//���? ���� �Է� 
+//���? ���� �Է� 
 #define ReadJumper         GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_11)
 // �ܺ� �Է� ��Ʈ 
 #ifndef NEW_BOARD

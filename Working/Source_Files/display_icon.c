@@ -1552,28 +1552,28 @@ void display_back_graph(void)
 }
 
 
-static void display_logo_slice(uint32_t block, uint32_t start_page, uint32_t y)
-{
-	NAND_ReadData2(imageBuffer, block, start_page, 23);
-	TFT_DrawImage(0, y, 480, y + 49, (uint16_t *)imageBuffer, DRAW_WHITE_BG);
-
-	NAND_ReadData2(imageBuffer, block, start_page + 23, 1);
-	TFT_DrawImage(0, y + 49, 480, y + 50, (uint16_t *)imageBuffer, DRAW_WHITE_BG);
-}
-
 void display_logo(void)
 {
 	/* White background, logo with color key (BACK_COLOR3/WHITE -> transparent) */
 	TFT_Fill(0, 0, 480, 272, WHITE);
 
-	display_logo_slice(41, 0, 0);
-	display_logo_slice(41, 24, 50);
-	display_logo_slice(42, 0, 100);
-	display_logo_slice(42, 24, 150);
-	display_logo_slice(43, 0, 200);
+	NAND_ReadData2(	imageBuffer, 41, 0, 24);
+	TFT_DrawImage( 0, 0, 480, 50,   (uint16_t *)imageBuffer, DRAW_WHITE_BG);
 
-	NAND_ReadData2(imageBuffer, 43, 24, 11);
-	TFT_DrawImage(0, 250, 480, 272, (uint16_t *)imageBuffer, DRAW_WHITE_BG);
+	NAND_ReadData2(	imageBuffer, 41, 24, 24);
+	TFT_DrawImage( 0, 50, 480, 100,  (uint16_t *)imageBuffer, DRAW_WHITE_BG);
+
+	NAND_ReadData2(	imageBuffer, 42, 0, 24);
+	TFT_DrawImage( 0, 100, 480, 150, (uint16_t *)imageBuffer, DRAW_WHITE_BG);
+
+	NAND_ReadData2(	imageBuffer, 42, 24, 24);
+	TFT_DrawImage( 0, 150, 480, 200, (uint16_t *)imageBuffer, DRAW_WHITE_BG);
+
+	NAND_ReadData2(	imageBuffer, 43, 0, 24);
+	TFT_DrawImage( 0, 200, 480, 250, (uint16_t *)imageBuffer, DRAW_WHITE_BG);
+
+	NAND_ReadData2(	imageBuffer, 43, 24, 24);
+	TFT_DrawImage( 0, 250, 480, 272, (uint16_t *)imageBuffer, DRAW_WHITE_BG);
 }
 
 

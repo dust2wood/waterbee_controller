@@ -47,18 +47,21 @@ static rs485_probe_type_t probe_modbus_addr(uint8_t addr)
 
     rx3Size = 0;
     RS485_DRIVE_HIGH;
-    Delay_10msec(2);
+    Delay_10msec(50);   /* RS485 안정화 (원복: 2→50) */
 
     for (i = 0; i < 8; i++) {
+        uint32_t tc_timeout = 100000;
         USART_SendData(USART3, tx3Buffer[i] & 0xFF);
-        while (USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET) { }
+        while (USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET) {
+            if (--tc_timeout == 0) break;  /* 무한대기 방지 */
+        }
     }
     RS485_DRIVE_LOW;
-    Delay_10msec(1);
+    Delay_10msec(30);   /* RS485 수신 준비 (원복: 1→30) */
 
     timeout = 0;
     while (timeout < RS485_PROBE_TIMEOUT_10MS) {
-        Delay_10msec(1);
+        Delay_10msec(30);  /* 프로브 간격 (원복: 1→30) */
         if (rx3Size >= 9) {
             if (rx3Size == last_rx_size) {
                 ++stable_count;
@@ -105,7 +108,7 @@ static uint8_t probe_adc(void)
     for (i = 0; i < 5; i++) {
         v = Read_Channel_ADC1();
         sum += v;
-        Delay_10msec(1);
+        Delay_10msec(30);  /* ADC 샘플 간격 (원복: 1→30) */
     }
     v = (uint16_t)(sum / 5);
     return (v >= ADC_VALID_MIN && v <= ADC_VALID_MAX) ? 1 : 0;

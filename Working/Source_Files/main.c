@@ -41,8 +41,9 @@ int16_t data_TEMP, SET_data_TEMP;
 #define DEFAULT_20MA2	41971// 2710   //2525
 
 
-//uint32_t adjdefault4mA = 400; 	//600;	  4-20mA ???????? ????????? ???? ??????. ?????? 600???.
-uint32_t adjdefault4mA = 0; 	//600;	  4-20mA ???????? ????????? ???? ??????. ?????? 600???.
+
+//uint32_t adjdefault4mA = 400; 	//600;	  4-20mA �������� ���Ǻκ��� ���� ������. ������ 600�̴�.
+uint32_t adjdefault4mA = 0; 	//600;	  4-20mA �������� ���Ǻκ��� ���� ������. ������ 600�̴�.
 uint32_t adjdefault20mA = 0; 	// 5000;
 uint32_t campare_4mA = 0;
 uint32_t campare_20mA = 0;
@@ -78,17 +79,19 @@ uint32_t Run_ON_RelayVaule3 = 0;
 CalibrationLogValue calibLog[4];
 
 
-// trand ??????? ?????? 
-// ??????? ????? ?????? ?????? ??????? ??????? ???.
+
+
+// trand �ϱ����� ������ 
+// �źи��� üũ�ؼ� �ش��ϴ� �и��� �����͸� ������Ʈ �Ѵ�.
 uint16_t trand_time1, trand_time6, trand_time12, trand_time24, trand_time168, trand_time336;
 
-// Trand ?? 60??(1??????), 6????(6??????), 12????(12??????), 24????(24??????), 168????=7??(168??????), 336????=14??(336??????)
-#define trand_select_time_NO 6		// ???????? ?????????
-uint16_t trand_select_time=0;		// ???????? ?????????
-uint16_t trand_select_Y=0, trand_select_Y_NO=3;		// Y ?? ?????? ?????????
+// Trand �� 60��(1�д���), 6�ð�(6�д���), 12�ð�(12�д���), 24�ð�(24�д���), 168�ð�=7��(168�д���), 336�ð�=14��(336�д���)
+#define trand_select_time_NO 6		// �ð����� �����ϴ°�
+uint16_t trand_select_time=0;		// �ð����� �����ϴ°�
+uint16_t trand_select_Y=0, trand_select_Y_NO=3;		// Y �� Ȯ����� �����ϴ°�
 
 
-// ???????? ??? ????
+// �����ض�� �ϴ� ����
 char flag_write_trand1, flag_write_trand6, flag_write_trand12, flag_write_trand24, flag_write_trand168, flag_write_trand336;
 
 
@@ -100,7 +103,7 @@ int16_t trandData[trand_select_time_NO][61] = {	 // [6][61]
     {0,},
     {0,}};
 
-int16_t trandData2[trand_select_time_NO][61] = {	 // [6][61]  ???
+int16_t trandData2[trand_select_time_NO][61] = {	 // [6][61]  Ź��
     {0,},
     {0,},
     {0,},
@@ -110,12 +113,24 @@ int16_t trandData2[trand_select_time_NO][61] = {	 // [6][61]  ???
 
 
 uint8_t trandData_TIME[trand_select_time_NO][61][6]; 
+/* = {	 // [6][61]
+    {0,},
+    {0,},
+    {0,},
+    {0,},
+    {0,},
+    {0,}};
+*/
 
 
 uint16_t trendValue[2][61] = {
     {0,},
     {0,}};
-
+/*int16_t Mesure_Data_Value[4][61] = {	 // [3][61]
+    {0,},
+    {0,},
+    {0,},
+    {0,}};*/
 uint16_t Filter_Data_Value[4][50] = {	 //  [2][100]
     {0,},
     {0,},
@@ -125,8 +140,10 @@ uint16_t Filter_Data_Value[4][50] = {	 //  [2][100]
 int16_t PPmSD_card_Data [60] = {0,};
 int16_t TEMP_card_Data [60] = {0,};
 
-int16_t PPmSD_card_Data2 [60] = {0,};	 // ??? 
+int16_t PPmSD_card_Data2 [60] = {0,};	 // Ź�� 
 int16_t TEMP_card_Data2 [60] = {0,};
+
+
 
 
 unsigned char LogData [111] = {0,};
@@ -161,8 +178,10 @@ uint16_t tp_counter = 0;
 uint16_t tx_trans_flag = 0;
 
 
+
 extern uint16_t Counter10msec;
 extern uint16_t Comm_time_flag;
+
 
 
 void display_set_set(unsigned char select);
@@ -178,6 +197,9 @@ void State_CalibBuffPH7(void);
 void State_CalibSpan(void);
 
 void State_CalibBuff_EC(void);
+
+
+
 
 
 //Static IP ADDRESS: IP_ADDR0.IP_ADDR1.IP_ADDR2.IP_ADDR3 
@@ -210,6 +232,7 @@ void State_ConfigEthernet(void);
 //extern int16_t trandData[trand_select_time_NO][61];
 
 
+
 #ifdef CH2
 	#include "Redisplay_ch2.c"
 #elif CH4
@@ -219,7 +242,9 @@ void State_ConfigEthernet(void);
 #endif
 
 
-int main(void) 
+
+
+int main(void)
 {
 	char led = 0;
 	unsigned int data=0;
@@ -235,12 +260,6 @@ int main(void)
 
 	/* PnP 안전: 로고 먼저 표시 후 3초 대기, 그 다음 센서 스캔 */
 	display_logo();
-	/* Clear any seam dots on logo slices (49px boundary) */
-	TFT_Fill(0, 49, 480, 50, WHITE);
-	TFT_Fill(0, 99, 480, 100, WHITE);
-	TFT_Fill(0, 149, 480, 150, WHITE);
-	TFT_Fill(0, 199, 480, 200, WHITE);
-	TFT_Fill(0, 249, 480, 250, WHITE);
 	Delay_10msec(300);
     sensor_autodetect_run();
     sensor_manager_init();
@@ -289,17 +308,17 @@ data=1000;
 //    	for (;;){
 //			DAC_output(1, data);
 			TIM8_Chage_Duty_Channel(2,data);   	// PB0, LAN.5
-
+		
 			DAC_output(2, data);
-  			 Delay_10msec(50);
+  			 Delay_10msec(300);  /* DAC/PWM 안정화 (원복: 50→300) */
 //		}
 
     DrawBack1();
 
 
-	// ??????? ???????
+	// �ڵ����� �����ϱ�
 	if (configData.relayConfig.relay1WashCycle>0) wash_run_flag = 1;	
-	// ????3 ???????
+	// ����3 �����ϱ�
 	if (configData.relayConfig.relay3WashCycle>0) wash_run_flag3 = 1;
 
 	//======================================
@@ -308,19 +327,19 @@ data=1000;
 		IP_ADDR1=configData.EthernetConfig.IP_ADDR1;
 		IP_ADDR2=configData.EthernetConfig.IP_ADDR2;
 		IP_ADDR3=configData.EthernetConfig.IP_ADDR3;
-
+		
 		//NETMASK
 		NETMASK_ADDR0 =  configData.EthernetConfig.NETMASK_ADDR0;
 		NETMASK_ADDR1 =  configData.EthernetConfig.NETMASK_ADDR1;
 		NETMASK_ADDR2 =  configData.EthernetConfig.NETMASK_ADDR2;
 		NETMASK_ADDR3 =  configData.EthernetConfig.NETMASK_ADDR3;
-
+		
 		//Gateway Address
 		GW_ADDR0 =  configData.EthernetConfig.GW_ADDR0;
 		GW_ADDR1 =  configData.EthernetConfig.GW_ADDR1;
 		GW_ADDR2 =  configData.EthernetConfig.GW_ADDR2;
 		GW_ADDR3 =  configData.EthernetConfig.GW_ADDR3;
-
+		
 		ETHERNET_PORT = configData.EthernetConfig.ETHERNET_PORT;
 	}
 	else {
@@ -329,19 +348,19 @@ data=1000;
 		IP_ADDR1=168;
 		IP_ADDR2=1;
 		IP_ADDR3=25;
-
+		
 		//NETMASK
 		NETMASK_ADDR0 =  255;
 		NETMASK_ADDR1 =  255;
 		NETMASK_ADDR2 =  255;
 		NETMASK_ADDR3 =  0;
-
+		
 		//Gateway Address
 		GW_ADDR0 =  192;
 		GW_ADDR1 =  168;
 		GW_ADDR2 =  1;
 		GW_ADDR3 =  1;
-
+		
 		ETHERNET_PORT=502;
 
 		configData.EthernetConfig.IP_ADDR0 = IP_ADDR0;
@@ -370,6 +389,7 @@ data=1000;
 BUZ_OFF;
 
 
+
     while (1) {
 		IWDG_ReloadCounter();  /* 매 루프 워치독 리셋 방지 */
 
@@ -377,6 +397,7 @@ BUZ_OFF;
 		else 		{ INDLED_OFF; led=0; }
 
 
+		
         // STATE, LCD OUT
         StateHandler();
 
@@ -385,7 +406,7 @@ BUZ_OFF;
         // SENSOR INPUT
         SensorComHandler();
 
-        /* ???? ??? ???? ???? (Modbus485Handler ???? ???? ?????? ??) */
+        /* 센서 상태 갱신 (Modbus485Handler 호출 전 데이터 currentData 동기화) */
         sensor_manager_update();
 
         // 4-20mA ???
@@ -411,10 +432,10 @@ BUZ_OFF;
        		Ethernet_loop();
         }
 
-        /* ???? ????? ???? (Modbus ???? currentData ???) */
+        /* 센서 상태 갱신 (Modbus 폴링 후 currentData 반영) */
         sensor_manager_update();
 
-        // CALIBRATION. ???? ???				
+        // CALIBRATION. ���� �Ŵ�				
         if (manual_cal_flag == 1) {
             if ((currentData.Device_Selector_Mode & SENSOR_1_MODE) && (req_ppm_com_flag == 0)) {
                 SendCalData(1, Tx_S1manualCal);
@@ -430,6 +451,9 @@ BUZ_OFF;
 
 //            if ((currentData.Device_Selector_Mode & SENSOR_1_MODE) && (req_ppm_com_flag == 1)) {
             if ((currentData.Device_Selector_Mode & SENSOR_1_MODE) ) {
+                if (req_ppm_com_flag == 1 && req_current_com_flag == 0) {
+                    //SendCalDataCurrent(SendParmeter_Current);
+                }
                 Delay_10msec(300);
                 //if (req_current_com_flag == 1 && req_ppm_com_flag == 1) {
                 //if (req_ppm_com_flag == 1) {
@@ -438,6 +462,9 @@ BUZ_OFF;
                     req_current_com_flag = 0;
                 //}
             } else if (currentData.Device_Selector_Mode & SENSOR_2_MODE) {
+                if (req_ppm_com_flag == 1 && req_current_com_flag == 0) {
+                  //  SendCalDataCurrent(SendParmeter_Current);
+                }
                 Delay_10msec(300);
                 //if (req_current_com_flag == 1 && req_ppm_com_flag == 1) {
 //                if (req_ppm_com_flag == 1) {
@@ -449,7 +476,7 @@ BUZ_OFF;
             }
         }
 
-        // TEMP. CAL ??? ????
+        // TEMP. CAL �µ� ����
         if (manual_cal_temp_flag == 1) {
             manual_cal_temp_flag = 0;
 
@@ -474,7 +501,7 @@ BUZ_OFF;
             }
         }
 
-        // ZERO CAL   ???? ????
+        // ZERO CAL   ���� ����
         if (zero_cal_update_flag == 1 && manual_cal_flag == 0) {
             zero_cal_update_flag = 0;
 
@@ -491,6 +518,12 @@ BUZ_OFF;
 				//display_set3_zero(1);
             }
             Delay_10msec(300);
+
+
+            if (req_zero_ppm_com_flag == 1 && req_zero_current_com_flag == 0) {
+                //SendCalZeroDataCurrent(SendParmeter_Zero_Current);
+            }
+            Delay_10msec(300);
             if (req_zero_ppm_com_flag == 1) {// && req_zero_current_com_flag == 1) {
                 zero_cal_update_flag = 0;
                 req_zero_current_com_flag = 0;
@@ -499,7 +532,7 @@ BUZ_OFF;
             }
         }
 
-        // SD ?? ???????
+        // SD �� �����ϱ�
 #ifdef SD_TEST
         if (sd_dec_flag == 1) {	  
 #else
@@ -511,31 +544,21 @@ BUZ_OFF;
 
 
 		MicroSD_Trand_Write();
-
+		
     }//while
 
 }
 
 //=======================================================
 
-volatile uint16_t delay_temp;
+uint16_t delay_temp;
 
 void Delay_10msec(uint16_t Time) {
     int i = 0,j;
     for (i = 0; i < Time; i++) {
-		IWDG_ReloadCounter();
 		for (j=0;j<1000;j++) {
         delay_temp = 1;
 		}
-    }
-}
-
-/* 1ms 단위 딜레이 - while 루프 내 1ms 간격 IWDG 킥용 */
-void Delay_1msec(uint16_t Time) {
-    int i, j;
-    for (i = 0; i < Time; i++) {
-		IWDG_ReloadCounter();
-		for (j = 0; j < 100; j++) delay_temp = 1;
     }
 }
 
@@ -547,6 +570,10 @@ void SysIND_LED(void) {
         INDLED_OFF;
         currentData.Device_Selector_Mode = SENSOR_2_MODE;
     }
+}
+
+void ReadSenosr2ADC(void) {
+//    adcBuffer[0] = ADC_GetConversionValue(ADC1);
 }
 
 void Update_Cal_Logdata(void) {
@@ -581,7 +608,7 @@ void bufferData_reset_function(void) {
 }
 
 
-#define RELAY2_OFF_TIME	300		// 5??...
+#define RELAY2_OFF_TIME	300		// 5��...
 
 uint32_t warning_counter = 0;
 uint32_t warning_counter1 = 0;
@@ -629,10 +656,12 @@ void Warning_Process_function(void) {
         }
 
 
+//       if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
+ #ifndef SENSOR_PH_EC
 	   		if (currentData.S1PPM == 0) {
 	            if (zero_Alarm_Time_couter >= 10 && zero_error_flag == 0) {
 					zero_Alarm_Time_couter =0;
-
+	
 	                zero_Alarm_sec++;
 		            if (zero_Alarm_sec >= 60) {
 		                zero_Alarm_sec = 0;
@@ -649,29 +678,76 @@ void Warning_Process_function(void) {
 	            zero_Alarm_min = 0;
 	            zero_error_flag = 0;
 	        }
+//		}
 
-			{ /* CH2 제로알람: NTU=15, EC=0 */
-				uint32_t s2_z = (sensor_manager_get_display_field(1) == WATER_FIELD_NTU) ? 15 : 0;
-				if (currentData.S2PPM == s2_z) {
-					if (zero_Alarm_Time_couter2 >= 10 && zero_error_flag2 == 0) {
-						zero_Alarm_Time_couter2 = 0;
-						zero_Alarm_sec2++;
-						if (zero_Alarm_sec2 >= 60) {
-							zero_Alarm_sec2 = 0;
-							zero_Alarm_min2++;
-							zero_Alarm_Time_couter2 = 0;
-							if (configData.alarmConfig.zeroAlarm2 == zero_Alarm_min2) {
-								zero_error_flag2 = 1;
-							}
-						}
-					}
-				} else {
-					zero_Alarm_Time_couter2 = 0;
-					zero_Alarm_sec2 = 0;
-					zero_Alarm_min2 = 0;
-					zero_error_flag2 = 0;
-				}
-			}
+//        if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
+			if (currentData.S2PPM == 15) { //50msec
+            	if (zero_Alarm_Time_couter2 >= 10 && zero_error_flag2 == 0) {
+					zero_Alarm_Time_couter2 =0;
+
+	                zero_Alarm_sec2++;
+		            if (zero_Alarm_sec2 >= 60) {
+	    	            zero_Alarm_sec2 = 0;
+	        	        zero_Alarm_min2++;
+	            	    zero_Alarm_Time_couter2 = 0;
+		            	if (configData.alarmConfig.zeroAlarm2 == zero_Alarm_min2) {
+		                	zero_error_flag2 = 1;
+			            }
+		            }
+        		}
+        	} else {
+	            zero_Alarm_Time_couter2 = 0;
+	            zero_Alarm_sec2 = 0;
+	            zero_Alarm_min2 = 0;
+	            zero_error_flag2 = 0;
+	        }
+#else
+	   		if (currentData.S1PPM == 0) {
+	            if (zero_Alarm_Time_couter >= 10 && zero_error_flag == 0) {
+					zero_Alarm_Time_couter =0;
+	
+	                zero_Alarm_sec++;
+		            if (zero_Alarm_sec >= 60) {
+		                zero_Alarm_sec = 0;
+		                zero_Alarm_min++;
+		                zero_Alarm_Time_couter = 0;
+			            if (configData.alarmConfig.zeroAlarm == zero_Alarm_min) {
+			                zero_error_flag = 1;
+			            }
+		            }
+	            }
+	        } else {
+	            zero_Alarm_Time_couter = 0;
+	            zero_Alarm_sec = 0;
+	            zero_Alarm_min = 0;
+	            zero_error_flag = 0;
+	        }
+//		}
+
+//        if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
+			if (currentData.S2PPM == 0) { //50msec
+            	if (zero_Alarm_Time_couter2 >= 10 && zero_error_flag2 == 0) {
+					zero_Alarm_Time_couter2 =0;
+
+	                zero_Alarm_sec2++;
+		            if (zero_Alarm_sec2 >= 60) {
+	    	            zero_Alarm_sec2 = 0;
+	        	        zero_Alarm_min2++;
+	            	    zero_Alarm_Time_couter2 = 0;
+		            	if (configData.alarmConfig.zeroAlarm2 == zero_Alarm_min2) {
+		                	zero_error_flag2 = 1;
+			            }
+		            }
+        		}
+        	} else {
+	            zero_Alarm_Time_couter2 = 0;
+	            zero_Alarm_sec2 = 0;
+	            zero_Alarm_min2 = 0;
+	            zero_error_flag2 = 0;
+	        }
+#endif
+//		}
+
 
 
 		if (Ext_Input2!=0)  RELAY2_ON;
@@ -693,7 +769,7 @@ void Warning_Process_function(void) {
                 DrawIcon(ICON_BELL, DRAW_IMAGE_DISABLE);
             }
             RELAY2_ON;
-
+        
 		} else {
             if (state == 0) {
                 DrawIcon(ICON_BELL, DRAW_IMAGE_DISABLE);
@@ -702,6 +778,7 @@ void Warning_Process_function(void) {
                 RELAY2_OFF;
 //            }
         }
+
 
 
 //    } else if (Alarm_OP_flag == 0 && configData.relayConfig.relay2AlarmOFF == 1) {
@@ -725,9 +802,28 @@ void Warning_Process_function(void) {
 			warning_counter2=0;
 			warning_counter3=0;
 	}
+	 
+/*	
+	else if (Alarm_OP_flag == 0 && configData.relayConfig.relay2AutoAlarm == 1) {
+        RELAY2_OFF;
+        DrawIcon(ICON_BELL, DRAW_IMAGE_DISABLE);
+        //configData.relayConfig.relay2AutoAlarm = 0;
+        warning_counter = 0;
+        warning_counter2 = 0;
+        zero_error_flag = 0;
+        Alarm_OP_flag = 1;
+    } else {
+        RELAY2_OFF;
+        DrawIcon(ICON_BELL, DRAW_IMAGE_DISABLE);
+        warning_counter = 0;
+        warning_counter2 = 0;
+        zero_error_flag = 0;
+        Alarm_OP_flag = 1;
+    }
+	*/
 
-
-	// ????????????? ????????????? ??????. 
+	
+	// �����̻������� ���θ޴������� ǥ���ϱ�. 
 	if (state==0) {	
     	if (Sensor_State2 == SENSOR_OK) DrawIcon(ICON_CAUTION, DRAW_IMAGE_DISABLE);
     	else 							DrawIcon(ICON_CAUTION, DRAW_IMAGE_ENABLE);
@@ -739,24 +835,24 @@ void Warning_Process_function(void) {
 }
 
 
-// ???????...
+// �ڵ�����...
 void Wash1_Run_Handler(void) {
 
 	if (configData.relayConfig.relay1manual == 0) 
 	{
 	    WashCycleVaule1 =    (configData.relayConfig.relay1WashCycle * 60) / 0.1;
 	    Run_ON_RelayVaule1 = (configData.relayConfig.relay1WashTime  * 60) / 0.1;
-
+	
 	    if ((WashCycleVaule1 < flag_wash1_time_counter) && (wash_run_flag == 1)) {
 	        flag_wash1_time_counter = 0;
 	        wash_run_flag = 0;
 	        Relay1_run_on_flag = 1;
 	    } else {
-
+	
 	    }
-
+		
 		if (Ext_Input1!=0)  RELAY1_ON;
-
+	
 	    else if ((Run_ON_RelayVaule1 > flag_wash1_relay_time_counter) && (Relay1_run_on_flag == 1)) {
 	        if (state == 0) {
 	            if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
@@ -774,7 +870,7 @@ void Wash1_Run_Handler(void) {
 	        Relay2_off_time2 = RELAY2_OFF_TIME;
 
 	    } else if ((Run_ON_RelayVaule1 < flag_wash1_relay_time_counter) && (Relay1_run_on_flag == 1)) {
-
+	
 	        if (state == 0) {
 	            if (currentData.Device_Selector_Mode & SENSOR_1_MODE) {
 	                //DrawTextsize120(40, 140, TEXT120_WASHING, DRAW_IMAGE_DISABLE);
@@ -808,17 +904,17 @@ void Set_Relay_OP_Run_Handler(void) {
 	{
 	    WashCycleVaule3    = (configData.relayConfig.relay3WashCycle * 60) / 0.1;
 	    Run_ON_RelayVaule3 = (configData.relayConfig.relay3WashTime  * 60) / 0.1;
-
+	
 	    if ((WashCycleVaule3 < flag_wash3_time_counter) && (wash_run_flag3 == 1)) {
 	        flag_wash3_time_counter = 0;
 	        wash_run_flag3 = 0;
 	        Relay3_run_on_flag = 1;
 	    } else {
-
+	
 	    }				  	
-
+	
 		if (Ext_Input3!=0)  RELAY3_ON;
-
+	
 		else if ((Run_ON_RelayVaule3 > flag_wash3_relay_time_counter) && (Relay3_run_on_flag == 1)) {
 	        if (state == 0) {
 	            // DrawTextsize120(40, 140, TEXT120_WASHING, DRAW_IMAGE_ENABLE);
@@ -828,14 +924,14 @@ void Set_Relay_OP_Run_Handler(void) {
 	        }
 	        RELAY3_ON;
 	    } else if ((Run_ON_RelayVaule3 < flag_wash3_relay_time_counter) && (Relay3_run_on_flag == 1)) {
-
+	
 	        if (state == 0) {
 	            //DrawTextsize120(40, 140, TEXT120_WASHING, DRAW_IMAGE_DISABLE);
 				display_message1();
 	        } else {
 	            RedrawValue();
 	        }
-
+	
 	        RELAY3_OFF;
 	        Relay3_run_on_flag = 0;
 	        flag_wash3_relay_time_counter = 0;
@@ -851,16 +947,6 @@ void Set_Relay_OP_Run_Handler(void) {
 void SystemSetting(void) {
     configData = *((ConfigSet*) (SAVEADDR_CONFIG_BASE));
 
-#ifdef SENSOR_PH_EC
-    /* RS485 센서 Slave ID 검증 - 중복 시 보정, 무효 시 기본값 */
-    if (configData.modbusConfig.modbusSensor1Addr < 1 || configData.modbusConfig.modbusSensor1Addr > 247)
-        configData.modbusConfig.modbusSensor1Addr = 2;
-    if (configData.modbusConfig.modbusSensor2Addr < 1 || configData.modbusConfig.modbusSensor2Addr > 247)
-        configData.modbusConfig.modbusSensor2Addr = 4;
-    if (configData.modbusConfig.modbusSensor1Addr == configData.modbusConfig.modbusSensor2Addr)
-        configData.modbusConfig.modbusSensor2Addr = (configData.modbusConfig.modbusSensor1Addr % 247) + 1;
-#endif
-
 	configData.outputConfig.output4mA = 0;
 	configData.outputConfig.output4mA2 = 0;
 
@@ -872,39 +958,23 @@ void SystemSetting(void) {
         Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
     }
 
-	/* PH/EC 설정 검증 (통합 펌웨어) */
+#ifdef SENSOR_PH_EC
+	// PH
 	if (configData.calibrationConfig.PH4_Cal<=0 || configData.calibrationConfig.PH4_Cal>1400)
 		configData.calibrationConfig.PH4_Cal=400;
 	if (configData.calibrationConfig.PH4_Value<=0 || configData.calibrationConfig.PH4_Value>1400)
 		configData.calibrationConfig.PH4_Value=400;
+
 	if (configData.calibrationConfig.PH7_Cal<=0 || configData.calibrationConfig.PH7_Cal>1400)
 		configData.calibrationConfig.PH7_Cal=700;
 	if (configData.calibrationConfig.PH7_Value<=0 || configData.calibrationConfig.PH7_Value>1400)
 		configData.calibrationConfig.PH7_Value=700;
-	if ((configData.calibrationConfig.PH_Span_Cal == 1) && (configData.calibrationConfig.PH_Span_Value == 1)) {
-		configData.calibrationConfig.PH_Span_Cal = 700;
-		configData.calibrationConfig.PH_Span_Value = 700;
-	}
-	if (configData.calibrationConfig.PH_Span_Cal<=0 || configData.calibrationConfig.PH_Span_Cal>1400)
-		configData.calibrationConfig.PH_Span_Cal=700;
-	if (configData.calibrationConfig.PH_Span_Value<=0 || configData.calibrationConfig.PH_Span_Value>1400)
-		configData.calibrationConfig.PH_Span_Value=700;
-	if (configData.calibrationConfig.EC_Cal < 0 || configData.calibrationConfig.EC_Cal > 9999)
-		configData.calibrationConfig.EC_Cal=0;
+
+	// ����������
 	if (configData.calibrationConfig.EC_Value<=0 || configData.calibrationConfig.EC_Value>20000)
 		configData.calibrationConfig.EC_Value=0;
-	if (configData.calibrationConfig.EC_Span_Cal<=0 || configData.calibrationConfig.EC_Span_Cal>99999)
-		configData.calibrationConfig.EC_Span_Cal=14130;
-	if (configData.calibrationConfig.EC_Span_Value<=0 || configData.calibrationConfig.EC_Span_Value>99999)
-		configData.calibrationConfig.EC_Span_Value=14130;
-	if ((configData.calibrationConfig.TEMP_Span_Cal1 == 1) && (configData.calibrationConfig.TEMP_Span_Value1 == 1)) {
-		configData.calibrationConfig.TEMP_Span_Cal1 = 0;
-		configData.calibrationConfig.TEMP_Span_Value1 = 0;
-	}
-	if ((configData.calibrationConfig.TEMP_Span_Cal2 == 1) && (configData.calibrationConfig.TEMP_Span_Value2 == 1)) {
-		configData.calibrationConfig.TEMP_Span_Cal2 = 0;
-		configData.calibrationConfig.TEMP_Span_Value2 = 0;
-	}
+
+#endif
 
 
     if (configData.outputConfig.output4mA == 0xFFFFFFFF)
@@ -945,6 +1015,7 @@ void SystemSetting(void) {
 }
 
 
+
 char sd_detect=0;
 void SD_Detect_Draw(void) {
 
@@ -960,6 +1031,30 @@ void SD_Detect_Draw(void) {
     }
 }
 
+
+/*
+void Alarm_Icon_Draw(void) {
+//    if (configData.relayConfig.relay2AutoAlarm == 0 && configData.alarmConfig.highLimit == 0 && configData.alarmConfig.lowLimit == 0 && configData.alarmConfig.zeroAlarm == 0 ) {
+//        DrawIcon(ICON_BELL, DRAW_IMAGE_DISABLE);
+//        warning_counter = 0;
+//        warning_counter2 = 0;
+//        zero_error_flag = 0;
+//        Alarm_OP_flag = 1;
+//    }
+
+    if ((configData.relayConfig.relay2AutoAlarm == 1)&&(configData.alarmConfig.highLimit != 0 || configData.alarmConfig.lowLimit != 0 || configData.alarmConfig.zeroAlarm != 0)) {
+        DrawIcon(ICON_BELL, DRAW_IMAGE_ENABLE);
+        Alarm_OP_flag = 0;
+
+    } else {
+        DrawIcon(ICON_BELL, DRAW_IMAGE_DISABLE);
+        warning_counter = 0;
+        warning_counter2 = 0;
+        zero_error_flag = 0;
+        Alarm_OP_flag = 1;
+    }
+}
+*/
 
 //====================================
 // STATE, LCD OUT
@@ -1006,9 +1101,12 @@ void StateHandler(void) {
             break;
 
 
+
+
         case STATE_CONFIG_COMM_ETHERNET:
             State_ConfigEthernet();
             break;
+
 
 
         case STATE_CONFIG_RELAY:
@@ -1020,36 +1118,45 @@ void StateHandler(void) {
         case STATE_CONFIG_ADJUST:
             State_ConfigAdjust();
             break;
-        case STATE_CALIB_ZERO:
-		    if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
-				if (sensor_manager_get_display_field(0) == WATER_FIELD_PH)
-					State_CalibBuff();
-				else
-					State_CalibZero();
-			} else {
-				if (sensor_manager_get_display_field(1) == WATER_FIELD_EC)
-					State_CalibBuff_EC();
-				else
-					State_CalibZero();
-			}
-            break;
 #ifndef SENSOR_PH_EC
+        case STATE_CALIB_ZERO:
+            State_CalibZero();
+            break;
+		// ���ұ���
         case STATE_CALIB_MANUAL:
             State_CalibManual();
             break;
-#endif
-        case STATE_CALIB_BUFF_PH4:
-            State_CalibBuffPH4();
+        case STATE_CALIB_TEMP:
+            State_CalibTemp();
             break;
+#else
+        case STATE_CALIB_ZERO:
+		    if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
+				// ���۱���
+	            State_CalibBuff();
+			}
+			else 
+				State_CalibBuff_EC();
+            break;
+
+
+		// 
+        case STATE_CALIB_BUFF_PH4:
+            State_CalibBuffPH4();	 
+            break;
+		// 
         case STATE_CALIB_BUFF_PH7:
             State_CalibBuffPH7();
             break;
+
+		// ���ұ���
         case STATE_CALIB_SPAN:
             State_CalibSpan();
             break;
         case STATE_CALIB_TEMP:
             State_CalibTemp();
             break;
+#endif
         case STATE_CALIB_S2_CYCLE:
             State_CalibS2Cycle();
             break;
@@ -1057,68 +1164,69 @@ void StateHandler(void) {
             State_CalibLog();
             break;
 
-		// 	???? - ??????- ???? : ???????-????????
+		// 	���� - ������- ���� : �ڵ�����-��������
         case STATE_CONFIG_RELAY_RELAY1:
             State_ConfigRelayRelay1();
             break;
-		// ???? - ??????- ?? : ??????, ???????
+		// ���� - ������- �溸 : �ڵ��˸�, �˸�����
         case STATE_CONFIG_RELAY_RELAY2:
             State_ConfigRelayRelay2();
             break;
 
-		// ???? - ??????- ?????? : ????????, ????????
+		// ���� - ������- ������ : ��������, ��������
         case STATE_CONFIG_RELAY_RELAY3:
             State_ConfigRelayRelay3();
             break;
 
 
-		// ???? - ???? - ????
+		// ���� - ���� - ����
         case STATE_CONFIG_ADJUST_GRADIENT:
             State_ConfigAdjustGradient();
             break;
-		// ???? - ???? - ???
+		// ���� - ���� - �ɼ�
         case STATE_CONFIG_ADJUST_OFFSET:
             State_ConfigAdjustOffset();
             break;
-		// ???? - ???? - ????
+		// ���� - ���� - ����
         case STATE_CONFIG_ADJUST_FILTER:
             State_ConfigAdjustFilter();
             break;
-		// ???? - ???? - ????
+		// ���� - ���� - �ʱ�ȭ
         case STATE_CONFIG_ADJUST_FACTORYRESET:
             State_ConfigAdjustFactoryReset();
             break;
 
 
-		//  ???? - ??????- ???? - ???????
+		//  ���� - ������- ���� - �ڵ�����
         case STATE_CONFIG_RELAY_RELAY1_AUTO_WASH:
             State_ConfigRelayRelay1AutoWash();
             break;
-		//  ???? - ??????- ???? - ????????
+		//  ���� - ������- ���� - ��������
         case STATE_CONFIG_RELAY_RELAY1_MAN_WASH:
             State_ConfigRelayRelay1manualWASH();
             break;
 
-		//  ???? - ??????- ?? - ?????? 
+		//  ���� - ������- �溸 - �ڵ��˶� 
         case STATE_CONFIG_RELAY_RELAY2_AUTO_ALARM:
             State_ConfigRelayRelay2AutoAlarm();
             break;
-		//  ???? - ??????- ?? - ???????
+		//  ���� - ������- �溸 - �˶�����
         case STATE_CONFIG_RELAY_RELAY2_ALARM_OFF:
             State_ConfigRelayRelay2AlarmOFF();
             break;
 
-        // ????-??????-??????-????????
+        // ����-������-������-��������
         case STATE_CONFIG_RELAY_RELAY3_SET:
             State_ConfigRelayRelay3SetOP();
             break;
 
-        // ????-??????-??????-????????
+        // ����-������-������-��������
         case STATE_CONFIG_RELAY_RELAY3_MAN:
             State_ConfigRelayRelay3manualOP();
             break;
     }
 }
+
 
 
 //====================================
@@ -1142,28 +1250,38 @@ void State_Main(void) {
             subState = 2;
             break;
         case 2:
-
+/*            if (flag10ms & FLAG10MS_BUTTON) {
+                flag10ms &= ~FLAG10MS_BUTTON;
+                if (CheckButton() == BUTTON_MENU) {
+                    subState = 3;
+                    cursor = 0;
+              //      MoveSelectedState();
+            		ClearBottomArea();
+                } else
+                    //RedrawTime();
+					RedrawBottomArea();
+            }
+            break;*/
 			if (flag10ms & FLAG10MS_BUTTON) {
 				flag10ms &= ~FLAG10MS_BUTTON;
 				btn = 	CheckButton();
 				if (btn!=0) {btn1=btn2; btn2=btn3; btn3=btn;}
 				switch (btn) {
 					case BUTTON_MENU:
-						subState = 3;
+						subState = 0;
 						cursor = 0;
-						//      MoveSelectedState();
-						ClearBottomArea();
+						MoveSelectedState();
 						break;
 					case BUTTON_ENTER:
 						//RedrawTime();
 						RedrawBottomArea();
-
+						
 						if (btn1==BUTTON_LEFT && btn2==BUTTON_LEFT)
 						{
 							if (currentData.holdState==0) currentData.holdState=1;
 							else currentData.holdState=0;
 						}
-
+						
 						break;
 					default:
 					//RedrawTime();
@@ -1171,7 +1289,7 @@ void State_Main(void) {
 				}
 			}
             break;
-
+            
         case 3:
             if (flag10ms & FLAG10MS_BUTTON) {
                 flag10ms &= ~FLAG10MS_BUTTON;
@@ -1190,14 +1308,14 @@ void State_Main(void) {
 						if  (currentData.Device_Selector_Mode & SENSOR_1_MODE) 
 							 currentData.Device_Selector_Mode = SENSOR_2_MODE; 
 						else currentData.Device_Selector_Mode = SENSOR_1_MODE; 
-
+	
 						RedrawBottomArea_CH2();
 						break;
                 	case BUTTON_RIGHT:
 						if  (currentData.Device_Selector_Mode & SENSOR_1_MODE) 
 							 currentData.Device_Selector_Mode = SENSOR_2_MODE; 
 						else currentData.Device_Selector_Mode = SENSOR_1_MODE; 
-
+	
 						RedrawBottomArea_CH2();
 						break;
 					default:
@@ -1208,6 +1326,8 @@ void State_Main(void) {
             break;
     }
 }
+
+
 
 
 //====================================
@@ -1339,28 +1459,46 @@ void State_Config(void) {
 }
 
 
+
+//==========================================
+#ifndef   SENSOR_PH_EC
+
 void display_calib_icon(void) {
-	water_field_t f0 = sensor_manager_get_display_field(0);
-	water_field_t f1 = sensor_manager_get_display_field(1);
+    display_set3_zero(0);
+    display_set3_span(0);
+    display_set3_temp(0);
+    display_set3_log(0);
 
-	if (currentData.Device_Selector_Mode == SENSOR_1_MODE)
-		(f0 == WATER_FIELD_PH) ? display_set3_buff(0) : display_set3_zero(0);
-	else
-		display_set3_zero(0);
-
-	display_set3_span(0);
-	display_set3_temp(0);
-	display_set3_log(0);
-
-	if (cursor == 0) {
-		if (currentData.Device_Selector_Mode == SENSOR_1_MODE)
-			(f0 == WATER_FIELD_PH) ? display_set3_buff(1) : display_set3_zero(1);
-		else
-			display_set3_zero(1);
-	} else if (cursor == 1) display_set3_span(1);
-	else if (cursor == 2) display_set3_temp(1);
-	else if (cursor == 3) display_set3_log(1);
+    if (cursor == 0) display_set3_zero(1);	  
+    else if (cursor == 1) display_set3_span(1);
+    else if (cursor == 2) display_set3_temp(1);
+    else if (cursor == 3) display_set3_log(1);
 }
+
+#else
+
+void display_calib_icon(void) {						  
+
+	if (currentData.Device_Selector_Mode == SENSOR_1_MODE)    display_set3_buff(0);
+	else     display_set3_zero(0);
+
+    display_set3_span(0);
+    display_set3_temp(0);
+    display_set3_log(0);
+
+    if (cursor == 0) {
+		if (currentData.Device_Selector_Mode == SENSOR_1_MODE)    display_set3_buff(1);
+		else     display_set3_zero(1);
+	}
+    else if (cursor == 1) display_set3_span(1);
+    else if (cursor == 2) display_set3_temp(1);
+    else if (cursor == 3) display_set3_log(1);
+}
+
+#endif
+
+
+
 
 
 void State_Calib(void) {
@@ -1397,7 +1535,9 @@ void State_Calib(void) {
                         else
                             --cursor;
 
-						if (currentData.Device_Selector_Mode == SENSOR_2_MODE && sensor_manager_get_display_field(1) == WATER_FIELD_NTU && cursor == 2) cursor = 1;
+#ifndef    SENSOR_PH_EC
+						if (currentData.Device_Selector_Mode == SENSOR_2_MODE && cursor == 2) cursor=1;
+#endif
                         //DrawLineRectangle(0+(cursor*cursorWidth), 238, cursorWidth+(cursor*cursorWidth), 272, YELLOW);
 
                         display_calib_icon();
@@ -1405,7 +1545,9 @@ void State_Calib(void) {
                     case BUTTON_RIGHT:
                         //DrawLineRectangle(0+(cursor*cursorWidth), 238, cursorWidth+(cursor*cursorWidth), 272, BLACK);
                         ++cursor;
-						if (currentData.Device_Selector_Mode == SENSOR_2_MODE && sensor_manager_get_display_field(1) == WATER_FIELD_NTU && cursor == 2) cursor = 3;
+#ifndef    SENSOR_PH_EC
+						if (currentData.Device_Selector_Mode == SENSOR_2_MODE && cursor == 2) cursor=3;
+#endif
                         cursor = cursor % cursorMax;
 
                         //DrawLineRectangle(0+(cursor*cursorWidth), 238, cursorWidth+(cursor*cursorWidth), 272, YELLOW);
@@ -1436,14 +1578,29 @@ void Trend_Data_calc(void) {
         comm_run_flag = 0;
     }
 } 
-
+/*
+void Trend_Data(void) {
+    int i = 0;
+    if (comm_run_flag != 1) {
+        comm_run_flag = 7;
+        if (Mesure_Data_Value[0][59] != 0xFFFF) {
+            for (i = 0; i < 60; i++) {
+                trendValue[0][i] = Mesure_Data_Value[0][i];
+            }
+        }
+        comm_run_flag = 0;
+    }
+}
+*/
 void State_Trend(void) {
 
-	if ((sensor_manager_get_display_field(0) == WATER_FIELD_CL && currentData.Device_Selector_Mode == SENSOR_1_MODE) ||
-	    (sensor_manager_get_display_field(1) == WATER_FIELD_EC && currentData.Device_Selector_Mode == SENSOR_2_MODE))
-		trand_select_Y_NO = 3;
-	else
-		trand_select_Y_NO = 4;
+#ifndef    SENSOR_PH_EC
+	if (currentData.Device_Selector_Mode == SENSOR_1_MODE) trand_select_Y_NO=3;
+#else 
+	if (currentData.Device_Selector_Mode == SENSOR_2_MODE) trand_select_Y_NO=3;
+#endif
+	else trand_select_Y_NO=4;
+
 
 
     switch (subState) {
@@ -1702,7 +1859,7 @@ void State_Alarm(void) {
                         if (configData.alarmConfig.highLimit != tempConfigData.alarmConfig.highLimit 
 						 || configData.alarmConfig.lowLimit != tempConfigData.alarmConfig.lowLimit
                          || configData.alarmConfig.zeroAlarm != tempConfigData.alarmConfig.zeroAlarm
-
+						 
 						 || configData.alarmConfig.highLimit2 != tempConfigData.alarmConfig.highLimit2 
 						 || configData.alarmConfig.lowLimit2 != tempConfigData.alarmConfig.lowLimit2
                          || configData.alarmConfig.zeroAlarm2 != tempConfigData.alarmConfig.zeroAlarm2	) {
@@ -1763,7 +1920,27 @@ uint16_t output20ma_flag = 0;
 int32_t output_temp4 = 0;
 int32_t output_temp20 = 0;
 
-
+/*
+void adj_Current_Cal(void) {
+    if (output4ma_flag == 1 && output20ma_flag == 0) {
+        if (campare_4mA != tempConfigData.outputConfig.outputReal4mA) {
+            configData.outputConfig.outputReal4mA = adjdefault4mA + tempConfigData.outputConfig.outputReal4mA;
+        }
+        TIM8_Chage_Duty_Channel(2, configData.outputConfig.outputReal4mA);
+        campare_4mA = configData.outputConfig.outputReal4mA;
+    } else if (output4ma_flag == 0 && output20ma_flag == 1) {
+        if (campare_20mA != tempConfigData.outputConfig.outputReal20mA) {
+            configData.outputConfig.outputReal20mA = adjdefault20mA + tempConfigData.outputConfig.outputReal20mA;
+        }
+        TIM8_Chage_Duty_Channel(2, configData.outputConfig.outputReal20mA);
+        campare_20mA = configData.outputConfig.outputReal20mA;
+    }
+    else {
+        campare_4mA = 0;
+        campare_20mA = 0;
+    }
+}
+*/  
 void adj_Current_Cal(void) {
     if (output4ma_flag == 1 && output20ma_flag == 0) {
         if (campare_4mA != tempConfigData.outputConfig.outputReal4mA) {
@@ -1805,6 +1982,7 @@ void adj_Current_Cal2(void) {
 }
 
 
+
 uint16_t dac_imsi=0;
 
 void DAC_output_imsi(uint16_t  data)
@@ -1830,6 +2008,8 @@ TIM8_Chage_Duty_Channel(2, dac_imsi);
 void DAC_output_imsi2(uint16_t  data) {
 	TIM8_Chage_Duty_Channel(3, data);
 }
+
+
 
 
 // ANALOG
@@ -1968,7 +2148,7 @@ void State_ConfigOutput(void) {
                                 break;
                             case 8:
 								//compareValue ^= 1;	
-                                compareValue=1; // ???1??????
+                                compareValue=1; // �׻�1������
                                 break;
                         }
                         DrawOutputConfig(cursor, YELLOW);
@@ -1977,14 +2157,14 @@ void State_ConfigOutput(void) {
                         if (configData.outputConfig.output4mA     != tempConfigData.outputConfig.output4mA     || configData.outputConfig.output20mA     != tempConfigData.outputConfig.output20mA
                          || configData.outputConfig.outputReal4mA != tempConfigData.outputConfig.outputReal4mA || configData.outputConfig.outputReal20mA != tempConfigData.outputConfig.outputReal20mA) {
 
-
+						 	
 							configData = tempConfigData;
                             Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
                         }
                         if (configData.outputConfig.output4mA2     != tempConfigData.outputConfig.output4mA2     || configData.outputConfig.output20mA2     != tempConfigData.outputConfig.output20mA2
                          || configData.outputConfig.outputReal4mA2 != tempConfigData.outputConfig.outputReal4mA2 || configData.outputConfig.outputReal20mA2 != tempConfigData.outputConfig.outputReal20mA2) {
 
-
+						 	
 							configData = tempConfigData;
                             Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
                         }
@@ -2002,6 +2182,7 @@ void State_ConfigOutput(void) {
             break;
     }
 }
+
 
 
 void State_ConfigOutput2(void) {
@@ -2139,7 +2320,7 @@ void State_ConfigOutput2(void) {
                                 break;
                             case 8:
 								//compareValue ^= 1;	
-                                compareValue=1; // ???1??????
+                                compareValue=1; // �׻�1������
                                 break;
                         }
                         DrawOutputConfig(cursor, YELLOW);
@@ -2148,14 +2329,14 @@ void State_ConfigOutput2(void) {
                         if (configData.outputConfig.output4mA     != tempConfigData.outputConfig.output4mA     || configData.outputConfig.output20mA     != tempConfigData.outputConfig.output20mA
                          || configData.outputConfig.outputReal4mA != tempConfigData.outputConfig.outputReal4mA || configData.outputConfig.outputReal20mA != tempConfigData.outputConfig.outputReal20mA) {
 
-
+						 	
 							configData = tempConfigData;
                             Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
                         }
                         if (configData.outputConfig.output4mA2     != tempConfigData.outputConfig.output4mA2     || configData.outputConfig.output20mA2     != tempConfigData.outputConfig.output20mA2
                          || configData.outputConfig.outputReal4mA2 != tempConfigData.outputConfig.outputReal4mA2 || configData.outputConfig.outputReal20mA2 != tempConfigData.outputConfig.outputReal20mA2) {
 
-
+						 	
 							configData = tempConfigData;
                             Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
                         }
@@ -2181,12 +2362,6 @@ void State_ConfigComm(void) {
     switch (subState) {
         case 0:
             tempConfigData = configData;
-            if ((tempConfigData.calibrationConfig.PH_Span_Cal == 1) && (tempConfigData.calibrationConfig.PH_Span_Value == 1)) {
-                tempConfigData.calibrationConfig.PH_Span_Cal = 700;
-                tempConfigData.calibrationConfig.PH_Span_Value = 700;
-            }
-            if (tempConfigData.calibrationConfig.EC_Span_Cal <= 0)
-                tempConfigData.calibrationConfig.EC_Span_Cal = 14130;
             RedrawTitle();
             RedrawBottomArea();
             RedrawViewArea();
@@ -2266,12 +2441,7 @@ void State_ConfigComm(void) {
                         break;
                     case BUTTON_ENTER:
                         if (configData.modbusConfig.mode != tempConfigData.modbusConfig.mode || configData.modbusConfig.baudrate != tempConfigData.modbusConfig.baudrate
-                                || configData.modbusConfig.modbusSlaveAddr != tempConfigData.modbusConfig.modbusSlaveAddr || configData.modbusConfig.databit != tempConfigData.modbusConfig.databit
-#ifdef SENSOR_PH_EC
-                                || configData.modbusConfig.modbusSensor1Addr != tempConfigData.modbusConfig.modbusSensor1Addr
-                                || configData.modbusConfig.modbusSensor2Addr != tempConfigData.modbusConfig.modbusSensor2Addr
-#endif
-                                ) {
+                                || configData.modbusConfig.modbusSlaveAddr != tempConfigData.modbusConfig.modbusSlaveAddr || configData.modbusConfig.databit != tempConfigData.modbusConfig.databit) {
                             configData.modbusConfig = tempConfigData.modbusConfig;
                             Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
 
@@ -2401,30 +2571,30 @@ void State_ConfigEthernet(void) {
 						IP_ADDR1=tempConfigData.EthernetConfig.IP_ADDR1;
 						IP_ADDR2=tempConfigData.EthernetConfig.IP_ADDR2;
 						IP_ADDR3=tempConfigData.EthernetConfig.IP_ADDR3;
-
+						
 						//NETMASK
 						NETMASK_ADDR0 =  tempConfigData.EthernetConfig.NETMASK_ADDR0;
 						NETMASK_ADDR1 =  tempConfigData.EthernetConfig.NETMASK_ADDR1;
 						NETMASK_ADDR2 =  tempConfigData.EthernetConfig.NETMASK_ADDR2;
 						NETMASK_ADDR3 =  tempConfigData.EthernetConfig.NETMASK_ADDR3;
-
+						
 						//Gateway Address
 						GW_ADDR0 =  tempConfigData.EthernetConfig.GW_ADDR0;
 						GW_ADDR1 =  tempConfigData.EthernetConfig.GW_ADDR1;
 						GW_ADDR2 =  tempConfigData.EthernetConfig.GW_ADDR2;
 						GW_ADDR3 =  tempConfigData.EthernetConfig.GW_ADDR3;
-
+						
 						ETHERNET_PORT=tempConfigData.EthernetConfig.ETHERNET_PORT;
 
 					  	/* Initilaize the LwIP stack */
 //					    lwip_init();
-
+					
 					    /* Configure the Network interface */
 //					    Netif_Config();
-
+					
 					    /* tcp echo server Init */
 //					    tcp_echoserver_init();
-
+					
 					    /* Notify user about the network interface config */
 //					    User_notification(&gnetif);
 
@@ -2441,6 +2611,8 @@ void State_ConfigEthernet(void) {
             break;
     }
 }
+
+
 
 
 //========================================
@@ -2606,6 +2778,7 @@ void State_ConfigTime(void) {
 }
 
 
+
 //==========================================
 
 void display_ConfigAdjust_icon(void) {
@@ -2630,6 +2803,7 @@ void State_ConfigAdjust(void) {
             RedrawBottomArea();
             subState = 1;
             cursor = 2;
+
 
 
         	configData.adjustConfig.gradientS1 = 100;
@@ -2736,6 +2910,7 @@ void State_ConfigAdjust(void) {
 #endif
 
 
+
 void Save_CalLog_Data(uint16_t Type, int32_t calvaule) {
     uint16_t address_start = 0;
     uint16_t upcounter = 0;
@@ -2804,6 +2979,7 @@ void Save_CalLog_Data(uint16_t Type, int32_t calvaule) {
 //    LogDataCounter = 0;
 
 
+
     EEpromdata.ReadEEpromData_Buffer[110] = LogData[110];
     EEpromdata.WriteEEpromData_Buffer[110] = LogData[110];
     MpuToEEprom(EEpromdata.WriteEEpromData_Buffer, address_start, 11);
@@ -2812,18 +2988,12 @@ void Save_CalLog_Data(uint16_t Type, int32_t calvaule) {
 }
 
 
-//????????
+//���α���
 void State_CalibZero(void) {
 
     switch (subState) {
         case 0:
             tempConfigData = configData;
-            if ((tempConfigData.calibrationConfig.PH_Span_Cal == 1) && (tempConfigData.calibrationConfig.PH_Span_Value == 1)) {
-                tempConfigData.calibrationConfig.PH_Span_Cal = 700;
-                tempConfigData.calibrationConfig.PH_Span_Value = 700;
-            }
-            if (tempConfigData.calibrationConfig.EC_Span_Cal <= 0)
-                tempConfigData.calibrationConfig.EC_Span_Cal = 14130;
             RedrawTitle();
             RedrawBottomArea();
             RedrawViewArea();
@@ -2904,28 +3074,22 @@ void State_CalibZero(void) {
 
                         if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
                             if (cursor == 0) {
-                                if (tempConfigData.calibrationConfig.S1zeroCal >= 10)
+                                if (tempConfigData.calibrationConfig.S1zeroCal >= 10) {
                                     tempConfigData.calibrationConfig.S1zeroCal -= 10;
-                                else if (tempConfigData.calibrationConfig.S1zeroCal < 0)
-                                    tempConfigData.calibrationConfig.S1zeroCal += 10;  /* 음수일 때 0으로 수렴 */
+                                } 
                             } else {
                                 if (tempConfigData.calibrationConfig.S1zeroCal > 0)
                                     --tempConfigData.calibrationConfig.S1zeroCal;
-                                else if (tempConfigData.calibrationConfig.S1zeroCal < 0)
-                                    ++tempConfigData.calibrationConfig.S1zeroCal;  /* 음수->0 */
                             }
                         }
                         else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
                             if (cursor == 0) {
-                                if (tempConfigData.calibrationConfig.S2zeroCal >= 100)
+                                if (tempConfigData.calibrationConfig.S2zeroCal >= 100) {
                                     tempConfigData.calibrationConfig.S2zeroCal -= 100;
-                                else if (tempConfigData.calibrationConfig.S2zeroCal < 0)
-                                    tempConfigData.calibrationConfig.S2zeroCal += 100;  /* 음수->0 */
+                                }
                             } else {
                                 if (tempConfigData.calibrationConfig.S2zeroCal > 0)
                                     --tempConfigData.calibrationConfig.S2zeroCal;
-                                else if (tempConfigData.calibrationConfig.S2zeroCal < 0)
-                                    ++tempConfigData.calibrationConfig.S2zeroCal;  /* 음수->0 */
                             }
                         }
 
@@ -2982,7 +3146,8 @@ void State_CalibZero(void) {
 }
 
 
-// ?????? ??????? span
+
+// ������ ���ұ��� span
 void State_CalibManual(void) {
     switch (subState) {
         case 0:
@@ -3141,7 +3306,9 @@ void State_CalibManual(void) {
 }
 
 
-// PH,EC ??????? span
+
+
+// PH,EC ���ұ��� span
 void State_CalibSpan(void) {
     switch (subState) {
         case 0:
@@ -3195,13 +3362,12 @@ void State_CalibSpan(void) {
                         if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
                             switch (cursor) {
                                 case 0:
-                                    /* 자릿수 가중치: 0.0X 구간에서는 +1만 적용 (0.001->0.002 방지) */
-                                    if (tempConfigData.calibrationConfig.PH_Span_Cal < 1400)
-                                        ++tempConfigData.calibrationConfig.PH_Span_Cal;
+                                    if (tempConfigData.calibrationConfig.PH_Span_Cal + 10 <= 9999)
+                                        tempConfigData.calibrationConfig.PH_Span_Cal += 10;
                                     break;
                                 case 1:
-                                    if (tempConfigData.calibrationConfig.PH_Span_Cal + 10 <= 1400)
-                                        tempConfigData.calibrationConfig.PH_Span_Cal += 10;
+                                    if (tempConfigData.calibrationConfig.PH_Span_Cal < 9999)
+                                        ++tempConfigData.calibrationConfig.PH_Span_Cal;
                                     break;
                                 case 2:
 
@@ -3210,13 +3376,12 @@ void State_CalibSpan(void) {
                         } else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
                             switch (cursor) {
                                 case 0:
-                                    /* 자릿수 가중치: 0.0X 구간에서는 +1만 적용 (0.001->0.011 튐 방지) */
-                                    if (tempConfigData.calibrationConfig.EC_Span_Cal + 10 <= 99999)
-                                        tempConfigData.calibrationConfig.EC_Span_Cal += 10;
-                                    break;
-                                case 1:
                                     if (tempConfigData.calibrationConfig.EC_Span_Cal + 100 <= 99999)
                                         tempConfigData.calibrationConfig.EC_Span_Cal += 100;
+                                    break;
+                                case 1:
+                                    if (tempConfigData.calibrationConfig.EC_Span_Cal < 99999)
+                                        ++tempConfigData.calibrationConfig.EC_Span_Cal;
                                     break;
                                 case 2:
 
@@ -3229,12 +3394,12 @@ void State_CalibSpan(void) {
                         if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
                             switch (cursor) {
                                 case 0:
-                                    if (tempConfigData.calibrationConfig.PH_Span_Cal > 0)
-                                        --tempConfigData.calibrationConfig.PH_Span_Cal;
-                                    break;
-                                case 1:
                                     if (tempConfigData.calibrationConfig.PH_Span_Cal >= 10)
                                         tempConfigData.calibrationConfig.PH_Span_Cal -= 10;
+                                    break;
+                                case 1:
+                                    if (tempConfigData.calibrationConfig.PH_Span_Cal > 0)
+                                        --tempConfigData.calibrationConfig.PH_Span_Cal;
                                     break;
                                 case 2:
 
@@ -3243,12 +3408,12 @@ void State_CalibSpan(void) {
                         } else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
                             switch (cursor) {
                                 case 0:
-                                    if (tempConfigData.calibrationConfig.EC_Span_Cal >= 10)
-                                        tempConfigData.calibrationConfig.EC_Span_Cal -= 10;
-                                    break;
-                                case 1:
                                     if (tempConfigData.calibrationConfig.EC_Span_Cal >= 100)
                                         tempConfigData.calibrationConfig.EC_Span_Cal -= 100;
+                                    break;
+                                case 1:
+                                    if (tempConfigData.calibrationConfig.EC_Span_Cal > 0)
+                                        --tempConfigData.calibrationConfig.EC_Span_Cal;
                                     break;
                                 case 2:
                                     if (compareSignValue > -99999)
@@ -3305,18 +3470,13 @@ void State_CalibSpan(void) {
 }
 
 
-static void State_CalibTemp_RS232(void) {
+#ifndef  SENSOR_PH_EC
+
+// ���� �µ�����
+void State_CalibTemp(void) {
     switch (subState) {
         case 0:
             tempConfigData = configData;
-            if ((tempConfigData.calibrationConfig.TEMP_Span_Cal1 == 1) && (tempConfigData.calibrationConfig.TEMP_Span_Value1 == 1)) {
-                tempConfigData.calibrationConfig.TEMP_Span_Cal1 = 0;
-                tempConfigData.calibrationConfig.TEMP_Span_Value1 = 0;
-            }
-            if ((tempConfigData.calibrationConfig.TEMP_Span_Cal2 == 1) && (tempConfigData.calibrationConfig.TEMP_Span_Value2 == 1)) {
-                tempConfigData.calibrationConfig.TEMP_Span_Cal2 = 0;
-                tempConfigData.calibrationConfig.TEMP_Span_Value2 = 0;
-            }
             compareSignValue = currentData.temperature;
             compareSigntemp = compareSignValue;
             RedrawTitle();
@@ -3417,11 +3577,11 @@ static void State_CalibTemp_RS232(void) {
 
                             switch (cursor) {
                                 case 0:
-                                    if (compareSignValue > -9990)
+                                    if (compareSignValue >= 100)
                                         compareSignValue -= 100;
                                     break;
                                 case 1:
-                                    if (compareSignValue > -9999)
+                                    if (compareSignValue >= 10)
                                         compareSignValue-=10;
                                     break;
                             }
@@ -3449,18 +3609,13 @@ static void State_CalibTemp_RS232(void) {
     }
 }
 
-static void State_CalibTemp_RS485(void) {
+#else
+
+// PH, EC �µ�����
+void State_CalibTemp(void) {
     switch (subState) {
         case 0:
             tempConfigData = configData;
-            if ((tempConfigData.calibrationConfig.TEMP_Span_Cal1 == 1) && (tempConfigData.calibrationConfig.TEMP_Span_Value1 == 1)) {
-                tempConfigData.calibrationConfig.TEMP_Span_Cal1 = 0;
-                tempConfigData.calibrationConfig.TEMP_Span_Value1 = 0;
-            }
-            if ((tempConfigData.calibrationConfig.TEMP_Span_Cal2 == 1) && (tempConfigData.calibrationConfig.TEMP_Span_Value2 == 1)) {
-                tempConfigData.calibrationConfig.TEMP_Span_Cal2 = 0;
-                tempConfigData.calibrationConfig.TEMP_Span_Value2 = 0;
-            }
             compareSignValue = currentData.temperature;
             compareSigntemp = compareSignValue;
             RedrawTitle();
@@ -3498,24 +3653,24 @@ static void State_CalibTemp_RS485(void) {
 					   	if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
 	                        switch (cursor) {
 	                            case 0:
-	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal1 < 9999)
-	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal1 += 1;
-	                                break;
-	                            case 1:
 	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal1 + 10 <= 9999)
 	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal1 += 10;
+	                                break;
+	                            case 1:
+	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal1 < 9990)
+	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal1+=1;
 	                                break;
 							}
 						}								
 						else {
 	                        switch (cursor) {
 	                            case 0:
-	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal2 < 9999)
-	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal2 += 1;
-	                                break;
-	                            case 1:
 	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal2 + 10 <= 9999)
 	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal2 += 10;
+	                                break;
+	                            case 1:
+	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal2 < 9990)
+	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal2+=1;
 	                                break;
 							}
 	                    }
@@ -3525,24 +3680,24 @@ static void State_CalibTemp_RS485(void) {
 					   	if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
 	                        switch (cursor) {
 	                            case 0:
-	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal1 > -9999)
-	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal1 -= 1;
+	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal1 >= 10)
+	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal1 -= 10;
 	                                break;
 	                            case 1:
-	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal1 > -9990)
-	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal1 -= 10;
+	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal1 >= 1)
+	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal1-=1;
 	                                break;
 	                        }
 						}
 						else {
 	                        switch (cursor) {
 	                            case 0:
-	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal2 > -9999)
-	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal2 -= 1;
+	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal2 >= 10)
+	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal2 -= 10;
 	                                break;
 	                            case 1:
-	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal2 > -9990)
-	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal2 -= 10;
+	                                if (tempConfigData.calibrationConfig.TEMP_Span_Cal2 >= 1)
+	                                    tempConfigData.calibrationConfig.TEMP_Span_Cal2-=1;
 	                                break;
 	                        }
 						}
@@ -3561,7 +3716,7 @@ static void State_CalibTemp_RS485(void) {
 
                         configData.calibrationConfig = tempConfigData.calibrationConfig;
                         Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
-
+						 
                         manual_cal_temp_flag = 1;
                         Save_CalLog_Data(TEXT96_TEMP_CALIBRATION, Tx_Adj_TempertureVaule);
                         Update_Cal_Logdata();
@@ -3575,17 +3730,7 @@ static void State_CalibTemp_RS485(void) {
     }
 }
 
-void State_CalibTemp(void) {
-	water_field_t f0 = sensor_manager_get_display_field(0);
-	water_field_t f1 = sensor_manager_get_display_field(1);
-	if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
-		if (f0 == WATER_FIELD_PH) State_CalibTemp_RS485();
-		else State_CalibTemp_RS232();
-	} else {
-		if (f1 == WATER_FIELD_EC) State_CalibTemp_RS485();
-		else State_CalibTemp_RS232();
-	}
-}
+#endif
 
 void State_CalibS2Cycle(void) {
     switch (subState) {
@@ -3639,7 +3784,7 @@ void State_CalibS2Cycle(void) {
 }
 
 
-// ??????? 
+// �����̷� 
 void State_CalibLog(void) {
     int year_temp = 0;
     int vaule_temp = 0;
@@ -3755,7 +3900,7 @@ void State_CalibLog(void) {
                         if (cursor > 0) {
                             --cursor;
                             caldisp_counter--;
-                            caldisp_counter = caldisp_counter - 3;	// ???4???? -3????
+                            caldisp_counter = caldisp_counter - 3;	// �޴�4���� -3����
                             if (caldisp_counter < 0) {
                                 caldisp_counter = 0;
                             }
@@ -3885,7 +4030,7 @@ void State_CalibLog(void) {
                     case BUTTON_DOWN:
                         if (cursor < 95) {
                             caldisp_counter++;
-                            caldisp_counter = caldisp_counter - 3;	// ??? 4???? -3????
+                            caldisp_counter = caldisp_counter - 3;	// �޴� 4���� -3����
 
                             ++cursor;
                             if (caldisp_counter == LogData[caldisp_counter * 11]) // cursor + 1
@@ -4018,10 +4163,11 @@ void State_CalibLog(void) {
 }
 
 
+
 //==========================================
 
 //=========================================
-// ??????? ph4
+// ���۱��� ph4
 
 //uint16_t buffer_calib_value=0;
 
@@ -4031,8 +4177,6 @@ void State_CalibBuffPH4(void) {
     switch (subState) {
         case 0:
             tempConfigData = configData;
-            if (tempConfigData.calibrationConfig.EC_Cal < 0)
-                tempConfigData.calibrationConfig.EC_Cal = 0;
             RedrawTitle();
             RedrawBottomArea();
             RedrawViewArea();
@@ -4054,12 +4198,18 @@ void State_CalibBuffPH4(void) {
                         break;
                     case BUTTON_LEFT:
                         DrawCalibPH4(cursor, WHITE);
-                        cursor ^= 1;
+                        //if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
+                        //    if (cursor == 0) cursor = 3;
+                        //    else --cursor;
+                        //} else cursor ^= 1;
                         DrawCalibPH4(cursor, YELLOW);
                         break;
                     case BUTTON_RIGHT:
                         DrawCalibPH4(cursor, WHITE);
-                        cursor ^= 1;
+                        //if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
+                        //    ++cursor;
+                        //    cursor = cursor % 4;
+                        //} else cursor ^= 1;
                         DrawCalibPH4(cursor, YELLOW);
                         break;
                     case BUTTON_UP:
@@ -4097,15 +4247,12 @@ void State_CalibBuffPH4(void) {
                         }
                         else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
                             if (cursor == 0) {
-                                if (tempConfigData.calibrationConfig.EC_Cal >= 100)
+                                if (tempConfigData.calibrationConfig.EC_Cal >= 100) {
                                     tempConfigData.calibrationConfig.EC_Cal -= 100;
-                                else if (tempConfigData.calibrationConfig.EC_Cal < 0)
-                                    tempConfigData.calibrationConfig.EC_Cal += 100;  /* 음수->0 */
+                                }
                             } else {
                                 if (tempConfigData.calibrationConfig.EC_Cal > 0)
                                     --tempConfigData.calibrationConfig.EC_Cal;
-                                else if (tempConfigData.calibrationConfig.EC_Cal < 0)
-                                    ++tempConfigData.calibrationConfig.EC_Cal;  /* 음수->0 */
                             }
                         }
 
@@ -4166,11 +4313,12 @@ void State_CalibBuffPH4(void) {
             break;
 
 
+
     }
 }
 
 //=========================================
-// ??????? ph7
+// ���۱��� ph7
 
 //uint16_t buffer_calib_value=0;
 
@@ -4201,12 +4349,18 @@ void State_CalibBuffPH7(void) {
                         break;
                     case BUTTON_LEFT:
                         DrawCalibPH7(cursor, WHITE);
-                        cursor ^= 1;
+                        //if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
+                        //    if (cursor == 0) cursor = 3;
+                        //    else --cursor;
+                        //} else cursor ^= 1;
                         DrawCalibPH7(cursor, YELLOW);
                         break;
                     case BUTTON_RIGHT:
                         DrawCalibPH7(cursor, WHITE);
-                        cursor ^= 1;
+                        //if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
+                        //    ++cursor;
+                        //    cursor = cursor % 4;
+                        //} else cursor ^= 1;
                         DrawCalibPH7(cursor, YELLOW);
                         break;
                     case BUTTON_UP:
@@ -4244,15 +4398,12 @@ void State_CalibBuffPH7(void) {
                         }
                         else if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
                             if (cursor == 0) {
-                                if (tempConfigData.calibrationConfig.EC_Cal >= 100)
+                                if (tempConfigData.calibrationConfig.EC_Cal >= 100) {
                                     tempConfigData.calibrationConfig.EC_Cal -= 100;
-                                else if (tempConfigData.calibrationConfig.EC_Cal < 0)
-                                    tempConfigData.calibrationConfig.EC_Cal += 100;  /* 음수->0 */
+                                }
                             } else {
                                 if (tempConfigData.calibrationConfig.EC_Cal > 0)
                                     --tempConfigData.calibrationConfig.EC_Cal;
-                                else if (tempConfigData.calibrationConfig.EC_Cal < 0)
-                                    ++tempConfigData.calibrationConfig.EC_Cal;  /* 음수->0 */
                             }
                         }
 
@@ -4311,6 +4462,7 @@ void State_CalibBuffPH7(void) {
             break;
 
 
+
     }
 }
 
@@ -4343,12 +4495,18 @@ void State_CalibBuff_EC(void) {
                         break;
                     case BUTTON_LEFT:
                         DrawCalib_EC(cursor, WHITE);
-                        cursor ^= 1;
+                        //if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
+                        //    if (cursor == 0) cursor = 3;
+                        //    else --cursor;
+                        //} else cursor ^= 1;
                         DrawCalib_EC(cursor, YELLOW);
                         break;
                     case BUTTON_RIGHT:
                         DrawCalib_EC(cursor, WHITE);
-                        cursor ^= 1;
+                        //if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
+                        //    ++cursor;
+                        //    cursor = cursor % 4;
+                        //} else cursor ^= 1;
                         DrawCalib_EC(cursor, YELLOW);
                         break;
                     case BUTTON_UP:
@@ -4368,15 +4526,12 @@ void State_CalibBuff_EC(void) {
 
                         if (currentData.Device_Selector_Mode == SENSOR_2_MODE) {
                             if (cursor == 0) {
-                                if (tempConfigData.calibrationConfig.EC_Cal >= 100)
+                                if (tempConfigData.calibrationConfig.EC_Cal >= 100) {
                                     tempConfigData.calibrationConfig.EC_Cal -= 100;
-                                else if (tempConfigData.calibrationConfig.EC_Cal < 0)
-                                    tempConfigData.calibrationConfig.EC_Cal += 100;  /* 음수->0 */
+                                }
                             } else {
                                 if (tempConfigData.calibrationConfig.EC_Cal > 0)
                                     --tempConfigData.calibrationConfig.EC_Cal;
-                                else if (tempConfigData.calibrationConfig.EC_Cal < 0)
-                                    ++tempConfigData.calibrationConfig.EC_Cal;  /* 음수->0 */
                             }
                         }
 
@@ -4415,8 +4570,10 @@ void State_CalibBuff_EC(void) {
             break;
 
 
+
     }
 }
+
 
 
 //==========================================
@@ -4475,7 +4632,7 @@ void State_CalibBuff(void) {
 
 //==========================================
 
-// ???????-????????
+// �ڵ�����-��������
 void display_RelayRelay1_icon(void) {
     display_set7_autowash(0);
     display_set7_manwash(0);
@@ -4537,7 +4694,8 @@ void display_RelayRelay2_icon(void) {
 }
 
 
-// ??-??????, ???????
+
+// �溸-�ڵ��˸�, �˸�����
 
 void State_ConfigRelayRelay2(void) {
     switch (subState) {
@@ -4715,7 +4873,7 @@ void State_ConfigAdjustGradient(void) {
                                 --tempConfigData.adjustConfig.gradientS2;
                             DrawAdjustGradient(0, 0, YELLOW);
                         }
-
+                        
                         break;
                     case BUTTON_ENTER:
                         if (currentData.Device_Selector_Mode == SENSOR_1_MODE) {
@@ -4985,7 +5143,7 @@ void State_ConfigAdjustFactoryReset(void) {
     }
 }
 
-//  ???? - ??????- ???? - ???????
+//  ���� - ������- ���� - �ڵ�����
 void State_ConfigRelayRelay1AutoWash(void) {
     switch (subState) {
         case 0:
@@ -5080,7 +5238,7 @@ void State_ConfigRelayRelay1AutoWash(void) {
 }
 
 
-// ????????
+// ��������
 void State_ConfigRelayRelay1manualWASH(void) {
     switch (subState) {
         case 0:
@@ -5149,7 +5307,7 @@ void State_ConfigRelayRelay1manualWASH(void) {
                         subState = 0;
                         state = STATE_MAIN;
 
-						// ??????? ???????
+						// �ڵ����� �����ϱ�
 						if (configData.relayConfig.relay1WashCycle>0) wash_run_flag = 1;	
 
                         break;
@@ -5177,7 +5335,8 @@ void State_ConfigRelayRelay2AutoAlarm(void) {
             display_set11_stop(0);
 
 
-			// ??? ???????.
+
+			// �׳� �����Ѵ�.
 			{
             	configData.relayConfig.relay2AutoAlarm = 1;
 				tempConfigData.relayConfig.relay2AutoAlarm =1;
@@ -5192,7 +5351,65 @@ void State_ConfigRelayRelay2AutoAlarm(void) {
 
 
             break;
+/*
+        case 1:
+            if (flag10ms & FLAG10MS_BUTTON) {
+                flag10ms &= ~FLAG10MS_BUTTON;
+                switch (CheckButton()) {
+                    case BUTTON_HOME:
+                        subState = 0;
+                        state = STATE_MAIN;
+                        break;
+                    case BUTTON_BACK:
+                        subState = 0;
+                        RedrawMainView();
+                        MoveBackState();
+                        break;
+                    case BUTTON_LEFT:
+                        if (currentData.Device_Selector_Mode == SENSOR_1_MODE || currentData.Device_Selector_Mode == SENSOR_2_MODE) {
+                        } else if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
+                            if (cursor == 0)
+                                cursor = 2;
+                            else
+                                --cursor;
+                        }
+                        break;
+                    case BUTTON_RIGHT:
+                        if (currentData.Device_Selector_Mode == SENSOR_1_MODE || currentData.Device_Selector_Mode == SENSOR_2_MODE) {
+                        } else if (currentData.Device_Selector_Mode == SENSOR_12_MODE) {
+                        }
+                        break;
 
+                    case BUTTON_UP:
+                    case BUTTON_DOWN:
+                        if (currentData.Device_Selector_Mode == SENSOR_1_MODE || currentData.Device_Selector_Mode == SENSOR_2_MODE) {
+                            tempConfigData.relayConfig.relay2AutoAlarm ^= 1;
+                        } else {
+                        }
+                        //				DrawRelay2Alarm(tempConfigData.relayConfig.relay2AutoAlarm, YELLOW);
+                        if ((tempConfigData.relayConfig.relay2AutoAlarm & 0x01) == 0x01) {
+                            //		     DrawTextETC(L_NUMBER1_X, L_NUMBER3_Y, TEXT_ETC_RUN_Y, DRAW_IMAGE_ENABLE);
+                            display_set11_run(1);
+                            display_set11_stop(0);
+                        } else {
+                            //			   DrawTextETC(L_NUMBER1_X, L_NUMBER3_Y, TEXT_ETC_STOP_Y, DRAW_IMAGE_ENABLE);
+                            display_set11_run(0);
+                            display_set11_stop(1);
+                        }
+
+                        break;
+                    case BUTTON_ENTER:
+                        if (configData.relayConfig.relay2AutoAlarm != tempConfigData.relayConfig.relay2AutoAlarm) {
+                            configData.relayConfig.relay2AutoAlarm = tempConfigData.relayConfig.relay2AutoAlarm;
+                            Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
+                        }
+                        subState = 0;
+                        state = STATE_MAIN;
+                        break;
+                }
+            }
+            break;
+			*/
     }
 }
 
@@ -5215,7 +5432,8 @@ void State_ConfigRelayRelay2AlarmOFF(void) {
             display_set11_stop(0);
 
 
-			// ??? ???????.
+
+			// �׳� �����Ѵ�.
 			{
             	configData.relayConfig.relay2AutoAlarm = 0;
 				tempConfigData.relayConfig.relay2AutoAlarm =0;
@@ -5230,8 +5448,54 @@ void State_ConfigRelayRelay2AlarmOFF(void) {
             state = STATE_MAIN;
 
 
-            break;
 
+            break;
+/*        case 1:
+            if (flag10ms & FLAG10MS_BUTTON) {
+                flag10ms &= ~FLAG10MS_BUTTON;
+                switch (CheckButton()) {
+                    case BUTTON_HOME:
+                        subState = 0;
+                        state = STATE_MAIN;
+                        break;
+                    case BUTTON_BACK:
+                        subState = 0;
+                        RedrawMainView();
+                        MoveBackState();
+                        break;
+                    case BUTTON_LEFT:
+                        break;
+                    case BUTTON_RIGHT:
+                        break;
+
+                    case BUTTON_UP:
+                    case BUTTON_DOWN:
+                        tempConfigData.relayConfig.relay2AlarmOFF ^= 1;
+                        //				DrawRelayAlarm(tempConfigData.relayConfig.relay2AlarmOFF);
+
+                        if ((tempConfigData.relayConfig.relay2AlarmOFF & 0x01) == 0) {
+                            //		     DrawTextETC(L_NUMBER1_X, L_NUMBER3_Y, TEXT_ETC_RUN_Y, DRAW_IMAGE_ENABLE);
+                            display_set11_run(1);
+                            display_set11_stop(0);
+                        } else {
+                            //			   DrawTextETC(L_NUMBER1_X, L_NUMBER3_Y, TEXT_ETC_STOP_Y, DRAW_IMAGE_ENABLE);
+                            display_set11_run(0);
+                            display_set11_stop(1);
+                        }
+
+                        break;
+                    case BUTTON_ENTER:
+                        if (configData.relayConfig.relay2AlarmOFF != tempConfigData.relayConfig.relay2AlarmOFF) {
+                            configData.relayConfig.relay2AlarmOFF = tempConfigData.relayConfig.relay2AlarmOFF;
+                            Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
+                        }
+                        subState = 0;
+                        state = STATE_MAIN;
+                        break;
+                }
+            }
+            break;
+			*/
     }
 }
 
@@ -5398,7 +5662,7 @@ void State_ConfigRelayRelay3manualOP(void) {
                         subState = 0;
                         state = STATE_MAIN;
 
-						// ????3 ???????
+						// ����3 �����ϱ�
 						if (configData.relayConfig.relay3WashCycle>0) wash_run_flag3 = 1;	
 
                         break;
@@ -5434,8 +5698,6 @@ void FactoryReset(void) {
     configData.modbusConfig.baudrate = 0;
     configData.modbusConfig.modbusSlaveAddr = 0;
     configData.modbusConfig.databit = 0;
-    configData.modbusConfig.modbusSensor1Addr = 2;   /* pH 센서 기본 Slave ID */
-    configData.modbusConfig.modbusSensor2Addr = 4;   /* EC 센서 기본 Slave ID */
 
     configData.relayConfig.relay1WashCycle = 0;
     configData.relayConfig.relay1WashTime = 0;
@@ -5466,23 +5728,23 @@ void FactoryReset(void) {
     configData.calibrationConfig.EC_Value = 0;
 
 
-    configData.calibrationConfig.PH_Span_Cal = 700;
-    configData.calibrationConfig.PH_Span_Value = 700;
+    configData.calibrationConfig.PH_Span_Cal = 1;
+    configData.calibrationConfig.PH_Span_Value = 1;
 
     configData.calibrationConfig.EC_Span_Cal = 14130;
     configData.calibrationConfig.EC_Span_Value = 14130;
 
-    configData.calibrationConfig.TEMP_Span_Cal1 = 0;
-    configData.calibrationConfig.TEMP_Span_Value1 = 0;
+    configData.calibrationConfig.TEMP_Span_Cal1 = 1;
+    configData.calibrationConfig.TEMP_Span_Value1 = 1;
 
-    configData.calibrationConfig.TEMP_Span_Cal2 = 0;
-    configData.calibrationConfig.TEMP_Span_Value2 = 0;
+    configData.calibrationConfig.TEMP_Span_Cal2 = 1;
+    configData.calibrationConfig.TEMP_Span_Value2 = 1;
 
-    configData.calibrationConfig.TEMP_Span_Cal3 = 0;
-    configData.calibrationConfig.TEMP_Span_Value3 = 0;
+    configData.calibrationConfig.TEMP_Span_Cal3 = 1;
+    configData.calibrationConfig.TEMP_Span_Value3 = 1;
 
-    configData.calibrationConfig.TEMP_Span_Cal4 = 0;
-    configData.calibrationConfig.TEMP_Span_Value4 = 0;
+    configData.calibrationConfig.TEMP_Span_Cal4 = 1;
+    configData.calibrationConfig.TEMP_Span_Value4 = 1;
 
 
     configData.calibrationConfig.S2zeroCal = 0;
@@ -5504,6 +5766,10 @@ void FactoryReset(void) {
     Flash_Write(SAVEADDR_CONFIG_BASE, (vu32*) & configData, sizeof (ConfigSet));
     Clear_EEprom_Data();
 }
+
+
+
+
 
 
 #define DAY_X 28	//10
@@ -5529,16 +5795,29 @@ void RedrawTime(void) {
 
 
         sprintf(strBuffer, "%02d:%02d:%02d", currentTime.tm_hour, currentTime.tm_min, currentTime.tm_sec);
-
+	    
 		if (time_up>0) {
 			Draw_Back_Oval_140x42(172, 220);
 			time_up--;
 		}
 		if (currentTime.tm_min != prevTime.tm_min) time_up=2;
 
-		//TFT_Fill(269,228, 269+35,228+28, WHITE);	 // ????? ???.
+		//TFT_Fill(269,228, 269+35,228+28, WHITE);	 // ���ص� �ȴ�.
         DrawSmallNumber(TIME_X, TIME_Y, strBuffer, WHITE);
     }
+    /*
+        if(currentTime.tm_mday != prevTime.tm_mday)
+        {
+            Draw_Back_Oval_140x42(20,220);
+            Draw_Back_Oval_140x42(172,220);
+            Draw_Back_Oval_140x42(322,220);
+
+            sprintf(strBuffer, "%04d-%02d-%02d",  currentTime.tm_year, currentTime.tm_mon+1, currentTime.tm_mday);
+            DrawSmallNumber(DAY_X, DAY_Y, strBuffer);
+            sprintf(strBuffer, "%02d:%02d:%02d",  currentTime.tm_hour, currentTime.tm_min, currentTime.tm_sec);
+            DrawSmallNumber(TIME_X, TIME_Y, strBuffer);
+        }
+     */
 
 
     prevTime = currentTime;

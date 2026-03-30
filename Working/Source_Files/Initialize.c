@@ -74,7 +74,7 @@ void Initialize(void)
 		set_rtc_to_build_time();
 	}
 	FSMC_LCD_Init();
-	Delay(200000UL);    /* FSMC stabilize before TFT init */
+	Delay(500000UL);    /* FSMC stabilize before TFT init (원본: 넉넉한 안정화) */
 	TFT_Init();
 	Serial_Open(SERIAL_PORT1,115200);
 	Serial_Open(SERIAL_PORT2,115200);
